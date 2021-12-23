@@ -1,0 +1,77 @@
+#:kivy 2.0.0
+
+<RoundedButton>:
+    btn_color_not_pressed: [.5, .5, .5, 1]
+    btn_color_pressed: [.25, .25, .25, 1]
+
+    background_color: (0,0,0,0)
+	background_normal: ''
+	canvas.before:
+		Color:
+            rgba: self.btn_color_not_pressed if self.state=='normal' else self.btn_color_pressed
+		RoundedRectangle:
+			size: self.size
+			pos: self.pos
+			radius: [20]
+
+
+<StartScreen>:
+    name: 'start'
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 50
+
+        Label:
+            text: 'Simple DCA'
+            font_size: '80'
+
+        BoxLayout:
+            orientation: 'vertical'
+            spacing: 40
+            padding: root.width / 4, 20, root.width / 4, 20
+            RoundedButton:
+                text: 'Find Device'
+                on_release: app.root.ids.sm.current = 'connection'
+            RoundedButton:
+                text: "Goodbye World!"
+                on_release: print("Bye")
+
+<ConnectionScreen>:
+    name: 'connection'
+    connections: connection_list
+    AnchorLayout:
+        padding: root.width / 5
+        BoxLayout:
+            orientation: 'vertical'
+            spacing: 0
+            canvas.before:
+                Color:
+                    rgba: .5, .5, .5, 0.2
+                RoundedRectangle:
+                    size: self.size
+                    pos: self.pos
+                    radius: [20]
+            Label:
+                text: 'Connections'
+                height: self.texture_size[1]
+                size_hint_y: None
+                font_size: '50'
+            ScrollView:
+                GridLayout:
+                    id: connection_list
+                    cols: 3
+                    spacing: 0
+
+<ControlScreen>:
+    name: 'control'
+    BoxLayout:
+        Label:
+            text: 'CONTROL'
+
+<DroneRoot>:
+    MyScreenManager:
+        id: sm
+        StartScreen:
+        ConnectionScreen:
+        ControlScreen:
+

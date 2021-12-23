@@ -1,0 +1,1535 @@
+[MAIN] [17-12-2021 08:45:36] [Warning] Test case mode active
+[MAIN] [17-12-2021 08:45:36] [Information] Setting layers process started
+[MAIN] [17-12-2021 08:45:36] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 08:45:36] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 08:45:36] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 08:45:36] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[THREAD 1] [17-12-2021 08:45:36] [Information] Collect bluetooth devices process started
+[MAIN] [17-12-2021 08:45:36] [Information] Build <class 'App.app.ControlWindow'> finished
+[THREAD 1] [17-12-2021 08:45:36] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 08:45:36] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 08:45:38] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 08:45:38] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 08:45:38] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 08:45:38] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 08:45:38] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 08:45:38] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 08:45:38] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 08:45:38] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 08:45:38] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 08:45:38] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 08:45:38] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 08:45:38] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 08:45:38] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 08:45:38] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 08:45:38] [Information] Settings layers process finished
+[MAIN] [17-12-2021 08:45:38] [Information] Build application process finished
+[MAIN] [17-12-2021 08:45:41] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 08:45:41] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 08:45:41] [Information] Switch to layer 1 (<class 'App.app.ConnectionWindow'>)
+[THREAD 1] [17-12-2021 08:45:41] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 08:45:41] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 08:45:42] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 08:45:42] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 08:45:42] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 08:45:42] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 08:45:43] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 08:45:43] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 08:45:43] [Information] Switch to layer 2 (<class 'App.app.ControlWindow'>)
+[MAIN] [17-12-2021 08:46:07] [Warning] Test case mode active
+[MAIN] [17-12-2021 08:46:07] [Information] Setting layers process started
+[MAIN] [17-12-2021 08:46:07] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 08:46:07] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 08:46:07] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 08:46:07] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 08:46:07] [Information] Build <class 'App.app.ControlWindow'> started
+[THREAD 1] [17-12-2021 08:46:07] [Information] Collect bluetooth devices process started
+[THREAD 1] [17-12-2021 08:46:07] [Information] Collect bluetooth devices process finished
+[MAIN] [17-12-2021 08:46:07] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 08:46:07] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 08:46:08] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 08:46:08] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 08:46:08] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 08:46:08] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 08:46:08] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 08:46:08] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 08:46:08] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 08:46:08] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 08:46:08] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 08:46:08] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 08:46:08] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 08:46:08] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 08:46:08] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 08:46:08] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 08:46:08] [Information] Settings layers process finished
+[MAIN] [17-12-2021 08:46:08] [Information] Build application process finished
+[MAIN] [17-12-2021 08:46:22] [Warning] Test case mode active
+[MAIN] [17-12-2021 08:46:25] [Information] Setting layers process started
+[MAIN] [17-12-2021 08:46:25] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 08:46:25] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 08:46:25] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 08:46:25] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[THREAD 1] [17-12-2021 08:46:25] [Information] Collect bluetooth devices process started
+[THREAD 1] [17-12-2021 08:46:25] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 08:46:25] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 08:46:26] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 08:46:26] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 08:46:26] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 08:46:26] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 08:46:26] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 08:46:26] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 08:46:26] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 08:46:26] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 08:46:26] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 08:46:26] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 08:46:26] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 08:46:26] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 08:46:26] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 08:46:26] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 08:46:26] [Information] Settings layers process finished
+[MAIN] [17-12-2021 08:46:26] [Information] Build application process finished
+[MAIN] [17-12-2021 08:46:27] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 08:46:27] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 08:46:27] [Information] Switch to layer 1 (<class 'App.app.ConnectionWindow'>)
+[THREAD 1] [17-12-2021 08:46:27] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 08:46:27] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 08:46:29] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 08:46:29] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 08:46:29] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 08:46:29] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 08:46:31] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 08:46:31] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 08:46:31] [Information] Switch to layer 2 (<class 'App.app.ControlWindow'>)
+[MAIN] [17-12-2021 08:57:27] [Warning] Test case mode active
+[MAIN] [17-12-2021 08:57:27] [Information] Setting layers process started
+[MAIN] [17-12-2021 08:57:27] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 08:57:28] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 08:57:28] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 08:57:28] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 08:57:28] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 08:57:28] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 08:57:28] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 08:57:28] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 08:57:28] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 08:57:28] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 08:57:28] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 08:57:28] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 08:57:28] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 08:57:28] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 08:57:28] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 08:57:28] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 08:57:28] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 08:57:28] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 08:57:28] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 08:57:28] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 08:57:28] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 08:57:28] [Information] Settings layers process finished
+[MAIN] [17-12-2021 08:57:29] [Information] Build application process finished
+[MAIN] [17-12-2021 08:57:30] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 08:57:30] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 08:57:30] [Information] Switch to layer 1 (<class 'App.app.ConnectionWindow'>)
+[THREAD 1] [17-12-2021 08:57:30] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 08:57:30] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 08:57:33] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 08:57:33] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 08:57:33] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 08:57:33] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 08:57:35] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 08:57:35] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 08:57:35] [Information] Switch to layer 2 (<class 'App.app.ControlWindow'>)
+[MAIN] [17-12-2021 08:58:20] [Warning] Test case mode active
+[MAIN] [17-12-2021 08:58:20] [Information] Setting layers process started
+[MAIN] [17-12-2021 08:58:20] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 08:58:20] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 08:58:20] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 08:58:20] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 08:58:20] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 08:58:20] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 08:58:20] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 08:58:21] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 08:58:21] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 08:58:21] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 08:58:21] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 08:58:21] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 08:58:21] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 08:58:21] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 08:58:21] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 08:58:21] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 08:58:21] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 08:58:21] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 08:58:21] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 08:58:21] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 08:58:21] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 08:58:21] [Information] Settings layers process finished
+[MAIN] [17-12-2021 08:58:21] [Information] Build application process finished
+[MAIN] [17-12-2021 08:58:22] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 08:58:22] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[THREAD 1] [17-12-2021 08:58:22] [Information] Collect bluetooth devices process started
+[THREAD 1] [17-12-2021 08:58:22] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 08:58:22] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 08:58:24] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 08:58:24] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 08:58:24] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 08:58:24] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 08:58:25] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 08:58:25] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 08:58:25] [Information] Switch to layer 2 (<class 'App.app.ControlWindow'>)
+[MAIN] [17-12-2021 08:58:43] [Warning] Test case mode active
+[MAIN] [17-12-2021 08:58:43] [Information] Setting layers process started
+[MAIN] [17-12-2021 08:58:43] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 08:58:43] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 08:58:43] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 08:58:43] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 08:58:44] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 08:58:44] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 08:58:44] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 08:58:44] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 08:58:44] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 08:58:44] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 08:58:44] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 08:58:44] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 08:58:44] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 08:58:44] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 08:58:44] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 08:58:44] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 08:58:44] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 08:58:44] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 08:58:44] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 08:58:44] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 08:58:44] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 08:58:44] [Information] Settings layers process finished
+[MAIN] [17-12-2021 08:58:44] [Information] Build application process finished
+[MAIN] [17-12-2021 08:58:46] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 08:58:46] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 08:58:46] [Information] Switch to layer 1 (<class 'App.app.ConnectionWindow'>)
+[THREAD 1] [17-12-2021 08:58:46] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 08:58:46] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 08:58:48] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 08:58:48] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 08:58:48] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 08:58:48] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 08:58:49] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 08:58:49] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 08:58:49] [Information] Switch to layer 2 (<class 'App.app.ControlWindow'>)
+[MAIN] [17-12-2021 08:59:54] [Warning] Test case mode active
+[MAIN] [17-12-2021 08:59:55] [Information] Setting layers process started
+[MAIN] [17-12-2021 08:59:55] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 08:59:55] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 08:59:55] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 08:59:55] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 08:59:55] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 08:59:55] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 08:59:55] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 08:59:55] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 08:59:55] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 08:59:55] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 08:59:55] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 08:59:55] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 08:59:55] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 08:59:55] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 08:59:55] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 08:59:55] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 08:59:55] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 08:59:55] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 08:59:55] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 08:59:55] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 08:59:55] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 08:59:55] [Information] Settings layers process finished
+[MAIN] [17-12-2021 08:59:55] [Information] Build application process finished
+[MAIN] [17-12-2021 08:59:56] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 08:59:56] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 08:59:56] [Information] Switch to layer 1 (<class 'App.app.ConnectionWindow'>)
+[THREAD 1] [17-12-2021 08:59:56] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 08:59:56] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 08:59:58] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 08:59:58] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 08:59:58] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 08:59:58] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 08:59:59] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 08:59:59] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 08:59:59] [Information] Switch to layer 2 (<class 'App.app.ControlWindow'>)
+[MAIN] [17-12-2021 09:00:14] [Warning] Test case mode active
+[MAIN] [17-12-2021 09:00:14] [Information] Setting layers process started
+[MAIN] [17-12-2021 09:00:14] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 09:00:14] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 09:00:14] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:00:14] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:00:14] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 09:00:14] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 09:00:14] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 09:00:15] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 09:00:15] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 09:00:15] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:00:15] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:00:15] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 09:00:15] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 09:00:15] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:00:15] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:00:15] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 09:00:15] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 09:00:15] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 09:00:15] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 09:00:15] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 09:00:15] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:00:15] [Information] Settings layers process finished
+[MAIN] [17-12-2021 09:00:15] [Information] Build application process finished
+[MAIN] [17-12-2021 09:00:16] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:00:16] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[THREAD 1] [17-12-2021 09:00:16] [Information] Collect bluetooth devices process started
+[THREAD 1] [17-12-2021 09:00:16] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 09:00:16] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 09:00:19] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 09:00:19] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 09:00:19] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 09:00:19] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 09:00:21] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 09:00:21] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 09:00:21] [Information] Switch to layer 2 (<class 'App.app.ControlWindow'>)
+[MAIN] [17-12-2021 09:00:46] [Warning] Test case mode active
+[MAIN] [17-12-2021 09:00:46] [Information] Setting layers process started
+[MAIN] [17-12-2021 09:00:46] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 09:00:46] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 09:00:46] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:00:48] [Warning] Test case mode active
+[MAIN] [17-12-2021 09:00:48] [Information] Setting layers process started
+[MAIN] [17-12-2021 09:00:48] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 09:00:48] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 09:00:48] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:00:48] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:00:48] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 09:00:48] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 09:00:48] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 09:00:49] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 09:00:49] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 09:00:49] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:00:49] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:00:49] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 09:00:49] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 09:00:49] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:00:49] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:00:49] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 09:00:49] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 09:00:49] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 09:00:49] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 09:00:49] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 09:00:49] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:00:49] [Information] Settings layers process finished
+[MAIN] [17-12-2021 09:00:49] [Information] Build application process finished
+[MAIN] [17-12-2021 09:00:50] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:00:50] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:00:50] [Information] Switch to layer 1 (<class 'App.app.ConnectionWindow'>)
+[THREAD 1] [17-12-2021 09:00:50] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 09:00:50] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 09:00:52] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 09:00:52] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 09:00:52] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 09:00:52] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 09:00:53] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 09:00:53] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 09:00:53] [Information] Switch to layer 2 (<class 'App.app.ControlWindow'>)
+[MAIN] [17-12-2021 09:01:19] [Warning] Test case mode active
+[MAIN] [17-12-2021 09:01:19] [Information] Setting layers process started
+[MAIN] [17-12-2021 09:01:19] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 09:01:19] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 09:01:19] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:01:19] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:01:19] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 09:01:19] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 09:01:19] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 09:01:20] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 09:01:20] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 09:01:20] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:01:20] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:01:20] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 09:01:20] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 09:01:20] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:01:20] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:01:20] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 09:01:20] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 09:01:20] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 09:01:20] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 09:01:20] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 09:01:20] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:01:20] [Information] Settings layers process finished
+[MAIN] [17-12-2021 09:01:20] [Information] Build application process finished
+[MAIN] [17-12-2021 09:01:21] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:01:21] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[THREAD 1] [17-12-2021 09:01:21] [Information] Collect bluetooth devices process started
+[THREAD 1] [17-12-2021 09:01:21] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 09:01:21] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 09:01:22] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 09:01:22] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 09:01:22] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 09:01:22] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 09:01:23] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 09:01:23] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 09:01:23] [Information] Switch to layer 2 (<class 'App.app.ControlWindow'>)
+[MAIN] [17-12-2021 09:04:16] [Warning] Test case mode active
+[MAIN] [17-12-2021 09:04:16] [Information] Setting layers process started
+[MAIN] [17-12-2021 09:04:16] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 09:04:16] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 09:04:16] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:04:17] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:04:17] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 09:04:17] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 09:04:17] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 09:04:17] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 09:04:17] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 09:04:17] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:04:17] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:04:17] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 09:04:17] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 09:04:17] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:04:17] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:04:17] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 09:04:17] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 09:04:17] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 09:04:17] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 09:04:17] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 09:04:17] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:04:17] [Information] Settings layers process finished
+[MAIN] [17-12-2021 09:04:17] [Information] Build application process finished
+[MAIN] [17-12-2021 09:05:23] [Warning] Test case mode active
+[MAIN] [17-12-2021 09:05:23] [Information] Setting layers process started
+[MAIN] [17-12-2021 09:05:23] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 09:05:23] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 09:05:23] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:05:23] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:05:23] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 09:05:23] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 09:05:23] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 09:05:24] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 09:05:24] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 09:05:24] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:05:24] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:05:24] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 09:05:24] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 09:05:24] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:05:24] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:05:24] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 09:05:24] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 09:05:24] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 09:05:24] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 09:05:24] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 09:05:24] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:05:24] [Information] Settings layers process finished
+[MAIN] [17-12-2021 09:05:24] [Information] Build application process finished
+[MAIN] [17-12-2021 09:06:16] [Warning] Test case mode active
+[MAIN] [17-12-2021 09:06:16] [Information] Setting layers process started
+[MAIN] [17-12-2021 09:06:16] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 09:06:16] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 09:06:16] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:06:16] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:06:16] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 09:06:16] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 09:06:16] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 09:06:16] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 09:06:17] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 09:06:17] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:06:17] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:06:17] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 09:06:17] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 09:06:17] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:06:17] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:06:17] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 09:06:17] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 09:06:17] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 09:06:17] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 09:06:17] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 09:06:17] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:06:17] [Information] Settings layers process finished
+[MAIN] [17-12-2021 09:06:17] [Information] Build application process finished
+[MAIN] [17-12-2021 09:06:18] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:06:18] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[THREAD 1] [17-12-2021 09:06:18] [Information] Collect bluetooth devices process started
+[THREAD 1] [17-12-2021 09:06:18] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 09:06:18] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 09:06:37] [Warning] Test case mode active
+[MAIN] [17-12-2021 09:06:37] [Information] Setting layers process started
+[MAIN] [17-12-2021 09:06:37] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 09:06:37] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 09:06:37] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:06:37] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:06:37] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 09:06:37] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 09:06:37] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 09:06:38] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 09:06:38] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 09:06:38] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:06:38] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:06:38] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 09:06:38] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 09:06:38] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:06:38] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:06:38] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 09:06:38] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 09:06:38] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 09:06:38] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 09:06:38] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 09:06:38] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:06:38] [Information] Settings layers process finished
+[MAIN] [17-12-2021 09:06:38] [Information] Build application process finished
+[MAIN] [17-12-2021 09:06:39] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:06:39] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[THREAD 1] [17-12-2021 09:06:39] [Information] Collect bluetooth devices process started
+[THREAD 1] [17-12-2021 09:06:39] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 09:06:39] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 09:09:57] [Warning] Test case mode active
+[MAIN] [17-12-2021 09:09:57] [Information] Setting layers process started
+[MAIN] [17-12-2021 09:09:57] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 09:09:57] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 09:09:57] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:09:57] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:09:57] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 09:09:57] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 09:09:57] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 09:09:58] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 09:09:58] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 09:09:58] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:09:58] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:09:58] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 09:09:58] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 09:09:58] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:09:58] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:09:58] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 09:09:58] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 09:09:58] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 09:09:58] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 09:09:58] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 09:09:58] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:09:58] [Information] Settings layers process finished
+[MAIN] [17-12-2021 09:09:58] [Information] Build application process finished
+[MAIN] [17-12-2021 09:09:59] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:09:59] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[THREAD 1] [17-12-2021 09:09:59] [Information] Collect bluetooth devices process started
+[THREAD 1] [17-12-2021 09:09:59] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 09:09:59] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 09:10:24] [Warning] Test case mode active
+[MAIN] [17-12-2021 09:10:24] [Information] Setting layers process started
+[MAIN] [17-12-2021 09:10:24] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 09:10:24] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 09:10:24] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:10:24] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:10:24] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 09:10:24] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 09:10:24] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 09:10:24] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 09:10:24] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 09:10:25] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:10:25] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:10:25] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 09:10:25] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 09:10:25] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:10:25] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:10:25] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 09:10:25] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 09:10:25] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 09:10:25] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 09:10:25] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 09:10:25] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:10:25] [Information] Settings layers process finished
+[MAIN] [17-12-2021 09:10:25] [Information] Build application process finished
+[MAIN] [17-12-2021 09:10:26] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:10:26] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:10:26] [Information] Switch to layer 1 (<class 'App.app.ConnectionWindow'>)
+[THREAD 1] [17-12-2021 09:10:26] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 09:10:26] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 09:10:27] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 09:10:27] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 09:10:27] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 09:10:27] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 09:10:28] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 09:10:28] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 09:10:28] [Information] Switch to layer 2 (<class 'App.app.ControlWindow'>)
+[MAIN] [17-12-2021 09:10:47] [Warning] Test case mode active
+[MAIN] [17-12-2021 09:10:47] [Information] Setting layers process started
+[MAIN] [17-12-2021 09:10:47] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 09:10:47] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 09:10:47] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:10:47] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:10:47] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 09:10:47] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 09:10:47] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 09:10:48] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 09:10:48] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 09:10:48] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:10:48] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:10:48] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 09:10:48] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 09:10:48] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:10:48] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:10:48] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 09:10:48] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 09:10:48] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 09:10:48] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 09:10:48] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 09:10:48] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:10:48] [Information] Settings layers process finished
+[MAIN] [17-12-2021 09:10:48] [Information] Build application process finished
+[MAIN] [17-12-2021 09:10:49] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:10:49] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[THREAD 1] [17-12-2021 09:10:49] [Information] Collect bluetooth devices process started
+[THREAD 1] [17-12-2021 09:10:49] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 09:10:49] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 09:10:51] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 09:10:51] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 09:10:51] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 09:10:51] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 09:10:52] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 09:10:52] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 09:10:52] [Information] Switch to layer 2 (<class 'App.app.ControlWindow'>)
+[MAIN] [17-12-2021 09:11:34] [Warning] Test case mode active
+[MAIN] [17-12-2021 09:11:34] [Information] Setting layers process started
+[MAIN] [17-12-2021 09:11:34] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 09:11:34] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 09:11:34] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:11:34] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:11:34] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 09:11:34] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 09:11:34] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 09:11:35] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 09:11:35] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 09:11:35] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:11:35] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:11:35] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 09:11:35] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 09:11:35] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:11:35] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:11:35] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 09:11:35] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 09:11:35] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 09:11:35] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 09:11:35] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 09:11:35] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:11:35] [Information] Settings layers process finished
+[MAIN] [17-12-2021 09:11:35] [Information] Build application process finished
+[MAIN] [17-12-2021 09:11:36] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:11:36] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[THREAD 1] [17-12-2021 09:11:36] [Information] Collect bluetooth devices process started
+[THREAD 1] [17-12-2021 09:11:36] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 09:11:36] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 09:11:37] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 09:11:37] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 09:11:37] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 09:11:37] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 09:11:38] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 09:11:38] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 09:12:13] [Warning] Test case mode active
+[MAIN] [17-12-2021 09:12:13] [Information] Setting layers process started
+[MAIN] [17-12-2021 09:12:13] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 09:12:13] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 09:12:13] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:12:13] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:12:13] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 09:12:13] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 09:12:13] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 09:12:14] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 09:12:14] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 09:12:14] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:12:14] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:12:14] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 09:12:14] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 09:12:14] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:12:14] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:12:14] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 09:12:14] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 09:12:14] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 09:12:14] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 09:12:14] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 09:12:14] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:12:14] [Information] Settings layers process finished
+[MAIN] [17-12-2021 09:12:14] [Information] Build application process finished
+[MAIN] [17-12-2021 09:12:15] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:12:15] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[THREAD 1] [17-12-2021 09:12:15] [Information] Collect bluetooth devices process started
+[THREAD 1] [17-12-2021 09:12:15] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 09:12:15] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 09:12:17] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 09:12:17] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 09:12:17] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 09:12:17] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 09:12:18] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 09:12:18] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 09:12:34] [Warning] Test case mode active
+[MAIN] [17-12-2021 09:12:34] [Information] Setting layers process started
+[MAIN] [17-12-2021 09:12:34] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 09:12:34] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 09:12:34] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:12:34] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:12:34] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 09:12:34] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 09:12:34] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 09:12:35] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 09:12:35] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 09:12:35] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:12:35] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:12:35] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 09:12:35] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 09:12:35] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:12:36] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:12:36] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 09:12:36] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 09:12:36] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 09:12:36] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 09:12:36] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 09:12:36] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:12:36] [Information] Settings layers process finished
+[MAIN] [17-12-2021 09:12:36] [Information] Build application process finished
+[MAIN] [17-12-2021 09:12:44] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:12:44] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:12:44] [Information] Switch to layer 1 (<class 'App.app.ConnectionWindow'>)
+[THREAD 1] [17-12-2021 09:12:44] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 09:12:44] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 09:12:46] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 09:12:46] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 09:12:46] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 09:12:46] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 09:12:48] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 09:12:48] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 09:13:00] [Warning] Test case mode active
+[MAIN] [17-12-2021 09:13:00] [Information] Setting layers process started
+[MAIN] [17-12-2021 09:13:00] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 09:13:00] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 09:13:00] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:13:00] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:13:00] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 09:13:00] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 09:13:00] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 09:13:01] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 09:13:01] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 09:13:01] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:13:01] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:13:01] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 09:13:01] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 09:13:01] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:13:01] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 09:13:01] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 09:13:01] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 09:13:01] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 09:13:01] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 09:13:01] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 09:13:01] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 09:13:01] [Information] Settings layers process finished
+[MAIN] [17-12-2021 09:13:02] [Information] Build application process finished
+[MAIN] [17-12-2021 09:13:02] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 09:13:02] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[THREAD 1] [17-12-2021 09:13:02] [Information] Collect bluetooth devices process started
+[THREAD 1] [17-12-2021 09:13:02] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 09:13:03] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 09:13:04] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 09:13:04] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 09:13:04] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 09:13:04] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 09:13:05] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 09:13:05] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 09:13:06] [Information] Switch to layer 2 (<class 'App.app.ControlWindow'>)
+[MAIN] [17-12-2021 12:05:39] [Warning] Test case mode active
+[MAIN] [17-12-2021 12:05:40] [Information] Setting layers process started
+[MAIN] [17-12-2021 12:05:40] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 12:05:40] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:05:40] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:05:40] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:05:40] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:05:40] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:05:40] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:05:41] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:05:41] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:05:41] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:05:41] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:05:41] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 12:26:59] [Warning] Test case mode active
+[MAIN] [17-12-2021 12:26:59] [Information] Setting layers process started
+[MAIN] [17-12-2021 12:26:59] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 12:26:59] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:26:59] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:26:59] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:26:59] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:26:59] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:26:59] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:27:00] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:27:00] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:27:00] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:27:00] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:27:00] [Information] Build <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:27:00] [Information] Build <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:27:00] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 12:27:00] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:27:00] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:27:00] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:27:00] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:27:00] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:27:00] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:27:00] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:27:00] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:27:00] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:27:00] [Information] Adding events process of <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:27:00] [Information] Adding events process of <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:27:00] [Information] Settings layers process finished
+[MAIN] [17-12-2021 12:27:00] [Information] Build application process finished
+[MAIN] [17-12-2021 12:28:21] [Warning] Test case mode active
+[MAIN] [17-12-2021 12:28:22] [Information] Setting layers process started
+[MAIN] [17-12-2021 12:28:22] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 12:28:22] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:28:22] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:28:22] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:28:22] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:28:22] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:28:22] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:28:22] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:28:22] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:28:22] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:28:22] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:28:22] [Information] Build <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:28:22] [Information] Build <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:28:22] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 12:28:22] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:28:22] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:28:22] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:28:22] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:28:22] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:28:22] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:28:22] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:28:22] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:28:22] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:28:22] [Information] Adding events process of <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:28:22] [Information] Adding events process of <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:28:22] [Information] Settings layers process finished
+[MAIN] [17-12-2021 12:28:23] [Information] Build application process finished
+[MAIN] [17-12-2021 12:28:25] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:28:25] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:28:25] [Information] Switch to layer 1 (<class 'App.app.ConnectionWindow'>)
+[THREAD 1] [17-12-2021 12:28:25] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 12:28:25] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 12:28:26] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:28:27] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:28:27] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 12:28:27] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 12:28:28] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 12:28:28] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 12:29:18] [Warning] Test case mode active
+[MAIN] [17-12-2021 12:29:18] [Information] Setting layers process started
+[MAIN] [17-12-2021 12:29:18] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 12:29:18] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:29:18] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:29:18] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:29:18] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:29:18] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:29:18] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:29:19] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:29:19] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:29:19] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:29:19] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:29:19] [Information] Build <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:29:19] [Information] Build <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:29:19] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 12:29:19] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:29:19] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:29:19] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:29:19] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:29:19] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:29:19] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:29:19] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:29:19] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:29:19] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:29:19] [Information] Adding events process of <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:29:19] [Information] Adding events process of <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:29:19] [Information] Settings layers process finished
+[MAIN] [17-12-2021 12:29:19] [Information] Build application process finished
+[MAIN] [17-12-2021 12:29:20] [Information] Switch to layer 1 (<class 'App.app.ConnectionWindow'>)
+[MAIN] [17-12-2021 12:29:20] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:29:20] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[THREAD 1] [17-12-2021 12:29:20] [Information] Collect bluetooth devices process started
+[THREAD 1] [17-12-2021 12:29:20] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 12:29:20] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 12:29:22] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:29:22] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:29:22] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 12:29:22] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 12:29:23] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 12:29:23] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 12:29:23] [Information] Switch to layer 2 (<class 'App.app.ControlWindow'>)
+[MAIN] [17-12-2021 12:29:51] [Warning] Test case mode active
+[MAIN] [17-12-2021 12:29:51] [Information] Setting layers process started
+[MAIN] [17-12-2021 12:29:51] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 12:29:51] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:29:51] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:29:51] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:29:51] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:29:51] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:29:51] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:29:52] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:29:52] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:29:52] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:29:52] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:29:52] [Information] Build <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:29:52] [Information] Build <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:29:52] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 12:29:52] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:29:52] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:29:52] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:29:52] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:29:52] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:29:52] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:29:52] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:29:52] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:29:52] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:29:52] [Information] Adding events process of <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:29:52] [Information] Adding events process of <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:29:52] [Information] Settings layers process finished
+[MAIN] [17-12-2021 12:29:52] [Information] Build application process finished
+[MAIN] [17-12-2021 12:29:53] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:29:53] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[THREAD 1] [17-12-2021 12:29:53] [Information] Collect bluetooth devices process started
+[THREAD 1] [17-12-2021 12:29:53] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 12:29:53] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 12:29:55] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:29:55] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:29:55] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 12:29:55] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 12:29:56] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 12:29:56] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 12:29:57] [Information] Switch to layer 2 (<class 'App.app.ControlWindow'>)
+[MAIN] [17-12-2021 12:30:36] [Warning] Test case mode active
+[MAIN] [17-12-2021 12:30:36] [Information] Setting layers process started
+[MAIN] [17-12-2021 12:30:36] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 12:30:36] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:30:36] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:30:36] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:30:36] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:30:36] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:30:36] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:30:37] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:30:37] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:30:37] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:30:37] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:30:37] [Information] Build <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:30:37] [Information] Build <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:30:37] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 12:30:37] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:30:37] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:30:37] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:30:37] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:30:37] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:30:37] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:30:37] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:30:37] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:30:37] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:30:37] [Information] Adding events process of <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:30:37] [Information] Adding events process of <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:30:37] [Information] Settings layers process finished
+[MAIN] [17-12-2021 12:30:37] [Information] Build application process finished
+[MAIN] [17-12-2021 12:30:39] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:30:39] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:30:39] [Information] Switch to layer 1 (<class 'App.app.ConnectionWindow'>)
+[THREAD 1] [17-12-2021 12:30:39] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 12:30:39] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 12:30:40] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:30:40] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:30:40] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 12:30:40] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 12:30:41] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 12:30:41] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 12:31:11] [Warning] Test case mode active
+[MAIN] [17-12-2021 12:31:11] [Information] Setting layers process started
+[MAIN] [17-12-2021 12:31:11] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 12:31:11] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:31:11] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:31:11] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:31:11] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:31:11] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:31:11] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:31:12] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:31:12] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:31:12] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:31:12] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:31:12] [Information] Build <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:31:12] [Information] Build <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:31:12] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 12:31:12] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:31:12] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:31:12] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:31:12] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:31:12] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:31:12] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:31:12] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:31:12] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:31:12] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:31:12] [Information] Adding events process of <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:31:12] [Information] Adding events process of <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:31:12] [Information] Settings layers process finished
+[MAIN] [17-12-2021 12:31:12] [Information] Build application process finished
+[MAIN] [17-12-2021 12:31:13] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:31:13] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:31:13] [Information] Switch to layer 1 (<class 'App.app.ConnectionWindow'>)
+[THREAD 1] [17-12-2021 12:31:13] [Information] Collect bluetooth devices process started
+[THREAD 1] [17-12-2021 12:31:13] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 12:31:13] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 12:31:15] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:31:15] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:31:15] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 12:31:15] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 12:31:16] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 12:31:16] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 12:31:16] [Information] Switch to layer 2 (<class 'App.app.ControlWindow'>)
+[MAIN] [17-12-2021 12:31:24] [Warning] Test case mode active
+[MAIN] [17-12-2021 12:31:24] [Information] Setting layers process started
+[MAIN] [17-12-2021 12:31:24] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 12:31:24] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:31:24] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:31:24] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:31:24] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:31:24] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:31:24] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:31:25] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:31:25] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:31:25] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:31:25] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:31:25] [Information] Build <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:31:25] [Information] Build <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:31:25] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 12:31:25] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:31:25] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:31:25] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:31:25] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:31:25] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:31:25] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:31:25] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:31:25] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:31:25] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:31:25] [Information] Adding events process of <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:31:25] [Information] Adding events process of <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:31:25] [Information] Settings layers process finished
+[MAIN] [17-12-2021 12:31:25] [Information] Build application process finished
+[MAIN] [17-12-2021 12:31:26] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:31:26] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:31:26] [Information] Switch to layer 1 (<class 'App.app.ConnectionWindow'>)
+[THREAD 1] [17-12-2021 12:31:26] [Information] Collect bluetooth devices process started
+[THREAD 1] [17-12-2021 12:31:26] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 12:31:26] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 12:31:28] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:31:28] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:31:28] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 12:31:28] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 12:31:29] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 12:31:29] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 12:31:29] [Information] Switch to layer 2 (<class 'App.app.ControlWindow'>)
+[MAIN] [17-12-2021 12:32:04] [Warning] Test case mode active
+[MAIN] [17-12-2021 12:32:04] [Information] Setting layers process started
+[MAIN] [17-12-2021 12:32:04] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 12:32:04] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:32:04] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:32:04] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:32:04] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:32:04] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:32:04] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:32:04] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:32:04] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:32:05] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:32:05] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:32:05] [Information] Build <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:32:05] [Information] Build <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:32:05] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 12:32:05] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:32:05] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:32:05] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:32:05] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:32:05] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:32:05] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:32:05] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:32:05] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:32:05] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:32:05] [Information] Adding events process of <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:32:05] [Information] Adding events process of <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:32:05] [Information] Settings layers process finished
+[MAIN] [17-12-2021 12:32:05] [Information] Build application process finished
+[MAIN] [17-12-2021 12:32:06] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:32:06] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[THREAD 1] [17-12-2021 12:32:06] [Information] Collect bluetooth devices process started
+[THREAD 1] [17-12-2021 12:32:06] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 12:32:06] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 12:32:07] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:32:07] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:32:07] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 12:32:07] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 12:32:08] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 12:32:08] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 12:32:44] [Warning] Test case mode active
+[MAIN] [17-12-2021 12:32:44] [Information] Setting layers process started
+[MAIN] [17-12-2021 12:32:44] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 12:32:44] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:32:44] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:32:44] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:32:44] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:32:44] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:32:44] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:32:45] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:32:45] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:32:45] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:32:45] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:32:45] [Information] Build <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:32:45] [Information] Build <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:32:45] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 12:32:45] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:32:45] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:32:45] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:32:45] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:32:45] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:32:45] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:32:45] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:32:45] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:32:45] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:32:45] [Information] Adding events process of <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:32:45] [Information] Adding events process of <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:32:45] [Information] Settings layers process finished
+[MAIN] [17-12-2021 12:32:45] [Information] Build application process finished
+[MAIN] [17-12-2021 12:32:46] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:32:46] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[THREAD 1] [17-12-2021 12:32:46] [Information] Collect bluetooth devices process started
+[THREAD 1] [17-12-2021 12:32:46] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 12:32:46] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 12:32:49] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:32:49] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:32:49] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 12:32:49] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 12:32:50] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 12:32:50] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 12:33:19] [Warning] Test case mode active
+[MAIN] [17-12-2021 12:33:19] [Information] Setting layers process started
+[MAIN] [17-12-2021 12:33:19] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 12:33:19] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:33:19] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:33:19] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:33:19] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:33:19] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:33:19] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:33:20] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:33:20] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:33:20] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:33:20] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:33:20] [Information] Build <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:33:20] [Information] Build <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:33:20] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 12:33:20] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:33:20] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:33:20] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:33:20] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:33:20] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:33:20] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:33:20] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:33:20] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:33:20] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:33:20] [Information] Adding events process of <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:33:20] [Information] Adding events process of <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:33:20] [Information] Settings layers process finished
+[MAIN] [17-12-2021 12:33:20] [Information] Build application process finished
+[MAIN] [17-12-2021 12:33:21] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:33:21] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:33:21] [Information] Switch to layer 1 (<class 'App.app.ConnectionWindow'>)
+[THREAD 1] [17-12-2021 12:33:21] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 12:33:21] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 12:33:23] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:33:23] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:33:23] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 12:33:23] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 12:33:24] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 12:33:24] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 12:33:25] [Information] Switch to layer 2 (<class 'App.app.ControlWindow'>)
+[MAIN] [17-12-2021 12:36:31] [Warning] Test case mode active
+[MAIN] [17-12-2021 12:36:31] [Information] Setting layers process started
+[MAIN] [17-12-2021 12:36:31] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 12:36:31] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:36:31] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:36:31] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:36:31] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:36:31] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:36:31] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:36:32] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:36:32] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:36:32] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:36:32] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:36:32] [Information] Build <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:36:32] [Information] Build <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:36:32] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 12:36:32] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:36:32] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:36:32] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:36:32] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:36:32] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:36:32] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:36:32] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:36:32] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:36:32] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:36:32] [Information] Adding events process of <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:36:32] [Information] Adding events process of <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:36:32] [Information] Settings layers process finished
+[MAIN] [17-12-2021 12:36:32] [Information] Build application process finished
+[MAIN] [17-12-2021 12:36:33] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:36:33] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:36:33] [Information] Switch to layer 1 (<class 'App.app.ConnectionWindow'>)
+[THREAD 1] [17-12-2021 12:36:33] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 12:36:33] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 12:36:35] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:36:35] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:36:35] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 12:36:35] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 12:36:36] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 12:36:36] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 12:38:55] [Warning] Test case mode active
+[MAIN] [17-12-2021 12:38:55] [Information] Setting layers process started
+[MAIN] [17-12-2021 12:38:55] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 12:38:55] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:38:55] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:38:55] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:38:55] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:38:55] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:38:55] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:38:56] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:38:56] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:38:56] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:38:56] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:38:56] [Information] Build <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:38:56] [Information] Build <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:38:56] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 12:38:56] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:38:56] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:38:56] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:38:56] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:38:56] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:38:56] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:38:56] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:38:56] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:38:56] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:38:56] [Information] Adding events process of <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:38:56] [Information] Adding events process of <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:38:56] [Information] Settings layers process finished
+[MAIN] [17-12-2021 12:38:56] [Information] Build application process finished
+[MAIN] [17-12-2021 12:38:57] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:38:57] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[THREAD 1] [17-12-2021 12:38:57] [Information] Collect bluetooth devices process started
+[MAIN] [17-12-2021 12:39:02] [Warning] Test case mode active
+[MAIN] [17-12-2021 12:39:02] [Information] Setting layers process started
+[MAIN] [17-12-2021 12:39:02] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 12:39:02] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:39:02] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:39:02] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:39:02] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:39:02] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:39:02] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:39:03] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:39:03] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:39:03] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:39:03] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:39:03] [Information] Build <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:39:03] [Information] Build <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:39:03] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 12:39:03] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:39:03] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:39:03] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:39:03] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:39:03] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:39:03] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:39:03] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:39:03] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:39:03] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:39:03] [Information] Adding events process of <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:39:03] [Information] Adding events process of <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:39:03] [Information] Settings layers process finished
+[MAIN] [17-12-2021 12:39:03] [Information] Build application process finished
+[MAIN] [17-12-2021 12:39:04] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:39:04] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:39:04] [Information] Switch to layer 1 (<class 'App.app.ConnectionWindow'>)
+[THREAD 1] [17-12-2021 12:39:04] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 12:39:04] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 12:39:07] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:39:07] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:39:07] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 12:39:07] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 12:39:08] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 12:39:08] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 12:39:35] [Warning] Test case mode active
+[MAIN] [17-12-2021 12:39:35] [Information] Setting layers process started
+[MAIN] [17-12-2021 12:39:35] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 12:39:35] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:39:35] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:39:35] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:39:35] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:39:35] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:39:35] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:39:35] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:39:35] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:39:35] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:39:35] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:39:35] [Information] Build <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:39:35] [Information] Build <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:39:36] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 12:39:36] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:39:36] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:39:36] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:39:36] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:39:36] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:39:36] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:39:36] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:39:36] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:39:36] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:39:36] [Information] Adding events process of <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:39:36] [Information] Adding events process of <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:39:36] [Information] Settings layers process finished
+[MAIN] [17-12-2021 12:39:36] [Information] Build application process finished
+[MAIN] [17-12-2021 12:39:37] [Information] Build <class 'App.app.ConnectionWindow'> started
+[THREAD 1] [17-12-2021 12:39:37] [Information] Collect bluetooth devices process started
+ed
+[MAIN] [17-12-2021 12:39:37] [Information] Switch to layer 1 (<class 'App.app.ConnectionWindow'>)
+[THREAD 1] [17-12-2021 12:39:37] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 12:39:37] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 12:39:39] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:39:39] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:39:39] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 12:39:39] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 12:39:40] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 12:39:40] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 12:39:54] [Warning] Test case mode active
+[MAIN] [17-12-2021 12:39:54] [Information] Setting layers process started
+[MAIN] [17-12-2021 12:39:54] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 12:39:54] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:39:54] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:39:54] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:39:54] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:39:54] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:39:54] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:39:54] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:39:54] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:39:54] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:39:54] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:39:54] [Information] Build <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:39:54] [Information] Build <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:39:54] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 12:39:54] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:39:54] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:39:54] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:39:54] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:39:54] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:39:54] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:39:54] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:39:54] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:39:54] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:39:54] [Information] Adding events process of <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:39:55] [Information] Adding events process of <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:39:55] [Information] Settings layers process finished
+[MAIN] [17-12-2021 12:39:55] [Information] Build application process finished
+[MAIN] [17-12-2021 12:39:56] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:39:56] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[THREAD 1] [17-12-2021 12:39:56] [Information] Collect bluetooth devices process started
+[THREAD 1] [17-12-2021 12:39:56] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 12:39:56] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 12:39:59] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:39:59] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:39:59] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 12:39:59] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 12:39:59] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 12:39:59] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 12:41:37] [Warning] Test case mode active
+[MAIN] [17-12-2021 12:41:37] [Information] Setting layers process started
+[MAIN] [17-12-2021 12:41:37] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 12:41:37] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:41:37] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:41:37] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:41:37] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:41:37] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:41:37] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:41:38] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:41:38] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:41:38] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:41:38] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:41:38] [Information] Build <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:41:38] [Information] Build <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:41:38] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 12:41:38] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:41:38] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:41:38] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:41:38] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:41:38] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:41:38] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:41:38] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:41:38] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:41:38] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:41:38] [Information] Adding events process of <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:41:38] [Information] Adding events process of <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:41:38] [Information] Settings layers process finished
+[MAIN] [17-12-2021 12:41:38] [Information] Build application process finished
+[MAIN] [17-12-2021 12:41:39] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:41:39] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[THREAD 1] [17-12-2021 12:41:39] [Information] Collect bluetooth devices process started
+[THREAD 1] [17-12-2021 12:41:39] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 12:41:39] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 12:41:41] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:41:41] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:41:41] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 12:41:41] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 12:41:42] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 12:41:42] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 12:42:16] [Warning] Test case mode active
+[MAIN] [17-12-2021 12:42:16] [Information] Setting layers process started
+[MAIN] [17-12-2021 12:42:16] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 12:42:16] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:42:16] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:42:16] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:42:16] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:42:16] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:42:16] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:42:17] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:42:17] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:42:17] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:42:17] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:42:17] [Information] Build <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:42:17] [Information] Build <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:42:17] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 12:42:17] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:42:17] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:42:17] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:42:17] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:42:17] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:42:17] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:42:17] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:42:17] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:42:17] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:42:17] [Information] Adding events process of <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:42:17] [Information] Adding events process of <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:42:17] [Information] Settings layers process finished
+[MAIN] [17-12-2021 12:42:17] [Information] Build application process finished
+[MAIN] [17-12-2021 12:42:18] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:42:18] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:42:18] [Information] Switch to layer 1 (<class 'App.app.ConnectionWindow'>)
+[THREAD 1] [17-12-2021 12:42:18] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 12:42:18] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 12:42:20] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:42:20] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:42:20] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 12:42:20] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 12:42:21] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 12:42:21] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 12:42:34] [Warning] Test case mode active
+[MAIN] [17-12-2021 12:42:34] [Information] Setting layers process started
+[MAIN] [17-12-2021 12:42:34] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 12:42:34] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:42:34] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:42:34] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:42:34] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:42:34] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:42:34] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:42:35] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:42:35] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:42:35] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:42:35] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:42:35] [Information] Build <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:42:35] [Information] Build <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:42:35] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 12:42:35] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:42:35] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:42:35] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:42:35] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:42:35] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:42:35] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:42:35] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:42:35] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:42:35] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:42:35] [Information] Adding events process of <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:42:35] [Information] Adding events process of <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:42:35] [Information] Settings layers process finished
+[MAIN] [17-12-2021 12:42:35] [Information] Build application process finished
+[MAIN] [17-12-2021 12:42:36] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:42:36] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:42:36] [Information] Switch to layer 1 (<class 'App.app.ConnectionWindow'>)
+[THREAD 1] [17-12-2021 12:42:36] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 12:42:36] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 12:42:37] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:42:37] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:42:37] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 12:42:37] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 12:42:38] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 12:42:38] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 12:42:55] [Warning] Test case mode active
+[MAIN] [17-12-2021 12:42:55] [Information] Setting layers process started
+[MAIN] [17-12-2021 12:42:55] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 12:42:55] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:42:55] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:42:55] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:42:55] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:42:55] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:42:55] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:42:56] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:42:56] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:42:56] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:42:56] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:42:56] [Information] Build <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:42:56] [Information] Build <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:42:56] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 12:42:56] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:42:56] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:42:56] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:42:56] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:42:56] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:42:56] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:42:56] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:42:56] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:42:56] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:42:56] [Information] Adding events process of <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:42:56] [Information] Adding events process of <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:42:56] [Information] Settings layers process finished
+[MAIN] [17-12-2021 12:42:56] [Information] Build application process finished
+[MAIN] [17-12-2021 12:42:57] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:42:57] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:42:57] [Information] Switch to layer 1 (<class 'App.app.ConnectionWindow'>)
+[THREAD 1] [17-12-2021 12:42:57] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 12:42:57] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 12:42:59] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:42:59] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:42:59] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 12:42:59] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 12:43:01] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 12:43:01] [Information] ESP32 WLAN Connection with  successfully
+[MAIN] [17-12-2021 12:43:35] [Warning] Test case mode active
+[MAIN] [17-12-2021 12:43:35] [Information] Setting layers process started
+[MAIN] [17-12-2021 12:43:35] [Information] Build <class 'App.app.StartWindow'> process started
+[MAIN] [17-12-2021 12:43:35] [Information] Build <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:43:35] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:43:35] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:43:35] [Information] Build <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:43:35] [Information] Build <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:43:35] [Information] Build <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:43:36] [Information] Build <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:43:36] [Information] Build <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:43:36] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:43:36] [Information] Build <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:43:36] [Information] Build <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:43:36] [Information] Build <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:43:36] [Information] Adding events process of <class 'App.app.StartWindow'> started
+[MAIN] [17-12-2021 12:43:36] [Information] Adding events process of <class 'App.app.StartWindow'> finished
+[MAIN] [17-12-2021 12:43:36] [Information] Adding events process of <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:43:36] [Information] Adding events process of <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:43:36] [Information] Adding events process of <class 'App.app.ControlWindow'> started
+[MAIN] [17-12-2021 12:43:36] [Information] Adding events process of <class 'App.app.ControlWindow'> finished
+[MAIN] [17-12-2021 12:43:36] [Information] Adding events process of <class 'App.app.HelpWindow'> started
+[MAIN] [17-12-2021 12:43:36] [Information] Adding events process of <class 'App.app.HelpWindow'> finished
+[MAIN] [17-12-2021 12:43:36] [Information] Adding events process of <class 'App.app.WifiDataWindow'> started
+[MAIN] [17-12-2021 12:43:36] [Information] Adding events process of <class 'App.app.WifiDataWindow'> finished
+[MAIN] [17-12-2021 12:43:36] [Information] Adding events process of <class 'App.app.SettingsWindow'> started
+[MAIN] [17-12-2021 12:43:36] [Information] Adding events process of <class 'App.app.SettingsWindow'> finished
+[MAIN] [17-12-2021 12:43:36] [Information] Settings layers process finished
+[MAIN] [17-12-2021 12:43:37] [Information] Build application process finished
+[MAIN] [17-12-2021 12:43:38] [Information] Build <class 'App.app.ConnectionWindow'> started
+[MAIN] [17-12-2021 12:43:38] [Information] Build <class 'App.app.ConnectionWindow'> finished
+[MAIN] [17-12-2021 12:43:38] [Information] Switch to layer 1 (<class 'App.app.ConnectionWindow'>)
+[THREAD 1] [17-12-2021 12:43:38] [Information] Collect bluetooth devices process finished
+[THREAD 1] [17-12-2021 12:43:38] [Information] Devices: [('23-A2-F4-12-32', 'Samsung s8')]
+[MAIN] [17-12-2021 12:43:39] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:43:39] [Information] BT-Connect with ('23-A2-F4-12-32', 'Samsung s8') started
+[MAIN] [17-12-2021 12:43:39] [Information] WLAN Connection with ('23-A2-F4-12-32', 'Samsung s8') successfully
+[MAIN] [17-12-2021 12:43:39] [Information] Switch to layer 4 (<class 'App.app.WifiDataWindow'>)
+[MAIN] [17-12-2021 12:43:40] [Information] ESP32 WLAN Connection with  started
+[MAIN] [17-12-2021 12:43:41] [Information] ESP32 WLAN Connection with  successfully
+[THREAD 2] [17-12-2021 12:43:42] [Information] data to ESP32: Right - (), Left - () sended
+[THREAD 2] [17-12-2021 12:43:43] [Information] data to ESP32: Right - (), Left - () sended
+[THREAD 2] [17-12-2021 12:43:44] [Information] data to ESP32: Right - (), Left - () sended
+[THREAD 2] [17-12-2021 12:43:45] [Information] data to ESP32: Right - (), Left - () sended
+[THREAD 2] [17-12-2021 12:43:46] [Information] data to ESP32: Right - (), Left - () sended
+[THREAD 2] [17-12-2021 12:43:47] [Information] data to ESP32: Right - (), Left - () sended

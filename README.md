@@ -1,0 +1,110 @@
+#Schülerprojekt: Drohne zum Nachbauen
+
+## Inhaltsverzeichnis
+1. [Entwicklerstatus](#Installation)
+2. [Dokumantation](#Dokumentation)
+3. [Support](#Support)
+
+### Entwicklerstatus
+In der Entwicklung...
+
+### Kontakt
+Falls ihr Bugs oder ähnliches findet, könnt ihr entweder ein [Issue]()
+erstellen oder uns über folgende Wegen eine Nachricht zukommen lassen.
+
+Email: [LINK]()
+
+Discord: [LINK]()
+
+## Dokumantation
+
+1. [Installation](#Installation)
+2. [Quellcode](#Quellcode)
+
+### Installation
+Die Entwickler unter der E-Mail [Monarch Softworks](https://www.gmail.com) nach der Software fragen.
+In der E-Mail sollten sich am besten schon folgende Daten über das Gerät gelistet sein.
+1. Firma
+2. Betriebssystem
+3. Handymodell
+
+#### oder
+
+Die App selber mithilfe von [buildozer]() konvertieren
+
+Tutorial:
+
+[(Video) Kivy crash course 2: Building an android apk](https://www.youtube.com/watch?v=t8N_8WkALdE&list=PLdNh1e1kmiPP4YApJm8ENK2yMlwF1_edq&index=2)
+
+oder
+
+[(Textform) http://inclem.net/2014/01/12/kivy-crash-course/2_building_an_android_apk/](http://inclem.net/2014/01/12/kivy-crash-course/2_building_an_android_apk/)
+
+
+####1. Voraussetzung erfüllen
+Ihr braucht Linux oder OS X um die App zu konvertieren. Falls ihr jedoch auf Windows arbeitet, könnt ihr entweder
+1. eine Linux virtual machine verwenden
+2. online cloud builder
+
+Die erste Option wird empfohlen, da sie flexibler ist und robuster, da man alles lokal hat. 
+
+####1. Die Bibliothek installieren
+Stellt davor sicher, dass ihr eine [virtual enviroment (venv)]() erstellt habt und euch im richtigen Verzeichnis befindet.
+```commandline
+sudo pip install buildozer
+```
+
+####2. Main.py.
+Später wird die App nach einer Datei namens Main.py suchen, die dann als Zugangspunkt verwendet wird. 
+Stellt also sicher, dass sie existiert. 
+
+
+####3. buildozer.spec erstellen
+nun wird eine spec. Datei erstellt, die alle wichtigen Daten wie beispielsweise den Namen der App, Einstellungen und mehr enthält
+```commandline
+buildozer init
+```
+
+Öffnet sie anschließend.
+
+```
+
+```
+
+- title: Titel der App
+- package.name: Eine einfache ID, bestehend aus einer Zeichenkette, die zusammen mit der Kette "package.domain" einzigartig sein sollte. Sie sollte zudem keine Leerzeichen, Sonderzeichen oder ähnliches enthalten. 
+- package.domain: siehe package.name 
+- source.dir: Das Verzeichnis mit dem Quellcode, insbesondere mit der main.py Datei. Der Standardwert ist "." und bedeutet, dass momentane Verzeichnis.
+- source.include_exts: Dateien, die mit in die konvertierte App genommen werden. Dazu zählt in allen Fällen py, kv.
+- source.exclude_exts, source.exclude_dirs, source.exclude_patterns: Mehr Optionen, um auszuwählen, welche Dateien oder Dateitypen dazugenommen werden und welche nicht.
+- version.regex, version.filename: Sucht in der angegebenen Datei (normalerweise, main.py) nach einer Zeichenkette ``__version__ = 'some_version'``. Falls, dass nicht geschehen ist, kommentiert diese Zeile aus.
+- version: Der andere Weg die Version anzugeben. Verwendet sie, wenn uhr den oberen Weg nicht gegangen seid.
+- requirements: Eine mit Kommas abgetrennte Liste, die Namen von Bibliotheken enthalten, die nicht zu den Standard Bibliotheken gehören.
+- presplash.filename: Dateiname des Bildes, welches beim Ladebildschirm erscheint, wenn die App zum ersten Mal gestartet wird.
+- icon.filename: Dateiname des Icons (Bilddatei)
+- orientation: Kann entweder ``landscape``, ``potrait`` oder ``all``sein. Das kann man auch dynamisch in der App ändern.
+![Orientation example](./Data/Res/orientation_example.jpeg)
+- fullscreen: Die App soll entweder den ganzen Bildschirm füllen (1) oder nicht (0).
+- log_level: Anzahl der Informationen, die ausgegeben werden.
+
+- Android & IOS spezifische Optionen: Sind für uns nicht relevant, da die Standardwerte ausreichen.
+
+####4. App bauen
+Führt den folgenden Befehl aus:
+```commandline
+buildozer android debug
+```
+
+- debug: Entscheidet über die Art und Weise, wie die App signiert wird.
+Normalerweise würde man es mit einem Entwicklerschlüssel tun, aber das ist für Testzwecke nicht nötig.
+
+Beim ersten Mal wird dieser Prozess etwas Zeit in Anspruch nehmen, da die Bibliotheken(e.g Android SDK, NDK und andere Tools) heruntergeladen müssen.
+Bei den nächsten Malen wird, es nicht mehr so lange dauern, da die Bibliotheken nur noch geprüft und dann direkt verwendet werden können.
+
+Falls ihr das Gerät schon an eurem Computer angeschlossen habt, könnt ihr hiermit die App direkt auf euer Handy laden.
+```commandline
+buildozer android debug deploy
+```
+
+##### 5. Viel Spaß mit der App
+

@@ -1,0 +1,288 @@
+# ********************* BLuetooth-Verbindung ***********************
+import bluetooth
+import random
+import struct
+import time
+
+from micropython import const
+
+_IRQ_CENTRAL_CONNECT = const(1)
+_IRQ_CENTRAL_DISCONNECT = const(2)
+_IRQ_GATTS_WRITE = const(3)
+
+_FLAG_READ = const(0x0002)
+_FLAG_WRITE_NO_RESPONSE = const(0x0004)
+_FLAG_WRITE = const(0x0008)
+_FLAG_NOTIFY = const(0x0010)
+
+_UART_UUID = bluetooth.UUID("6E400001-B5A3-F393-E0A9-E50E24DCCA9E")
+_UART_TX = (
+    bluetooth.UUID("6E400003-B5A3-F393-E0A9-E50E24DCCA9E"),
+    _FLAG_READ | _FLAG_NOTIFY,
+)
+_UART_RX = (
+    bluetooth.UUID("6E400002-B5A3-F393-E0A9-E50E24DCCA9E"),
+    _FLAG_WRITE | _FLAG_WRITE_NO_RESPONSE,
+)
+_UART_SERVICE = (
+    _UART_UUID,
+    (_UART_TX, _UART_RX),
+)
+
+_ADV_TYPE_FLAGS = const(0x01)
+_ADV_TYPE_NAME = const(0x09)
+_ADV_TYPE_UUID16_COMPLETE = const(0x3)
+_ADV_TYPE_UUID32_COMPLETE = const(0x5)
+_ADV_TYPE_UUID128_COMPLETE = const(0x7)
+_ADV_TYPE_UUID16_MORE = const(0x2)
+_ADV_TYPE_UUID32_MORE = const(0x4)
+_ADV_TYPE_UUID128_MORE = const(0x6)
+_ADV_TYPE_APPEARANCE = const(0x19)
+
+# Generate a payload to be passed to gap_advertise(adv_data=...).
+def advertising_payload(limited_disc=False, br_edr=False, name=None, services=None, appearance=0):
+    payload = bytearray()
+
+    def _append(adv_type, value):
+        nonlocal payload
+        payload += struct.pack("BB", len(value) + 1, adv_type) + value
+
+    _append(
+        _ADV_TYPE_FLAGS,
+        struct.pack("B", (0x01 if limited_disc else 0x02) + (0x18 if br_edr else 0x04)),
+    )
+
+    if name:
+        _append(_ADV_TYPE_NAME, name)
+
+    if services:
+        for uuid in services:
+            b = bytes(uuid)
+            if len(b) == 2:
+                _append(_ADV_TYPE_UUID16_COMPLETE, b)
+            elif len(b) == 4:
+                _append(_ADV_TYPE_UUID32_COMPLETE, b)
+            elif len(b) == 16:
+                _append(_ADV_TYPE_UUID128_COMPLETE, b)
+
+    # See org.bluetooth.characteristic.gap.appearance.xml
+    if appearance:
+        _append(_ADV_TYPE_APPEARANCE, struct.pack("<h", appearance))
+
+    return payload
+
+
+class BLESimplePeripheral:
+    def __init__(self, ble, name="mpy-uart"):
+        self.wlan_connection = False
+
+        self._ble = ble
+        self._ble.active(True)
+        self._ble.irq(self._irq)
+        ((self._handle_tx, self._handle_rx),) = self._ble.gatts_register_services((_UART_SERVICE,))
+        self._connections = set()
+        self._write_callback = None
+        self._payload = advertising_payload(name=name, services=[_UART_UUID])
+        self._advertise()
+
+    def _irq(self, event, data):
+        # Track connections so we can send notifications.
+        if event == _IRQ_CENTRAL_CONNECT:
+            conn_handle, _, _ = data
+            print("New connection", conn_handle)
+            self._connections.add(conn_handle)
+        elif event == _IRQ_CENTRAL_DISCONNECT:
+            conn_handle, _, _ = data
+            print("Disconnected", conn_handle)
+            self._connections.remove(conn_handle)
+            # Start advertising again to allow a new connection.
+            self._advertise()
+        elif event == _IRQ_GATTS_WRITE:
+            conn_handle, value_handle = data
+            value = self._ble.gatts_read(value_handle)
+
+            res = self.check_data(value)
+            if res == 1:
+                self.send('WC1')
+                self.wlan_connection = True
+            elif res == 2:
+                self.send('WC2')
+
+            if value_handle == self._handle_rx and self._write_callback:
+                self._write_callback(value)
+
+    def send(self, data):
+        for conn_handle in self._connections:
+            self._ble.gatts_notify(conn_handle, self._handle_tx, data)
+
+    def is_connected(self):
+        return len(self._connections) > 0
+
+    def _advertise(self, interval_us=50000):
+        print("Starting advertising")
+        self._ble.gap_advertise(interval_us, adv_data=self._payload)
+
+    def on_write(self, callback):
+        self._write_callback = callback
+
+    def check_data(self, data):
+        message = ""
+        for index in range(len(data) - 2):
+            #print(f"{str(data[index])} | {chr(data[index])}")
+            message += chr(data[index])
+
+        if 'WLAN' in message:
+            size = len(message)
+            idx_list = [idx + 1 for idx, val in
+                enumerate(message) if val is '|']
+
+            res = [message[i: j] for i, j in
+                    zip([0] + idx_list, idx_list +
+                    ([size] if idx_list[-1] != size else []))]
+            name = res[1].rstrip(res[0][-1])
+            password = res[2]
+            if connect(name, password):
+                return 1
+            else:
+                return 2
+
+
+# ********************* WLAN-Verbindung ***********************
+import network
+import ubinascii
+from machine import Pin
+
+try:
+    import usocket as socket
+except:
+    import socket
+import esp
+
+esp.osdebug(None)
+import gc
+
+gc.collect()
+from time import sleep
+
+try:
+    import usocket as socket
+except:
+    import socket
+
+# Die Dictionarystruktur (dict) erlaubt später die Klartextausgabe
+# des Verbindungsstatus anstelle der Zahlencodes
+connectStatus = {
+    1000: "STAT_IDLE",
+    1001: "STAT_CONNECTING",
+    1010: "STAT_GOT_IP",
+    202: "STAT_WRONG_PASSWORD",
+    201: "NO AP FOUND"
+}
+
+class Wlan_Server(object):
+
+    def hexMac(byteMac):
+        """
+        Die Funktion hexMAC nimmt die MAC-Adresse im Bytecode entgegen und
+        bildet daraus einen String für die Rückgabe
+        """
+        macString = ""
+        for i in range(0, len(byteMac)):  # Für alle Bytewerte
+            macString += hex(byteMac[i])[2:]  # vom String ab Position 2 bis Ende
+            if i < len(byteMac) - 1:  # Trennzeichen bis auf das letzte Byte
+                macString += "-"
+        return macString
+
+
+    def connect(siD="Internet", password="copz7477"):
+        # Netzwerk-Interface-Instanz erzeugen und ESP32-Stationmodus aktivieren;
+        # möglich sind network.STA_IF und network.AP_IF beide wie in LUA oder
+        # AT-based oder Adruino-IDE ist in MicroPython nicht möglich
+        nic = network.WLAN(network.STA_IF)  # Constructor
+        nic.active(True)
+
+        # binäre MAC-Adresse abrufen und in ein Hex-Tupel umgewandelt ausgeben
+        MAC = nic.config('mac')
+        myMac = hexMac(MAC)
+        print("STATION MAC: \t" + myMac + "\n")
+
+        # Verbindung mit AP im lokalen Netzwerk aufnehmen, falls noch nicht verbunden
+        if not nic.isconnected():
+            tries = 0
+            print(siD)
+            print(password)
+
+            try:
+            # Zum AP im lokalen Netz verbinden und Status anzeigen
+                nic.connect(siD, password)
+            except Exception as e:
+                print(e)
+
+            # warten bis die Verbindung zum Accesspoint steht
+            while nic.status() != network.STAT_GOT_IP:
+                if tries == 10:
+                    return False
+                print(".", end='')
+                sleep(1)
+                tries += 1
+
+        print("Erfolgreicher Verbindungsstatus: ", connectStatus[nic.status()])
+        STAconf = nic.ifconfig()
+        print("STA-IP:\t\t", STAconf[0], "\nSTA-NETMASK:\t", STAconf[1], "\nSTA-GATEWAY::\t", STAconf[2], "\n", "\n",
+              sep='')
+
+        return True
+
+
+    def create_server(nic):
+        try:
+            portNum = 9192
+            print("Fordere Server-Socket an")
+            server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            server.bind(('', portNum))  # an lokale IP und Portnummer 9192 binden
+            server.listen(5)  # Akzeptiere bis zu 5 eingehende Anfragen
+            STAconf = nic.ifconfig()
+            print("Empfange Anfragen auf ", STAconf[0], ":", portNum, sep='')
+            return True
+        catch Exception as e:
+            print(e)
+            return False
+
+    def server_loop(self):
+      while 1:  # Endlosschleife
+            c, addr = server.accept()  # Anfrage entgegennehmen
+            print('\nGot a connection from %s' % str(addr))
+            # c ist ein bytes-Objekt und muss als string decodiert werden
+            # damit string-Methoden darauf angewandt werden koennen.
+            request = c.recv(1024).decode("utf-8")
+            receive_data(request)
+            c.send('HTTP/1.1 200 OK\n')
+            c.send('Content-Type: text/html\n')
+            c.send('Connection: close\n\n')
+            c.close()
+
+
+    def receive_data(data):
+        print('Content = %s' % data)
+
+
+
+ble = bluetooth.BLE()
+p = BLESimplePeripheral(ble)
+w = WLAN_Server()
+
+while True:
+    if p.wlan_connection:
+        print("Connection established.")
+        break
+    time.sleep_ms(1000)
+
+result = w.create_server(nic)
+p.close()
+
+if result:
+    p.send('WS1')
+    w.server_loop()
+else:
+    p.send('WS2')
