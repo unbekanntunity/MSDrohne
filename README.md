@@ -1,7 +1,7 @@
 #Schülerprojekt: Drohne zum Nachbauen
 
 ## Inhaltsverzeichnis
-1. [Entwicklerstatus](#Installation)
+1. [Entwicklerstatus](#Entwicklerstatus)
 2. [Dokumantation](#Dokumentation)
 3. [Support](#Support)
 
@@ -9,7 +9,7 @@
 In der Entwicklung...
 
 ### Kontakt
-Falls ihr Bugs oder ähnliches findet, könnt ihr entweder ein [Issue]()
+Falls ihr Bugs oder ähnliches findet, könnt ihr entweder ein [Issue](https://github.com/unbekanntunity/MSDrohne/issues/new/choose)
 erstellen oder uns über folgende Wegen eine Nachricht zukommen lassen.
 
 Email: [LINK]()
@@ -107,4 +107,7 @@ buildozer android debug deploy
 ```
 
 ##### 5. Viel Spaß mit der App
+Viel Spaß
+
+Letztes Update: 23/12/2021
 
