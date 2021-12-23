@@ -49,7 +49,7 @@ Ihr braucht Linux oder OS X um die App zu konvertieren. Falls ihr jedoch auf Win
 Die erste Option wird empfohlen, da sie flexibler ist und robuster, da man alles lokal hat. 
 
 ####1. Die Bibliothek installieren
-Stellt davor sicher, dass ihr eine [virtual enviroment (venv)]() erstellt habt und euch im richtigen Verzeichnis befindet.
+Stellt davor sicher, dass ihr eine [virtual enviroment (venv)](https://thecodingpie.com/post/a-quick-guide-on-how-to-setup-a-python-virtual-environment-windows-linux-mac) erstellt habt und euch im richtigen Verzeichnis befindet.
 ```commandline
 sudo pip install buildozer
 ```
@@ -108,6 +108,27 @@ buildozer android debug deploy
 
 ##### 5. Viel Spaß mit der App
 Viel Spaß
+
+#### Daten
+Software - App
+
+- Sprache: Python 3.10
+
+- Umgebung: Pycharm
+
+- Bibliotheken:
+  - Pybluez - Windows Bluetooth access
+  - Kivy - GUI Framework
+  - pip - Package manager
+  
+Hardware (ESP32-WROOM-32)
+  - Sprache: Python 3.10
+
+  - Umgebung: Thonny
+
+  - Bibliotheken:
+    - Micropython
+
 
 Letztes Update: 23/12/2021
 
