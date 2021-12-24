@@ -11,8 +11,12 @@ class EventHandlerBase(object):
         return self
 
     def __call__(self, *args, **keywargs):
+        results = []
+
         for event in self.__events:
-            event(*args, **keywargs)
+            res = event(*args, **keywargs)
+            results.append(res)
+        return results
 
 
 class EventHandler(object):
@@ -20,7 +24,7 @@ class EventHandler(object):
         self.eventHandler = EventHandlerBase()
 
     def invoke(self):
-        self.eventHandler()
+        return self.eventHandler()
 
     def add_event(self, function):
         self.eventHandler += function

@@ -39,6 +39,8 @@
 <ConnectionScreen>:
     name: 'connection'
     connections: connection_list
+    status: status_label
+    scrollview: scroll_view
     AnchorLayout:
         padding: root.width / 5
         BoxLayout:
@@ -57,10 +59,39 @@
                 size_hint_y: None
                 font_size: '50'
             ScrollView:
-                GridLayout:
+                id: scroll_view
+                BoxLayout:
                     id: connection_list
-                    cols: 3
-                    spacing: 0
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: self.minimum_height
+            Label:
+                id: status_label
+                size_hint_y: None
+                height: 0
+                canvas.before:
+                    Color:
+                        rgba: .5, .5, .5, 1
+                    Line:
+                        width: 1
+                        rectangle: self.x, self.y, self.width, self.height
+
+<SelectableRow>
+    name: name_field
+    power: power_field
+
+    size_hint_y: None
+    height: name_field.texture_size[1] + 10
+    canvas.before:
+        Color:
+            rgba: .5, .5, .5, 1
+        Line:
+            width: 1
+            rectangle: self.x, self.y, self.width, self.height
+    Label:
+        id: name_field
+    Label:
+        id: power_field
 
 <ControlScreen>:
     name: 'control'
@@ -68,10 +99,16 @@
         Label:
             text: 'CONTROL'
 
+<WlanScreen>
+    name: 'wlan'
+    Label:
+        text: 'WLAN'
+
 <DroneRoot>:
     MyScreenManager:
         id: sm
         StartScreen:
         ConnectionScreen:
         ControlScreen:
+        WlanScreen:
 
