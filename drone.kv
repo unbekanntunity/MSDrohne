@@ -38,71 +38,54 @@
 
 <ConnectionScreen>:
     name: 'connection'
-    connections: connection_list
     status: status_label
-    scrollview: scroll_view
+    wlan: wlan_grid
     AnchorLayout:
         padding: root.width / 5
-        BoxLayout:
-            orientation: 'vertical'
-            spacing: 0
-            canvas.before:
-                Color:
-                    rgba: .5, .5, .5, 0.2
-                RoundedRectangle:
-                    size: self.size
-                    pos: self.pos
-                    radius: [20]
+        Label:
+            id: status_label
+        GridLayout:
+            id: wlan_grid
+            cols: 2
+            height: 0
             Label:
-                text: 'Connections'
-                height: self.texture_size[1]
-                size_hint_y: None
-                font_size: '50'
-            ScrollView:
-                id: scroll_view
-                BoxLayout:
-                    id: connection_list
-                    orientation: 'vertical'
-                    size_hint_y: None
-                    height: self.minimum_height
+                text: 'Name'
+            TextInput:
+                id: name_field
+                multiline: False
             Label:
-                id: status_label
-                size_hint_y: None
-                height: 0
-                canvas.before:
-                    Color:
-                        rgba: .5, .5, .5, 1
-                    Line:
-                        width: 1
-                        rectangle: self.x, self.y, self.width, self.height
+                text: 'Passwort'
+            TextInput:
+                id: password_field
+                multiline: False
+            Button:
+                text: 'Submit'
+                on_release: root.send_data(root.ids.name_field.text, root.ids.password_field.text)
 
-<SelectableRow>
-    name: name_field
-    power: power_field
-
-    size_hint_y: None
-    height: name_field.texture_size[1] + 10
-    canvas.before:
-        Color:
-            rgba: .5, .5, .5, 1
-        Line:
-            width: 1
-            rectangle: self.x, self.y, self.width, self.height
-    Label:
-        id: name_field
-    Label:
-        id: power_field
 
 <ControlScreen>:
     name: 'control'
     BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            spacing: 30
+            size_hint_y: None
+            height: root.height / 6
+            Button:
+                text: 'back'
+            Label:
+                text: 'Ready for take off'
+            Button:
+                text: 'menu'
         Label:
             text: 'CONTROL'
-
-<WlanScreen>
-    name: 'wlan'
-    Label:
-        text: 'WLAN'
+        BoxLayout:
+            size_hint_y: None
+            height: root.height / 6
+            Label:
+                text: 'Ready for take off'
+            Label:
+                text: 'Ready for take off'
 
 <DroneRoot>:
     MyScreenManager:
@@ -110,5 +93,4 @@
         StartScreen:
         ConnectionScreen:
         ControlScreen:
-        WlanScreen:
 

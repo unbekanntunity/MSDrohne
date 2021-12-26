@@ -9,7 +9,6 @@ def build_data(datatype, datas):
         else:
             message = datas
     except Exception as e:
-        print(message)
         print(str(e))
 
     return prefix + message

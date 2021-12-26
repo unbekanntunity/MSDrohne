@@ -1,8 +1,6 @@
 from datetime import datetime
 
-from Rnd.dataHandling import *
-
-import socket
+from jnius import autoclass
 
 PORT = 9192
 IP_ADDRESS = "192.168.252.11"
@@ -13,13 +11,8 @@ TIME = 10
 
 class BluetoothClient(object):
     def __init__(self):
-        self.socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-
-    def connect(self, address):
-        self.socket.connect((address, PORT))
-
-    def send_message_bluetooth(self, msg):
-        self.socket.send(msg)
+        self.socket = None
+        self.paired_device_name = ''
 
     def wait_for_response(self):
         time_started = datetime.now()
@@ -32,44 +25,35 @@ class BluetoothClient(object):
             if data:
                 return data
 
-    def close(self):
-        self.socket.close()
 
-    def is_connected(self):
-        return self.socket is not None
-
-
-class WLANClient(object):
+class AndroidBluetoothClient(BluetoothClient):
     def __init__(self):
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        super(BluetoothClient, self).__init__()
+        self.BluetoothAdapter = autoclass('android.bluetooth.BluetoothAdapter')
+        self.BluetoothDevice = autoclass('android.bluetooth.BluetoothDevice')
+        self.BluetoothSocket = autoclass('android.bluetooth.BluetoothSocket')
+        self.UUID = autoclass('java.util.UUID')
 
-    def connect(self):
-        self.socket.connect((IP_ADDRESS, PORT))
+        self.send_stream = None
+        self.recv_stream = None
 
-    def send_message(self, message):
-        self.socket.send(message.encode())  # Baut und sendet eine Nachricht
-        data = self.socket.recv(1024).decode()  # Erhält die Antwort vom Server
-        print(data)
+    def create_socket_stream(self, name):
+        if self.has_paired_devices():
+            paired_devices = self.BluetoothAdapter.getDefaultAdapter().getBondedDevices().toArray()
+            for device in paired_devices:
+                if device.getName() == name:
+                    self.socket = device.createRfcommSocketToServiceRecord(
+                        self.UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"))
+                    self.recv_stream = self.socket.getInputStream()
+                    self.send_stream = self.socket.getOutputStream()
+                    self.paired_device_name = name
+                    break
+            if self.socket is not None:
+                self.socket.connect()
 
-    def wait_for_response(self):
-        while True:
-            data = self.socket.recv(1024)
-            if data:
-                return data
-
-    def close(self):
-        self.socket.close()
-
-
-def bluetooth_list(os_system):
-    print("start searching...")
-
-    devices = []
-    if "Android" or "Windows" in os_system:
-        devices = [("s", "1"), ("a", "12"), ("aw", "100"),
-                   ]
-        pass
-    return devices
+    def has_paired_devices(self):
+        paired_devices = self.BluetoothAdapter.getDefaultAdapter().getBondedDevices().toArray()
+        return paired_devices is not None and len(paired_devices) != 0
 
 
 
