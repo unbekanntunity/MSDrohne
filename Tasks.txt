@@ -1,0 +1,27 @@
+Task:
+
+- Buildozer installieren und android apk bauen
+
+- Testen:
+case1: Bluetooth durchgägnig an 
+case2: Bluettoth vor der eingabe des WLAN abbrechen
+
+- Controlmenu 
+- UI -> Labels, buttons, joysticks
+- Zwei threade erstellen
+1. sender thread: joystickdaten
+2. empfänger thread: erhält daten
+	esp32: Daten durch einen thread oder prozess senden
+
+- Menu erstellen 
+-> slide effekte 
+
+- Dokumentation ui
+-> Dropdown list erstellen
+
+Dokumentation
+-> Code
+-> Nachbauanleitung
+-> Text
+
+Discord einrichten und email einrichten

@@ -62,8 +62,10 @@
                 text: 'Submit'
                 on_release: root.send_data(root.ids.name_field.text, root.ids.password_field.text)
 
+#: import Joystick customwidgets.joystick.joystick
 
 <ControlScreen>:
+    center_area: center_a
     name: 'control'
     BoxLayout:
         orientation: 'vertical'
@@ -77,20 +79,26 @@
                 text: 'Ready for take off'
             Button:
                 text: 'menu'
-        Label:
-            text: 'CONTROL'
+        BoxLayout:
+            id: center_a
+            Label:
+                text: 'CONTROL'
         BoxLayout:
             size_hint_y: None
             height: root.height / 6
             Label:
-                text: 'Ready for take off'
+                text: f'H: {root.altitude} \nS: {root.speed}'
             Label:
-                text: 'Ready for take off'
+                text: f'Lo: {root.latitude} \nLa: {root.longitude}'
+            Label:
+                text: f'{root.battery}%'
+            Label:
+                text: 'strong'
+
 
 <DroneRoot>:
     MyScreenManager:
         id: sm
-        StartScreen:
-        ConnectionScreen:
-        ControlScreen:
-
+        StartScreen
+        ConnectionScreen
+        ControlScreen

@@ -48,18 +48,21 @@ Ihr braucht Linux oder OS X um die App zu konvertieren. Falls ihr jedoch auf Win
 
 Die erste Option wird empfohlen, da sie flexibler ist und robuster, da man alles lokal hat. 
 
-####1. Die Bibliothek installieren
+Hilfe findet ihr auf folgenden Webseiten:
+- [Buildozer auf einer VM installieren und ausführen](http://inclem.net/2019/05/19/kivy/running_buildozer_in_a_virtual_machine/)
+- [Shared Folders](https://www.pragmaticlinux.com/2021/02/how-to-mount-a-shared-folder-in-virtualbox/#:~:text=1%20Select%20your%20virtual%20machine%20and%20open%20its,the%20OK%20button%20and%20start%20the%20virtual%20machine)
+#### 1. Die Bibliothek installieren
 Stellt davor sicher, dass ihr eine [virtual enviroment (venv)](https://thecodingpie.com/post/a-quick-guide-on-how-to-setup-a-python-virtual-environment-windows-linux-mac) erstellt habt und euch im richtigen Verzeichnis befindet.
 ```commandline
 sudo pip install buildozer
 ```
 
-####2. Main.py.
+#### 2. Main.py.
 Später wird die App nach einer Datei namens Main.py suchen, die dann als Zugangspunkt verwendet wird. 
 Stellt also sicher, dass sie existiert. 
 
 
-####3. buildozer.spec erstellen
+#### 3. buildozer.spec erstellen
 nun wird eine spec. Datei erstellt, die alle wichtigen Daten wie beispielsweise den Namen der App, Einstellungen und mehr enthält
 ```commandline
 buildozer init
@@ -106,16 +109,11 @@ Falls ihr das Gerät schon an eurem Computer angeschlossen habt, könnt ihr hier
 buildozer android debug deploy
 ```
 
-##### 5. Viel Spaß mit der App
-Viel Spaß
-
-#### Daten
+### Daten
 Software - App
 
 - Sprache: Python 3.10
-
 - Umgebung: Pycharm
-
 - Bibliotheken:
   - Pybluez - Windows Bluetooth access
   - Kivy - GUI Framework
@@ -123,9 +121,7 @@ Software - App
   
 Hardware (ESP32-WROOM-32)
   - Sprache: Python 3.10
-
   - Umgebung: Thonny
-
   - Bibliotheken:
     - Micropython
 
