@@ -2,8 +2,8 @@
 
 ## Inhaltsverzeichnis
 1. [Entwicklerstatus](#Entwicklerstatus)
-2. [Dokumantation](#Dokumentation)
-3. [Support](#Support)
+2. [Kontakt](#Kontakt)
+3. [Dokumantation](#Dokumentation)
 
 ### Entwicklerstatus
 In der Entwicklung...

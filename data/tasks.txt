@@ -1,7 +1,0 @@
-Bluetooth Android API anschauen
-Android umwandlung
-
-Bluetooth window flexibel machen(layouts)
-Controller window gestalten
-
-Einstellungen Slider erstellen

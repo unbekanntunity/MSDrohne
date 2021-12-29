@@ -3,9 +3,6 @@ from jnius import autoclass
 
 import socket
 
-PORT = 9192
-IP_ADDRESS = "192.168.252.11"
-
 SIZE = 1024
 TIME = 10
 
@@ -13,9 +10,8 @@ TIME = 10
 class BluetoothClient(object):
     def __init__(self):
         self.socket = None
-        self.paired_device_name = ''
 
-    def wait_for_response(self):
+    def wait_for_response(self, flag=''):
         time_started = datetime.now()
         while True:
             if datetime.now().second - TIME is time_started:
@@ -24,7 +20,14 @@ class BluetoothClient(object):
 
             data = self.socket.recv(1024)
             if data:
-                return data
+                if flag != '':
+                    if str.encode(flag, 'UTf-8') in data:
+                        return data
+                else:
+                    return data
+
+    def reset(self):
+        self.socket = None
 
 
 class AndroidBluetoothClient(BluetoothClient):
@@ -37,6 +40,11 @@ class AndroidBluetoothClient(BluetoothClient):
 
         self.send_stream = None
         self.recv_stream = None
+
+    def reset(self):
+        self.send_stream = None
+        self.recv_stream = None
+        super(BluetoothClient, self).reset()
 
     def create_socket_stream(self, name):
         if self.has_paired_devices():
@@ -60,18 +68,36 @@ class AndroidBluetoothClient(BluetoothClient):
 class WLANClient(object):
     def __init__(self):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.paired_device_ip = ''
+        self.paired_device_port = ''
 
-    def connect(self):
-        self.socket.connect((IP_ADDRESS, PORT))
+    def get_ip_address(self):
+        h_name = socket.gethostname()
+        return socket.gethostbyname(h_name)
+
+    def connect(self, address, port):
+        self.socket.connect((address, port))
+        self.paired_device_ip = address
+        self.paired_device_port = port
 
     def send_message(self, message):
         self.socket.send(message.encode())
         data = self.socket.recv(1024).decode()
+        print(data)
 
-    def wait_for_response(self):
+    def wait_for_response(self, only_paired_device=False):
         while True:
             data = self.socket.recv(1024)
             if data:
-                return data
+                if only_paired_device:
+                    if str.encode(self.paired_device_ip, 'UTF-8') in data:
+                        return data
+                else:
+                    return data
+
+    def reset(self):
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.paired_device_ip = ''
+        self.paired_device_port = ''
 
 

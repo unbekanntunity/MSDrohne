@@ -39,6 +39,9 @@ _ADV_TYPE_UUID32_MORE = const(0x4)
 _ADV_TYPE_UUID128_MORE = const(0x6)
 _ADV_TYPE_APPEARANCE = const(0x19)
 
+PORTNUM = 9192
+SEPARATOR = ''
+
 # Generate a payload to be passed to gap_advertise(adv_data=...).
 def advertising_payload(limited_disc=False, br_edr=False, name=None, services=None, appearance=0):
     payload = bytearray()
@@ -74,8 +77,9 @@ def advertising_payload(limited_disc=False, br_edr=False, name=None, services=No
 
 class BLESimplePeripheral:
     def __init__(self, ble, name="mpy-uart"):
+        self.connected = False
+        self.paired_device_ip = None
         self.wlan_connection = False
-        self.opponent_ip = None
 
         self._ble = ble
         self._ble.active(True)
@@ -102,16 +106,46 @@ class BLESimplePeripheral:
             conn_handle, value_handle = data
             value = self._ble.gatts_read(value_handle)
 
-            res, data = self.check_data(value)
-            if res == 1:
-                self.send('WC1')
+            message = ""
+            for index in range(len(data) - 2):
+                message += chr(data[index])
+
+            if 'WLAN' in message:
+                res, data = self.try_connect(message)
+                if res == 1:
+                    self.send('WC1')
+                    self.send(f'STAINFO{SEPARATOR}{data[2][0]}{SEPARATOR}{PORTNUM}')
+                    self.connected = True
+                elif res == 2:
+                    self.send('WC2')
+            elif 'WLANDATA' in message:
+                self.paired_device_ip = message.split(SEPARATOR)[1]
+
+            if self.paired_device_ip != None and self.connected:
                 self.wlan_connection = True
-                self.opponent_ip = data[2]
-            elif res == 2:
-                self.send('WC2')
 
             if value_handle == self._handle_rx and self._write_callback:
                 self._write_callback(value)
+
+        def try_connect(self, message):
+            size = len(message)
+            idx_list = [idx + 1 for idx, val in
+                enumerate(message) if val is SEPARATOR]
+
+            data = [message[i: j] for i, j in
+                    zip([0] + idx_list, idx_list +
+                    ([size] if idx_list[-1] != size else []))]
+
+            name = res[1].rstrip(res[1][-1])
+            password = res[2]
+
+            #WLAN|NAME|PASSWORD|ESP_STAINFO
+            connected, sta_info = connect(name, password)
+            data.append(sta_info)
+            if connected and len(res) == 3:
+                return (1, data)
+            else:
+                return (2, [])
 
     def send(self, data):
         for conn_handle in self._connections:
@@ -126,29 +160,6 @@ class BLESimplePeripheral:
 
     def on_write(self, callback):
         self._write_callback = callback
-
-    def check_data(self, data):
-        message = ""
-        for index in range(len(data) - 2):
-            #print(f"{str(data[index])} | {chr(data[index])}")
-            message += chr(data[index])
-
-        if 'WLAN' in message:
-            size = len(message)
-            idx_list = [idx + 1 for idx, val in
-                enumerate(message) if val is '|']
-
-            res = [message[i: j] for i, j in
-                    zip([0] + idx_list, idx_list +
-                    ([size] if idx_list[-1] != size else []))]
-
-            name = res[1].rstrip(res[0][-1])
-            password = res[2]
-
-            if connect(name, password) and len(res) == 3:
-                return (1, res)
-            else:
-                return (2, [])
 
 
 # ********************* WLAN-Verbindung ***********************
@@ -190,8 +201,12 @@ class Wlan_Server(object):
         self.send_thread.add_event(self.send_sensor_data)
         self.send_thread.start()
 
-    def create_socket(self, id):
-        self.socket.connect((IP_ADDRESS, 90))
+        self.paired_device_ip = None
+        self.server = None
+
+    def create_socket(self, ip):
+        self.paired_device_ip = ip
+        self.socket.connect((ip, 90))
 
     def hexMac(byteMac):
         """
@@ -205,57 +220,15 @@ class Wlan_Server(object):
                 macString += "-"
         return macString
 
-
-    def connect(siD="Internet", password="copz7477"):
-        # Netzwerk-Interface-Instanz erzeugen und ESP32-Stationmodus aktivieren;
-        # möglich sind network.STA_IF und network.AP_IF beide wie in LUA oder
-        # AT-based oder Adruino-IDE ist in MicroPython nicht möglich
-        nic = network.WLAN(network.STA_IF)  # Constructor
-        nic.active(True)
-
-        # binäre MAC-Adresse abrufen und in ein Hex-Tupel umgewandelt ausgeben
-        MAC = nic.config('mac')
-        myMac = hexMac(MAC)
-        print("STATION MAC: \t" + myMac + "\n")
-
-        # Verbindung mit AP im lokalen Netzwerk aufnehmen, falls noch nicht verbunden
-        if not nic.isconnected():
-            tries = 0
-            print(siD)
-            print(password)
-
-            try:
-            # Zum AP im lokalen Netz verbinden und Status anzeigen
-                nic.connect(siD, password)
-            except Exception as e:
-                print(e)
-
-            # warten bis die Verbindung zum Accesspoint steht
-            while nic.status() != network.STAT_GOT_IP:
-                if tries == 10:
-                    return False
-                print(".", end='')
-                sleep(1)
-                tries += 1
-
-        print("Erfolgreicher Verbindungsstatus: ", connectStatus[nic.status()])
-        STAconf = nic.ifconfig()
-        print("STA-IP:\t\t", STAconf[0], "\nSTA-NETMASK:\t", STAconf[1], "\nSTA-GATEWAY::\t", STAconf[2], "\n", "\n",
-              sep='')
-
-        return True
-
-
     def create_server(nic):
         try:
-            portNum = 9192
             print("Fordere Server-Socket an")
-            server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            server.bind(('', portNum))  # an lokale IP und Portnummer 9192 binden
-            server.listen(5)  # Akzeptiere bis zu 5 eingehende Anfragen
+            self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.server.bind(('', PORTNUM))  # an lokale IP und Portnummer 9192 binden
+            self.server.listen(5)  # Akzeptiere bis zu 5 eingehende Anfragen
             STAconf = nic.ifconfig()
-            print("Empfange Anfragen auf ", STAconf[0], ":", portNum, sep='')
+            print("Empfange Anfragen auf ", STAconf[0], ":", PORTNUM, sep='')
             return True
         catch Exception as e:
             print(e)
@@ -268,14 +241,23 @@ class Wlan_Server(object):
             # c ist ein bytes-Objekt und muss als string decodiert werden
             # damit string-Methoden darauf angewandt werden koennen.
             request = c.recv(1024).decode("utf-8")
-            receive_data(request)
-            c.send('HTTP/1.1 200 OK\n')
-            c.send('Content-Type: text/html\n')
-            c.send('Connection: close\n\n')
+            if self.validate_data(request):
+                process_data(c, request)
+                c.send(f'Received data: {request}\n\n')
             c.close()
 
-    def receive_data(data):
-        print('Content = %s' % data)
+    def validate_data(address):
+        if paired_device_ip != None:
+            return paired_device_ip == str(address):
+        else:
+            return False
+
+    def process_data(data):
+        if paired_device_ip in data:
+            print('Content = %s' % data)
+            if 'CMD' in data
+                command = data.split(SEPERATOR)[1]
+                self.{lower(command)}()
 
     def send_sensor_data(self):
         message = ""
@@ -283,6 +265,45 @@ class Wlan_Server(object):
            self.socket.send(message.encode())
            time.sleep(1)
 
+    def reset(self):
+        self.close
+        setup()
+
+def connect(siD="Internet", password="copz7477"):
+    # Netzwerk-Interface-Instanz erzeugen und ESP32-Stationmodus aktivieren;
+    # möglich sind network.STA_IF und network.AP_IF beide wie in LUA oder
+    # AT-based oder Adruino-IDE ist in MicroPython nicht möglich
+    nic = network.WLAN(network.STA_IF)  # Constructor
+    nic.active(True)
+
+    # binäre MAC-Adresse abrufen und in ein Hex-Tupel umgewandelt ausgeben
+    MAC = nic.config('mac')
+    myMac = hexMac(MAC)
+    print("STATION MAC: \t" + myMac + "\n")
+
+    # Verbindung mit AP im lokalen Netzwerk aufnehmen, falls noch nicht verbunden
+    if not nic.isconnected():
+        tries = 0
+        try:
+        # Zum AP im lokalen Netz verbinden und Status anzeigen
+            nic.connect(siD, password)
+        except Exception as e:
+            print(e)
+
+        # warten bis die Verbindung zum Accesspoint steht
+        while nic.status() != network.STAT_GOT_IP:
+            if tries == 10:
+                return False
+            print(".", end='')
+            sleep(1)
+            tries += 1
+
+    print("Erfolgreicher Verbindungsstatus: ", connectStatus[nic.status()])
+    STAconf = nic.ifconfig()
+    print("STA-IP:\t\t", STAconf[0], "\nSTA-NETMASK:\t", STAconf[1], "\nSTA-GATEWAY::\t", STAconf[2], "\n", "\n",
+          sep='')
+
+    return True, STAconf
 
 # ********************* Threading ***********************
 from threading import Thread
@@ -318,23 +339,26 @@ class DisposableThread(Thread):
         self.on_finished_events.invoke()
 
 
-ble = bluetooth.BLE()
-p = BLESimplePeripheral(ble)
-w = WLAN_Server()
-w.create_socket()
+def setup():
+    ble = bluetooth.BLE()
+    p = BLESimplePeripheral(ble)
+    w = WLAN_Server()
 
-while True:
-    if p.wlan_connection:
-        print("Connection established.")
-        w.opponent_id = p.opponent_id
-        break
-    time.sleep_ms(1000)
+    while True:
+        if p.wlan_connection:
+            w.create_socket(p.paired_device_ip)
+            print("Connection established.")
+            break
+        time.sleep_ms(1000)
 
-result = w.create_server(nic)
-p.close()
+    result = w.create_server(nic)
 
-if result:
-    p.send('WS1')
-    w.server_loop()
-else:
-    p.send('WS2')
+    if result:
+        p.send('WS1')
+        p.close()
+        w.server_loop()
+    else:
+        p.send('WS2')
+
+if __name__ == '__main__':
+    setup()

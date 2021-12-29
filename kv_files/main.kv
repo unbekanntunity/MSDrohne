@@ -1,0 +1,144 @@
+#:kivy 2.0.0
+
+<RoundedButton@Button>:
+    btn_color_not_pressed: [.5, .5, .5, 1]
+    btn_color_pressed: [.25, .25, .25, 1]
+
+    background_color: (0,0,0,0)
+	background_normal: ''
+	canvas.before:
+		Color:
+            rgba: self.btn_color_not_pressed if self.state=='normal' else self.btn_color_pressed
+		RoundedRectangle:
+			size: self.size
+			pos: self.pos
+			radius: [20]
+
+
+<StartScreen>:
+    name: 'start'
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 50
+
+        Label:
+            text: 'Simple DCA'
+            font_size: '80'
+
+        BoxLayout:
+            orientation: 'vertical'
+            spacing: 40
+            padding: root.width / 4, 20, root.width / 4, 20
+            RoundedButton:
+                text: 'Find Device'
+                on_release: root.manager.current = 'connection'
+            RoundedButton:
+                text: "Goodbye World!"
+                on_release: root.manager.current = 'support'
+
+<SupportScreen>:
+    name: 'support'
+    BoxLayout:
+        AnchorLayout:
+            size_hint_x: None
+            anchor_x: 'left'
+            anchor_y: 'top'
+            padding: 20
+            Button:
+                size_hint_x: None
+                size_hint_y: None
+                text: 'back'
+                on_press: root.go_back('start')
+        ScrollView:
+            BoxLayout:
+                id: question_box
+                padding: 20
+                size_hint_y: None
+                orientation: 'vertical'
+
+<ConnectionScreen>:
+    name: 'connection'
+    status: status_label
+    wlan: wlan_grid
+    RelativeLayout:
+        AnchorLayout:
+            size_hint_x: None
+            anchor_x: 'left'
+            anchor_y: 'top'
+            padding: 20
+            Button:
+                size_hint_x: None
+                size_hint_y: None
+                text: 'back'
+                on_press: root.go_back('start')
+        AnchorLayout:
+            padding: root.width / 5
+
+            Label:
+                id: status_label
+            GridLayout:
+                id: wlan_grid
+                cols: 2
+                height: 0
+                Label:
+                    text: 'Name'
+                TextInput:
+                    id: name_field
+                    multiline: False
+                Label:
+                    text: 'Passwort'
+                TextInput:
+                    id: password_field
+                    multiline: False
+                Button:
+                    text: 'Submit'
+                    on_release: root.send_data(root.ids.name_field.text, root.ids.password_field.text)
+
+
+<ControlScreen>:
+    name: 'control'
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            id: top_a
+            spacing: 30
+            size_hint_y: None
+            height: root.height / 6
+            Button:
+                id: back_btn
+                text: 'back'
+            Label:
+                text: 'Ready for take off'
+        BoxLayout:
+            id: center_a
+            orientation: 'vertical'
+            Label:
+                text: 'CONTROL'
+            BoxLayout:
+                id: joystick_a
+                orientation: 'horizontal'
+        BoxLayout:
+            size_hint_y: None
+            height: root.height / 6
+            Label:
+                text: f'H: {root.altitude} \nS: {root.speed}'
+            Label:
+                text: f'Lo: {root.latitude} \nLa: {root.longitude}'
+            Label:
+                text: f'{root.battery}%'
+            Label:
+                text: 'strong'
+
+<WaypointsScreen>:
+    name: 'waypoints'
+    Label:
+        text: 'Waypoint'
+
+<DroneRoot>:
+    MyScreenManager:
+        id: sm
+        StartScreen
+        ConnectionScreen
+        ControlScreen
+        WaypointsScreen
+        SupportScreen
