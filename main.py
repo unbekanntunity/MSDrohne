@@ -53,7 +53,7 @@ class CustomScreen(Screen):
         self.manager.transition.direction = 'right'
         self.manager.current = screen_name
 
-    def on_enter(self, *args):
+    def on_leave(self, *args):
         self.manager.transition.direction = 'left'
 
 
@@ -107,14 +107,12 @@ class SupportScreen(CustomScreen):
         return result + 50
 
     def trigger_box(self, *args):
-        for index in range(len(self.question_boxes)):
-            if args[0] == self.question_boxes[index]:
-                selected_text_box = self.text_boxes[index]
-                if len(selected_text_box.children) == 0:
-                    self.open_box(selected_text_box, index)
-                else:
-                    self.close_box(selected_text_box, index)
-                break
+        index = self.question_boxes.index(args[0])
+        selected_text_box = self.text_boxes[index]
+        if len(selected_text_box.children) == 0:
+            self.open_box(selected_text_box, index)
+        else:
+            self.close_box(selected_text_box)
 
     def open_box(self, answer_box, index):
         answer_box.add_widget(Button(text=self.answers[index]))
@@ -126,6 +124,7 @@ class SupportScreen(CustomScreen):
     def reset(self):
         for widget in self.ids.question_box.children:
             self.ids.question_box.remove_widget(widget)
+
 
 class ConnectionScreen(CustomScreen):
     status = ObjectProperty()
@@ -212,32 +211,22 @@ class ControlScreen(CustomScreen):
         self.r_joystick = JoyStick()
         self.l_joystick = JoyStick()
 
+        self.created = False
+
         if not TESTCASE:
             self.receive_thread.save_start()
             self.send_thread.save_start()
 
-        self.menu_btn = Button(text='Menu')
-        self.menu_dropdown = DropDown()
-
     def on_enter(self, *args):
-        self.ids.top_a.add_widget(self.menu_btn)
+        if not self.created:
+            self.ids.joystick_a.add_widget(self.r_joystick)
+            self.ids.joystick_a.add_widget(self.l_joystick)
 
-        waypoints_btn = Button(text='waypoints', size_hint_y=None, height=44)
-        waypoints_btn.bind(on_release=self.open_waypoints)
-        settings_btn = Button(text='settings', size_hint_y=None, height=44)
-        settings_btn.bind(on_release=self.open_settings)
-        self.menu_dropdown.add_widget(settings_btn)
-        self.menu_dropdown.add_widget(waypoints_btn)
+            self.ids.back_btn.bind(on_press=self.back_to_main)
 
-        self.menu_btn.bind(on_release=self.menu_dropdown.open)
-
-        self.ids.joystick_a.add_widget(self.r_joystick)
-        self.ids.joystick_a.add_widget(self.l_joystick)
-
-        self.ids.back_btn.bind(on_press=self.back_to_main)
-
-        Clock.schedule_once(self.r_joystick.set_center, 0.01)
-        Clock.schedule_once(self.l_joystick.set_center, 0.01)
+            Clock.schedule_once(self.r_joystick.set_center, 0.01)
+            Clock.schedule_once(self.l_joystick.set_center, 0.01)
+            self.created = True
 
     def send_data(self):
         message = f'LJ{SEPARATOR}{self.joystick.js_center_x}{SEPARATOR}{self.joystick.js_center_y}'
@@ -254,30 +243,9 @@ class ControlScreen(CustomScreen):
         self.latitude = datas[2]
         self.longitude = datas[3]
 
-    def open_waypoints(self, *args):
-        self.menu_dropdown.dismiss()
-        self.manager.current = 'waypoints'
-
-    def open_settings(self, *args):
-        self.menu_dropdown.dismiss()
-        App.get_running_app().open_settings()
-
-    def reset(self):
-        self.ids.top_a.remove_widget(self.menu_btn)
-
-        for widget in self.ids.joystick_a.children:
-            self.ids.joystick_a.remove_widget(widget)
-
     def back_to_main(self, *args):
         if not TESTCASE:
             wlan_client.send_message(f'CMD{SEPARATOR}reset')
-
-        screens = self.manager.screens
-        for screen in screens:
-            try:
-                screen.reset()
-            except AttributeError as e:
-                pass
 
         bluetooth_client.reset()
         wlan_client.reset()
@@ -285,12 +253,101 @@ class ControlScreen(CustomScreen):
         self.go_back('start')
 
 
-class WaypointsScreen(CustomScreen):
+class MenuScreen(CustomScreen):
+    def __init__(self, **kwargs):
+        super(MenuScreen, self).__init__(**kwargs)
+        self.nav_bar_buttons = []
+
+        self.nav_bar = None
+
+    def on_enter(self, *args):
+        self.nav_bar = App.get_running_app().root.ids.nav_bar
+        if self.nav_bar.size_hint_y is None:
+            self.nav_bar.size_hint_y = 0.2
+
+            settings_group = self.manager.screen_groups['settings']
+            for settings in settings_group:
+                btn = Button(text=settings)
+                btn.bind(on_release=self.nav_bar_btn_clicked)
+                self.nav_bar_buttons.append(btn)
+                self.nav_bar.add_widget(btn)
+
+    def on_leave(self, *args):
+        if self.manager.current not in self.manager.screen_groups['settings']:
+            self.nav_bar.size_hint_y = None
+            self.nav_bar.height = 0
+            super(MenuScreen, self).on_leave(*args)
+
+    def nav_bar_btn_clicked(self, *args):
+        index = self.nav_bar_buttons.index(args[0])
+        current_index = self.manager.screen_groups['settings'].index(self.manager.current)
+        if current_index > index:
+            transition = 'right'
+        else:
+            transition = 'left'
+
+        self.manager.go_to_screen_of_group('settings', index, transition)
+
+    def close_menu(self, *args):
+        childrens = self.nav_bar.children
+        for index in range(len(childrens)):
+            self.nav_bar.remove_widget(self.nav_bar.children[0])
+
+        self.nav_bar.size_hint_y = None
+        self.nav_bar.height = 0
+        self.nav_bar_buttons.clear()
+
+        self.go_back('control')
+
+class SettingsScreen(MenuScreen):
+    pass
+
+class WaypointsScreen(MenuScreen):
     pass
 
 
 class MyScreenManager(ScreenManager):
-    pass
+    def __init__(self, **kwargs):
+        super(MyScreenManager, self).__init__(**kwargs)
+        self.screen_groups = {
+            'settings': ['settings', 'waypoints']
+        }
+
+    def get_next_screen_of_group(self, group_name):
+        if group_name in self.screen_groups:
+            group = self.screen_groups[group_name]
+            if self.current in group:
+                index = group.index(self.current)
+                if index == len(group) - 1:
+                    index = 0
+                else:
+                    index += 1
+                self.current = group[index]
+            else:
+                raise ValueError(f'The current screen {self.current} has to be one of{group}')
+        else:
+            raise ValueError(f'screen manager cant find the group, {group_name}')
+
+    def get_previous_screen_of_group(self, group_name):
+        if group_name in self.screen_groups:
+            group = self.screen_groups[group_name]
+            if self.current in group:
+                index = group.index(self.current)
+                if index == 0:
+                    index = len(group) - 1
+                else:
+                    index -= 1
+                self.current = group[index]
+            else:
+                raise ValueError(f'The current screen {self.current} has to be one of{group}')
+        else:
+            raise ValueError(f'screen manager cant find the group, {group_name}')
+
+    def go_to_screen_of_group(self, group_name, index, transition_direction='right'):
+        if group_name in self.screen_groups:
+            group = self.screen_groups[group_name]
+            self.transition.direction = transition_direction
+            self.current = group[index]
 
 
 class DroneRoot(BoxLayout):

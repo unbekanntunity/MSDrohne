@@ -22,19 +22,29 @@ class JoyStick(Widget):
 
     def __init__(self, **kwargs):
         super().__init__()
-
         self.js_center_origin_x = self.center_x
         self.js_center_origin_y = self.center_y
 
         self.js_center_x = self.js_center_origin_x
         self.js_center_y = self.js_center_origin_y
 
+        self.process_touch = False
+
+    def on_touch_down(self, touch):
+        result = (round(touch.pos[0]) - self.center_x)**2 + (round(touch.pos[1]) - self.js_center_y)**2 - self.outer_radius**2
+        if result < 0:
+            self.process_touch = True
+        super().on_touch_up(touch)
+
     def on_touch_move(self, touch):
-        self.update_center(round(touch.pos[0]), round(touch.pos[1]))
+        if self.process_touch:
+            self.update_center(round(touch.pos[0]), round(touch.pos[1]))
+        super().on_touch_move(touch)
 
     def on_touch_up(self, touch):
         self.js_center_x = self.js_center_origin_x
         self.js_center_y = self.js_center_origin_y
+        self.process_touch = False
         super().on_touch_up(touch)
 
     def set_center(self, *args):

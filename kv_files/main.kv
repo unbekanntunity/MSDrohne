@@ -109,6 +109,9 @@
                 text: 'back'
             Label:
                 text: 'Ready for take off'
+            Button:
+                text: 'menu'
+                on_press: root.manager.current = 'settings'
         BoxLayout:
             id: center_a
             orientation: 'vertical'
@@ -129,16 +132,37 @@
             Label:
                 text: 'strong'
 
+<SettingsScreen>:
+    name: 'settings'
+    BoxLayout:
+        orientation: 'vertical'
+        Button:
+            text: 'back'
+            size_hint_x: None
+            size_hint_y: 0.2
+            on_release: root.close_menu()
+        Label:
+            text: 'settings'
+
 <WaypointsScreen>:
     name: 'waypoints'
-    Label:
-        text: 'Waypoint'
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: 'waypoint'
 
 <DroneRoot>:
-    MyScreenManager:
-        id: sm
-        StartScreen
-        ConnectionScreen
-        ControlScreen
-        WaypointsScreen
-        SupportScreen
+    BoxLayout:
+        orientation: 'vertical'
+        MyScreenManager:
+            id: sm
+            StartScreen
+            ConnectionScreen
+            ControlScreen
+            SettingsScreen
+            WaypointsScreen
+            SupportScreen
+        BoxLayout:
+            id: nav_bar
+            size_hint_y: None
+            height: 0
