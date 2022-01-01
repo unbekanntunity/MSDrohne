@@ -169,7 +169,6 @@ class SupportScreen(CustomScreen):
             self.text_boxes.append(a1)
 
             self.ids.question_box.add_widget(b1)
-            print(self.ids.question_box.minimum_height)
         self.ids.question_box.height = self.get_height()
 
     def get_height(self) -> int:
@@ -301,8 +300,9 @@ class ControlScreen(CustomScreen):
             Clock.schedule_once(self.l_joystick.set_center, 0.01)
             self.created = True
 
-            # Damit der Esp32 eine Connection hat, um die Sensordaten zu senden
-            wlan_client.send_message('ping')
+            if not TESTCASE:
+                # Damit der Esp32 eine Connection hat, um die Sensordaten zu senden
+                wlan_client.send_message('ping')
 
     def send_data(self) -> None:
         message = f'LJ{SEPARATOR}{self.joystick.js_center_x}{SEPARATOR}{self.joystick.js_center_y}'

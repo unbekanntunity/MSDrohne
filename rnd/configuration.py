@@ -2,12 +2,11 @@
 # Klasse für das Laden und Speichern der Konfiguration, die
 # in der config.json gespeichert ist
 # ********************************************************************
-
 import json
 
 
 class Configuration(object):
-    def __init__(self, file_path, load_at_init=False):
+    def __init__(self, file_path: str, load_at_init: bool = False):
         self.file_path = file_path
         self.config_dict = {}
 

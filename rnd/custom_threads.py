@@ -25,27 +25,27 @@ class DisposableLoopThread(Thread):
         self.results = {}
 
     # Threads können nur einmal gestartet werden, selbst wenn sie gestoppt wurden
-    def save_start(self):
+    def save_start(self) -> None:
         if self.started:
             self.proceed = True
         else:
             self.start()
 
-    def start(self):
+    def start(self) -> None:
         if not self.proceed:
             self.started = True
             self.proceed = True
             Thread.start(self)
 
-    def run(self):
+    def run(self) -> None:
         while self.proceed:
             sleep(self.interval_sec)
             self.results = self.events.invoke()
 
-    def stop(self):
+    def stop(self) -> None:
         self.proceed = False
         self.on_finished_events.invoke()
 
-    def add_event(self, function):
+    def add_event(self, function) -> None:
         self.events.add_event(function)
         self.results[function] = None

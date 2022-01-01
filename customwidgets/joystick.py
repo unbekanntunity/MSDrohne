@@ -46,6 +46,7 @@ class JoyStick(Widget):
     # Wischen
     def on_touch_move(self, touch) -> None:
         if self.process_touch:
+            # touch.pos -> (x, y)
             self.update_center(round(touch.pos[0]), round(touch.pos[1]))
         super().on_touch_move(touch)
 

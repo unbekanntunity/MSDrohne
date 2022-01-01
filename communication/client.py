@@ -1,3 +1,7 @@
+# *********************** client.py **************************
+# ********************************************************************
+
+
 from datetime import datetime
 from jnius import autoclass
 
@@ -5,7 +9,7 @@ import socket
 
 # Konstanten
 SIZE = 1024
-TIME = 10
+TIME_SEC = 10
 
 
 class BluetoothClient(object):
@@ -16,7 +20,7 @@ class BluetoothClient(object):
     def wait_for_response(self, flag=''):
         time_started = datetime.now()
         while True:
-            if datetime.now().second - TIME is time_started:
+            if datetime.now().second - TIME_SEC is time_started:
                 print("Timeout!")
                 return
 
@@ -35,6 +39,7 @@ class BluetoothClient(object):
 class AndroidBluetoothClient(BluetoothClient):
     def __init__(self):
         super(BluetoothClient, self).__init__()
+        # Zugriff auf die Android API, geschrieben in Java
         self.BluetoothAdapter = autoclass('android.bluetooth.BluetoothAdapter')
         self.BluetoothDevice = autoclass('android.bluetooth.BluetoothDevice')
         self.BluetoothSocket = autoclass('android.bluetooth.BluetoothSocket')
