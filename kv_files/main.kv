@@ -141,8 +141,17 @@
             size_hint_x: None
             size_hint_y: 0.2
             on_release: root.close_menu()
-        Label:
-            text: 'settings'
+        GridLayout:
+            padding: 50
+            cols: 2
+            Label:
+                text: 'tick'
+            TextInput:
+                id: tick_field
+                multiline: False
+            Button:
+                text: 'save'
+                on_release: root.save_config()
 
 <WaypointsScreen>:
     name: 'waypoints'

@@ -3,6 +3,7 @@ from jnius import autoclass
 
 import socket
 
+# Konstanten
 SIZE = 1024
 TIME = 10
 
@@ -10,6 +11,7 @@ TIME = 10
 class BluetoothClient(object):
     def __init__(self):
         self.socket = None
+        self.paired_device_name = ''
 
     def wait_for_response(self, flag=''):
         time_started = datetime.now()
@@ -44,7 +46,7 @@ class AndroidBluetoothClient(BluetoothClient):
     def reset(self):
         self.send_stream = None
         self.recv_stream = None
-        super(BluetoothClient, self).reset()
+        super(AndroidBluetoothClient, self).reset()
 
     def create_socket_stream(self, name):
         if self.has_paired_devices():
@@ -71,10 +73,6 @@ class WLANClient(object):
         self.paired_device_ip = ''
         self.paired_device_port = ''
 
-    def get_ip_address(self):
-        h_name = socket.gethostname()
-        return socket.gethostbyname(h_name)
-
     def connect(self, address, port):
         self.socket.connect((address, port))
         self.paired_device_ip = address
@@ -100,4 +98,7 @@ class WLANClient(object):
         self.paired_device_ip = ''
         self.paired_device_port = ''
 
-
+    @staticmethod
+    def get_ip_address():
+        h_name = socket.gethostname()
+        return socket.gethostbyname(h_name)

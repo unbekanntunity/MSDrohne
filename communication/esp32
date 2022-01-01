@@ -1,4 +1,4 @@
-# ********************* BLuetooth-Verbindung ***********************
+# ********************* Bluetooth-Verbindung ***********************
 import bluetooth
 import random
 import struct
@@ -246,28 +246,40 @@ class Wlan_Server(object):
                 c.send(f'Received data: {request}\n\n')
             c.close()
 
-    def validate_data(address):
+    def validate_data(self, address):
         if paired_device_ip != None:
             return paired_device_ip == str(address):
         else:
             return False
 
-    def process_data(data):
+    def process_data(self, data):
         if paired_device_ip in data:
             print('Content = %s' % data)
             if 'CMD' in data
-                command = data.split(SEPERATOR)[1]
-                self.{lower(command)}()
+                command_name, args = self.extract_command(data)
+                self.{command_name}(args)
+
+    # CMD|name|arg1|arg2|....
+    def extract_command(self, data):
+        command_split = data.split(SEPERATOR)
+        command_name = lower(command_split[1])
+        args = []
+        if len(command_split) > 2:
+            args = command[2: -1]
+        return (command_name, args)
+
+    def reset(self, *args):
+        self.socket.close()
+        setup()
+
+    def set_tick(self, *args)
+        print(f'set tick to {args[0]}')
 
     def send_sensor_data(self):
         message = ""
         while 1:
            self.socket.send(message.encode())
            time.sleep(1)
-
-    def reset(self):
-        self.close
-        setup()
 
 def connect(siD="Internet", password="copz7477"):
     # Netzwerk-Interface-Instanz erzeugen und ESP32-Stationmodus aktivieren;
