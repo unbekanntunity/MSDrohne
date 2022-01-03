@@ -1,4 +1,6 @@
-string = 'WLAN|KHOA|khoa19610121'
-byte = string.encode()
+from misc.configuration import Configuration
 
-print(len(byte))
+config = Configuration('./data/config.json')
+config.load_config()
+
+print(config.config_dict)

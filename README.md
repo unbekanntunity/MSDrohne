@@ -18,9 +18,27 @@ Discord: [LINK]()
 
 ## Dokumantation
 
-1. [Installation](#Installation)
-2. [Quellcode](#Quellcode)
+1. [Daten](#Daten)
+2. [Installation](#Installation)
+3. [Kommunikation](#Kommunikation)
+4. [Quellcode](#Quellcode)
 
+### Daten
+Software - App
+
+- Sprache: Python 3.10
+- Umgebung: Pycharm
+- Bibliotheken:
+  - Pybluez - Windows Bluetooth access
+  - Kivy - GUI Framework
+  - pip - Package manager
+  
+Hardware (ESP32-WROOM-32)
+  - Sprache: Python 3.10
+  - Umgebung: Thonny
+  - Bibliotheken:
+    - Micropython
+    
 ### Installation
 Die Entwickler unter der E-Mail [Monarch Softworks](https://www.gmail.com) nach der Software fragen.
 In der E-Mail sollten sich am besten schon folgende Daten über das Gerät gelistet sein.
@@ -30,7 +48,7 @@ In der E-Mail sollten sich am besten schon folgende Daten über das Gerät gelis
 
 #### oder
 
-Die App selber mithilfe von [buildozer]() konvertieren
+Die App selber mithilfe von [buildozer](https://buildozer.readthedocs.io/en/latest/) konvertieren
 
 Tutorial:
 
@@ -92,7 +110,7 @@ buildozer init
 
 - Android & IOS spezifische Optionen: Sind für uns nicht relevant, da die Standardwerte ausreichen.
 
-####4. App bauen
+#### 4. App bauen
 Führt den folgenden Befehl aus:
 ```commandline
 buildozer android debug
@@ -109,21 +127,8 @@ Falls ihr das Gerät schon an eurem Computer angeschlossen habt, könnt ihr hier
 buildozer android debug deploy
 ```
 
-### Daten
-Software - App
-
-- Sprache: Python 3.10
-- Umgebung: Pycharm
-- Bibliotheken:
-  - Pybluez - Windows Bluetooth access
-  - Kivy - GUI Framework
-  - pip - Package manager
-  
-Hardware (ESP32-WROOM-32)
-  - Sprache: Python 3.10
-  - Umgebung: Thonny
-  - Bibliotheken:
-    - Micropython
+### Kommunikation
+Für die Kommunikation verwenden wir Sockets, die als ein Kommunikationsendpunkte dienen. 
 
 
 Letztes Update: 23/12/2021

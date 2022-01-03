@@ -1,0 +1,176 @@
+import network
+import ubinascii
+
+from drohne.custom_threads import DisposableLoopThread
+
+import gc
+gc.collect()
+
+from time import sleep
+
+try:
+    import usocket as socket
+except:
+    import socket
+
+# Die Dictionarystruktur (dict) erlaubt später die Klartextausgabe
+# des Verbindungsstatus anstelle der Zahlencodes
+connectStatus = {
+    1000: "STAT_IDLE",
+    1001: "STAT_CONNECTING",
+    1010: "STAT_GOT_IP",
+    202: "STAT_WRONG_PASSWORD",
+    201: "NO AP FOUND"
+}
+
+class Wlan_Server(object):
+    def __init__(self, config):
+        self.server = None
+        self.client_connection = None
+
+        self.send_thread = DisposableLoopThread()
+        self.send_thread.add_event(self.send_sensor_data)
+
+        self.paired_device_ip = None
+
+        self.config = config
+
+    def create_server(self, nic):
+        try:
+            print("Fordere Server-Socket an")
+            self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.server.bind(('', 9192))  # an lokale IP und Portnummer 9192 binden
+            self.server.listen(5)  # Akzeptiere bis zu 5 eingehende Anfragen
+            STAconf = nic.ifconfig()
+            print("Empfange Anfragen auf ", STAconf[0], ":", 9192, sep='')
+            return True
+        except Exception as e:
+            print(e)
+            return False
+
+    def server_loop(self):
+        self.send_thread.start()
+        while 1:  # Endlosschleife
+            c, addr = self.server.accept()  # Anfrage entgegennehmen
+            if self.client_connection is None and self.paired_device_ip == str(address):
+                self.client_connection = c
+
+            print('\nGot a connection from %s' % str(addr))
+            # c ist ein bytes-Objekt und muss als string decodiert werden
+            # damit string-Methoden darauf angewandt werden koennen.
+            request = c.recv(1024).decode("utf-8")
+            print(f'data detected: {request}')
+            if self.validate_data(request):
+                process_data(c, request)
+                c.send(f'Received data: {request}\n\n')
+            c.close()
+
+    def validate_data(self, address):
+        if paired_device_ip is not None:
+            return self.paired_device_ip == str(address)
+        else:
+            return False
+
+    def process_data(self, data):
+        if paired_device_ip in data:
+            print('Content = %s' % data)
+            if 'CMD' in data:
+                command_name, args = self.extract_command(data)
+                print(f'command detected: {command_name}, {args}')
+
+    # CMD|name|arg1|arg2|....
+    def extract_command(self, data):
+        command_split = data.split(SEPERATOR)
+        command_name = lower(command_split[1])
+        args = []
+        if len(command_split) > 2:
+            args = command[2: -1]
+
+        globals()[command_name](*args)
+
+        return (command_name, args)
+
+    def reset(self, *args):
+        self.client_connection.close()
+        self.socket.close()
+        setup()
+
+    def set_config(self, *args):
+        config_str = args[0]
+        self.config.save_config_with_jsonstr(config_str)
+        self.config.load_config()
+
+    def send_sensor_data(self):
+        message = ""
+        while 1:
+           if self.client_connection is not None:
+               print('Sensor data')
+               #self.client_connection.send(message.encode())
+           sleep(self.config.config_dict['tick'])
+
+
+def hexMac(byteMac):
+    """
+    Die Funktion hexMAC nimmt die MAC-Adresse im Bytecode entgegen und
+    bildet daraus einen String für die Rückgabe
+    """
+    macString = ""
+    for i in range(0, len(byteMac)):  # Für alle Bytewerte
+        macString += hex(byteMac[i])[2:]  # vom String ab Position 2 bis Ende
+        if i < len(byteMac) - 1:  # Trennzeichen bis auf das letzte Byte
+            macString += "-"
+    return macString
+
+def connect(siD="Internet", password="copz7477"):
+    # Netzwerk-Interface-Instanz erzeugen und ESP32-Stationmodus aktivieren;
+    # möglich sind network.STA_IF und network.AP_IF beide wie in LUA oder
+    # AT-based oder Adruino-IDE ist in MicroPython nicht möglich
+    nic = network.WLAN(network.STA_IF)  # Constructor
+    nic.active(True)
+
+    # binäre MAC-Adresse abrufen und in ein Hex-Tupel umgewandelt ausgeben
+    MAC = nic.config('mac')
+    myMac = hexMac(MAC)
+    print("STATION MAC: \t" + myMac + "\n")
+
+    #zeige_ap_liste(nic)
+
+    # Verbindung mit AP im lokalen Netzwerk aufnehmen, falls noch nicht verbunden
+    if not nic.isconnected():
+        # Zum AP im lokalen Netz verbinden und Status anzeigen
+        nic.connect(siD, password)
+
+        # warten bis die Verbindung zum Accesspoint steht
+        while nic.status() != network.STAT_GOT_IP:
+            print(connectStatus[nic.status()])
+            sleep(1)
+
+    print("Erfolgreicher Verbindungsstatus: ", connectStatus[nic.status()])
+    STAconf = nic.ifconfig()
+    print("STA-IP:\t\t", STAconf[0], "\nSTA-NETMASK:\t", STAconf[1], "\nSTA-GATEWAY::\t", STAconf[2], "\n", "\n",
+          sep='')
+
+    return (True, STAconf, nic)
+
+def zeige_ap_liste(nic):
+  """
+  Scannt die Funkumgebung nach vorhandenen Accesspoints und liefert
+  deren Kennung (SSID) sowie die Betriebsdaten zurück. Nach entsprechender
+  Aufbereitung werden die Daten im Terminalfenster ausgegeben.
+  """
+  # Gib eine Liste der umgebenden APs aus
+  liste = nic.scan()
+  autModus=["open", "WEP", "WPA-PSK", "WPA2-PSK", "WPA/WPA2-PSK"]
+  for AP in liste:
+    print("SSID: \t\t",(AP[0]).decode("utf-8"))
+    print("MAC: \t\t",ubinascii.hexlify(AP[1],"-").decode("utf-8"))
+    print("Kanal: \t\t",AP[2])
+    print("Feldstaerke: \t\t",AP[3])
+    print("Authentifizierung: \t",autModus[AP[4]])
+    print("SSID ist \t\t",end='')
+    if AP[5]:
+      print("verborgen")
+    else:
+      print("sichtbar")
+    print("")

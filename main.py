@@ -1,11 +1,8 @@
 # **************************** main.py ******************************
 # Hauptklasse und Einstiegspunkt der ganzen Applikation
-#
-#
-#
 # *******************************************************************
 
-# **************************** Imports ******************************
+# **************************** Imports ****************a**************
 import os
 os.environ['KIVY_GL_BACKEND'] = 'angle_sdl2'
 
@@ -24,8 +21,8 @@ from kivy.lang import Builder
 from kivy.properties import ObjectProperty, StringProperty
 
 from communication import client
-from rnd.custom_threads import DisposableLoopThread
-from rnd.configuration import Configuration
+from misc.custom_threads import DisposableLoopThread
+from misc.configuration import Configuration
 from customwidgets.joystick import *
 import time
 
@@ -73,12 +70,23 @@ class RoundedButton(Button):
 
 
 class CustomScreen(Screen):
+    def __init__(self, **kw):
+        super(CustomScreen, self).__init__(**kw)
+        App.get_running_app().configuration.on_config_changed.add_function(self.on_config_changed)
+
+        self.machine_config = App.get_running_app().configuration.config_dict['machine']
+        self.app_config = App.get_running_app().configuration.config_dict['app']
+
     def go_back(self, screen_name) -> None:
         self.manager.transition.direction = 'right'
         self.manager.current = screen_name
 
     def on_leave(self, *args) -> None:
         self.manager.transition.direction = 'left'
+
+    def on_config_changed(self):
+        self.machine_config = App.get_running_app().configuration.config_dict['machine']
+        self.app_config = App.get_running_app().configuration.config_dict['app']
 
 
 class MyScreenManager(ScreenManager):
@@ -207,7 +215,7 @@ class ConnectionScreen(CustomScreen):
         self.connected = False
 
         self.response_thread = DisposableLoopThread()
-        self.response_thread.events.add_event(self.check_response)
+        self.response_thread.event_handler.add_function(self.check_response)
 
         self.bluetooth_connection_thread = DisposableLoopThread()
         self.bluetooth_connection_thread.add_event(self.check_bluetooth_connection)
@@ -242,7 +250,7 @@ class ConnectionScreen(CustomScreen):
         if 'WC1' and wlan_client.paired_device_ip in wlan_response:
             if 'STAINFO' in esp32_data:
                 converted_data = esp32_data.split(SEPARATOR)
-                wlan_client.connect(converted_data[1], converted_data[2])
+                wlan_client.connect(converted_data[1], int(converted_data[2]))
             self.status.text = f'Connection with {bluetooth_client.paired_device_name}'
             time.sleep(1)
             if 'WS1' in server_response:
@@ -267,12 +275,12 @@ class ControlScreen(CustomScreen):
 
     def __init__(self, **kwargs):
         super(ControlScreen, self).__init__(**kwargs)
-
         self.receive_thread = DisposableLoopThread()
         self.send_thread = DisposableLoopThread()
 
         self.receive_thread.add_event(self.receive_data)
         self.send_thread.add_event(self.send_data)
+        self.send_thread.interval_sec = self.machine_config['tick']
 
         self.speed = "0"
         self.altitude = "0"
@@ -303,6 +311,10 @@ class ControlScreen(CustomScreen):
             if not TESTCASE:
                 # Damit der Esp32 eine Connection hat, um die Sensordaten zu senden
                 wlan_client.send_message('ping')
+
+    def on_config_changed(self):
+        super(ControlScreen, self).on_config_changed()
+        self.send_thread.interval_sec = self.machine_config['tick']
 
     def send_data(self) -> None:
         message = f'LJ{SEPARATOR}{self.joystick.js_center_x}{SEPARATOR}{self.joystick.js_center_y}'
@@ -379,24 +391,35 @@ class MenuScreen(CustomScreen):
 class SettingsScreen(MenuScreen):
     def __init__(self, **kwargs):
         super(SettingsScreen, self).__init__(**kwargs)
-        self.config = App.get_running_app().configuration
 
     def on_enter(self, *args) -> None:
-        self.ids.tick_field.text = str(self.config.config_dict['tick'])
         super(SettingsScreen, self).on_enter(*args)
+        self.ids.tick_field.text = str(self.machine_config['tick'])
 
     def save_config(self, *args) -> None:
         tick = self.ids.tick_field.text
-        self.config.config_dict['tick'] = tick
-        self.change_tick(tick)
+        result = self.try_set_tick(tick)
+        if result:
+            App.get_running_app().configuration.save_config()
+            self.notify()
 
-        self.config.save_config()
         self.close_menu(None)
 
     @staticmethod
-    def change_tick(tick) -> None:
+    def try_set_tick(tick: str) -> bool:
+        int_tick = 0
+        try:
+            int_tick = int(tick)
+        except ValueError:
+            return False
+
+        App.get_running_app().configuration.config_dict['machine']['tick'] = int_tick
+        return True
+
+    def notify(self) -> None:
         if not TESTCASE:
-            wlan_client.send_message(f'CMD{SEPARATOR}set_tick{SEPARATOR}{tick}')
+            json_string = self.config_obj.get_json_string_from_dict(self.machine_config)
+            wlan_client.send_message(f'CMD{SEPARATOR}set_config{SEPARATOR}{json_string}')
 
 
 class WaypointsScreen(MenuScreen):
@@ -413,6 +436,13 @@ class DroneRoot(BoxLayout):
 
 class DroneApp(App):
     configuration = Configuration('./data/config.json', True)
+
+    def __init__(self, **kwargs):
+        super(DroneApp, self).__init__(**kwargs)
+        self.configuration.on_config_changed.add_function(self.on_config_changed)
+
+    def on_config_changed(self):
+        self.configuration.load_config()
 
     def build(self):
         self.load_kv_files()

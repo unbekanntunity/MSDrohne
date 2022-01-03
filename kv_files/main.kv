@@ -1,19 +1,16 @@
 #:kivy 2.0.0
 
 <RoundedButton@Button>:
-    btn_color_not_pressed: [.5, .5, .5, 1]
-    btn_color_pressed: [.25, .25, .25, 1]
-
     background_color: (0,0,0,0)
 	background_normal: ''
+    color: app.configuration.config_dict['app']['font_color']
 	canvas.before:
 		Color:
-            rgba: self.btn_color_not_pressed if self.state=='normal' else self.btn_color_pressed
-		RoundedRectangle:
-			size: self.size
-			pos: self.pos
-			radius: [20]
-
+            rgba: app.configuration.config_dict['app']['btn_color_not_pressed'] if self.state=='normal' else app.configuration.config_dict['app']['btn_color_pressed']
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: [20]
 
 <StartScreen>:
     name: 'start'
@@ -24,7 +21,7 @@
         Label:
             text: 'Simple DCA'
             font_size: '80'
-
+            color: app.configuration.config_dict['app']['font_color']
         BoxLayout:
             orientation: 'vertical'
             spacing: 40
@@ -33,7 +30,7 @@
                 text: 'Find Device'
                 on_release: root.manager.current = 'connection'
             RoundedButton:
-                text: "Goodbye World!"
+                text: 'Support'
                 on_release: root.manager.current = 'support'
 
 <SupportScreen>:
@@ -44,7 +41,7 @@
             anchor_x: 'left'
             anchor_y: 'top'
             padding: 20
-            Button:
+            RoundedButton:
                 size_hint_x: None
                 size_hint_y: None
                 text: 'back'
@@ -66,32 +63,36 @@
             anchor_x: 'left'
             anchor_y: 'top'
             padding: 20
-            Button:
+            RoundedButton:
                 size_hint_x: None
                 size_hint_y: None
                 text: 'back'
                 on_press: root.go_back('start')
         AnchorLayout:
             padding: root.width / 5
-
             Label:
                 id: status_label
-            GridLayout:
+            BoxLayout:
                 id: wlan_grid
-                cols: 2
-                height: 0
-                Label:
-                    text: 'Name'
+                orientation: 'vertical'
+                padding: 40
+                spacing: 20
+                canvas.before:
+                    Color:
+                        rgba: app.configuration.config_dict['app']['font_color']
+                    Line:
+                        width: 0.5
+                        rectangle: self.x, self.y, self.width, self.height
                 TextInput:
                     id: name_field
+                    text: 'Name'
                     multiline: False
-                Label:
-                    text: 'Passwort'
                 TextInput:
                     id: password_field
+                    text: 'Passwort'
                     multiline: False
-                Button:
-                    text: 'Submit'
+                RoundedButton:
+                    text: 'Senden'
                     on_release: root.send_data(root.ids.name_field.text, root.ids.password_field.text)
 
 
@@ -104,19 +105,22 @@
             spacing: 30
             size_hint_y: None
             height: root.height / 6
-            Button:
+            RoundedButton:
                 id: back_btn
                 text: 'back'
+                on_press: root.go_back('start')
             Label:
                 text: 'Ready for take off'
-            Button:
-                text: 'menu'
+                color: app.configuration.config_dict['app']['font_color']
+            RoundedButton:
+                text: 'menü'
                 on_press: root.manager.current = 'settings'
         BoxLayout:
             id: center_a
             orientation: 'vertical'
             Label:
                 text: 'CONTROL'
+                color: app.configuration.config_dict['app']['font_color']
             BoxLayout:
                 id: joystick_a
                 orientation: 'horizontal'
@@ -125,33 +129,43 @@
             height: root.height / 6
             Label:
                 text: f'H: {root.altitude} \nS: {root.speed}'
+                color: app.configuration.config_dict['app']['font_color']
             Label:
                 text: f'Lo: {root.latitude} \nLa: {root.longitude}'
+                color: app.configuration.config_dict['app']['font_color']
             Label:
                 text: f'{root.battery}%'
+                color: app.configuration.config_dict['app']['font_color']
             Label:
                 text: 'strong'
+                color: app.configuration.config_dict['app']['font_color']
 
 <SettingsScreen>:
     name: 'settings'
     BoxLayout:
         orientation: 'vertical'
-        Button:
+        RoundedButton:
             text: 'back'
             size_hint_x: None
             size_hint_y: 0.2
             on_release: root.close_menu()
-        GridLayout:
+        BoxLayout:
             padding: 50
-            cols: 2
-            Label:
-                text: 'tick'
-            TextInput:
-                id: tick_field
-                multiline: False
-            Button:
-                text: 'save'
+            orientation: 'vertical'
+            BoxLayout:
+                Label:
+                    text: 'ticks:'
+                    color: app.configuration.config_dict['app']['font_color']
+                TextInput:
+                    id: tick_field
+                    multiline: False
+        AnchorLayout:
+            anchor_x: 'center'
+            RoundedButton:
+                text: 'speichern'
                 on_release: root.save_config()
+                size_hint_x: None
+                size_hint_y: None
 
 <WaypointsScreen>:
     name: 'waypoints'
@@ -159,8 +173,15 @@
         orientation: 'vertical'
         Label:
             text: 'waypoint'
+            color: app.configuration.config_dict['app']['font_color']
 
 <DroneRoot>:
+    canvas.before:
+		Color:
+			rgba: app.configuration.config_dict['app']['bg_color']
+		Rectangle:
+			pos: self.pos
+			size: self.size
     BoxLayout:
         orientation: 'vertical'
         MyScreenManager:

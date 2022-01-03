@@ -1,3 +1,31 @@
 {
-    "tick": "1012"
+    "app": {
+        "bg_color": [
+            0,
+            0,
+            0,
+            0
+        ],
+        "btn_color_not_pressed": [
+            0.5,
+            0.5,
+            0.5,
+            1
+        ],
+        "btn_color_pressed": [
+            0.25,
+            0.25,
+            0.25,
+            1
+        ],
+        "font_color": [
+            1,
+            1,
+            1,
+            1
+        ]
+    },
+    "machine": {
+        "tick": 10
+    }
 }

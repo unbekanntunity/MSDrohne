@@ -1,0 +1,31 @@
+import bluetooth
+from time import sleep
+
+from drohne.wifi import Wlan_Server
+from drohne.bluetooth import BLESimplePeripheral
+from drohne.config import Configuration
+
+def setup():
+    config = Configuration('./drohne/config.json',load_at_init=True)
+    ble = bluetooth.BLE()
+    ble.config(rxbuf=40)
+    p = BLESimplePeripheral(ble)
+    w = Wlan_Server(config)
+
+    while True:
+        if p.wlan_connection:
+            print("Connection established.")
+            break
+        sleep(1)
+
+    w.paired_device_ip = p.paired_device_ip
+    result = w.create_server(p.nic)
+
+    if result:
+        p.send(p.paired_device_conn_handle, 'WS1')
+        p.close()
+        w.server_loop()
+    else:
+        p.send(p.paired_device_conn_handle, 'WS2')
+
+setup()

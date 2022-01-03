@@ -1,4 +1,3 @@
-# ********************* Bluetooth-Verbindung ***********************
 import bluetooth
 import random
 import struct
