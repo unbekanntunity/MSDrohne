@@ -107,7 +107,7 @@ class DisposableLoopThread(Thread):
         self.proceed = False
         self.on_finished_events.invoke()
 
-    def add_event(self, function) -> None:
+    def add_function(self, function) -> None:
         """
         Fügt eine auszuführende Funktion  den dazugehörenden Platz in der 'self.results' Liste hinzu,
         selbst wenn diese Funktionen kein Rückgabewert hat.

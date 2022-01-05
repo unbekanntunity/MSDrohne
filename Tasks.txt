@@ -6,32 +6,21 @@ Task:
 case1: Bluetooth durchgägnig an 
 case2: Bluettoth vor der eingabe des WLAN abbrechen
 
----------------- Done
-- Controlmenu 
-- UI -> Labels, buttons, joysticks
-- Zwei threade erstellen
-1. sender thread: joystickdaten
-2. empfänger thread: erhält daten
-	esp32: Daten durch einen thread oder prozess senden
----------------
 
 - Kamera
 - Kamera bild anzeigen lassen
 
----------------Done
-- Menü
--> settings, dropdown list maybe?
----------------
 
----------------Done
+- Menü
+-> Dropdown liste generieren lassen
+Automatische Kategorien und Widget bassierend auf die Datentypen
+
+
 - Dokumentation ui
--> Dropdown list erstellen
----------------
+Dropdownliste anpassen
 
 Dokumentation
--> Code
--> Nachbauanleitung
--> Text
+Readme vervollständigen
 
 Discord einrichten und email einrichten
 

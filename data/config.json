@@ -1,31 +1,98 @@
 {
     "app": {
-        "bg_color": [
-            0,
-            0,
-            0,
-            0
-        ],
-        "btn_color_not_pressed": [
-            0.5,
-            0.5,
-            0.5,
-            1
-        ],
-        "btn_color_pressed": [
-            0.25,
-            0.25,
-            0.25,
-            1
-        ],
-        "font_color": [
-            1,
-            1,
-            1,
-            1
-        ]
+        "current_theme": "dark",
+        "themes": {
+            "dark": {
+                "bg_color": {
+                    "fixed": true,
+                    "type": "list",
+                    "value": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ]
+                },
+                "btn_color_not_pressed": {
+                    "fixed": true,
+                    "type": "list",
+                    "value": [
+                        0.5,
+                        0.5,
+                        0.5,
+                        1
+                    ]
+                },
+                "btn_color_pressed": {
+                    "fixed": true,
+                    "type": "list",
+                    "value": [
+                        0.25,
+                        0.25,
+                        0.25,
+                        1
+                    ]
+                },
+                "font_color": {
+                    "fixed": true,
+                    "type": "list",
+                    "value": [
+                        1,
+                        1,
+                        1,
+                        1
+                    ]
+                }
+            },
+            "light": {
+                "bg_color": {
+                    "fixed": true,
+                    "type": "list",
+                    "value": [
+                        1,
+                        1,
+                        1,
+                        1
+                    ]
+                },
+                "btn_color_not_pressed": {
+                    "fixed": true,
+                    "type": "list",
+                    "value": [
+                        0.5,
+                        0.5,
+                        0.5,
+                        1
+                    ]
+                },
+                "btn_color_pressed": {
+                    "fixed": true,
+                    "type": "list",
+                    "value": [
+                        0.25,
+                        0.25,
+                        0.25,
+                        1
+                    ]
+                },
+                "font_color": {
+                    "fixed": true,
+                    "type": "list",
+                    "value": [
+                        0,
+                        0,
+                        0,
+                        1
+                    ]
+                }
+            }
+        }
     },
     "machine": {
-        "tick": 10
+        "tick": {
+            "fixed": false,
+            "type": "int",
+            "value": 10
+        }
     }
 }

@@ -17,14 +17,15 @@ from kivy.uix.screenmanager import Screen, ScreenManager
 
 from kivy.clock import Clock
 from kivy.lang import Builder
-
+from kivy.core.text.markup import MarkupLabel
 from kivy.properties import ObjectProperty, StringProperty
 
 from communication import client
 from misc.custom_threads import DisposableLoopThread
 from misc.configuration import Configuration
 from customwidgets.joystick import *
-import time
+from time import sleep
+from random import randrange
 
 import os
 import platform
@@ -35,8 +36,10 @@ import platform
 
 TESTCASE = True
 NAME = 'mpy-uart'
-KV_DIRECTORY = './kv_files'
 SEPARATOR = '|'
+
+KV_DIRECTORY = './kv_files'
+FONTS_DIRECTORY = './data/fonts'
 
 # ******************************************************************
 
@@ -132,13 +135,100 @@ class MyScreenManager(ScreenManager):
             self.transition.direction = transition_direction
             self.current = group[index]
 
+
+class MenuScreen(CustomScreen):
+    def __init__(self, **kwargs):
+        super(MenuScreen, self).__init__(**kwargs)
+        self.nav_bar_buttons = []
+
+        self.nav_bar = None
+
+    def on_pre_enter(self, *args) -> None:
+        self.nav_bar = App.get_running_app().root.ids.nav_bar
+        if self.nav_bar.size_hint_y is None:
+            self.nav_bar.size_hint_y = 0.1
+
+            settings_group = self.manager.screen_groups['settings']
+            for settings in settings_group:
+                btn = Button(text=settings)
+                btn.bind(on_release=self.nav_bar_btn_clicked)
+                self.nav_bar_buttons.append(btn)
+                self.nav_bar.add_widget(btn)
+        super(MenuScreen, self).on_pre_enter(*args)
+
+    def on_pre_leave(self, *args) -> None:
+        if self.manager.current not in self.manager.screen_groups['settings']:
+            self.nav_bar.size_hint_y = None
+            self.nav_bar.height = 0
+            super(MenuScreen, self).on_pre_leave(*args)
+
+    def nav_bar_btn_clicked(self, *args) -> None:
+        index = self.nav_bar_buttons.index(args[0])
+        current_index = self.manager.screen_groups['settings'].index(self.manager.current)
+        if current_index > index:
+            transition = 'right'
+        else:
+            transition = 'left'
+
+        self.manager.go_to_screen_of_group('settings', index, transition)
+
+    def close_menu(self, *args) -> None:
+        children = self.nav_bar.children
+        for index in range(len(children)):
+            self.nav_bar.remove_widget(self.nav_bar.children[0])
+
+        self.nav_bar.size_hint_y = None
+        self.nav_bar.height = 0
+        self.nav_bar_buttons.clear()
+
+        self.go_back('control')
+
+
 # *******************************************************************
 
 # *************************** Bildschirme ***************************
 
 
 class StartScreen(CustomScreen):
-    pass
+    def __init__(self, **kw):
+        super(StartScreen, self).__init__(**kw)
+        self.fonts = list(map(lambda x: f'{FONTS_DIRECTORY}/{x}', os.listdir(FONTS_DIRECTORY)))
+        self.texts = ['Welcome', 'Willkommen']
+
+    def on_enter(self, *args) -> None:
+        Clock.schedule_interval(self.change_font, 2)
+        super(StartScreen, self).on_enter(*args)
+
+    def on_leave(self, *args) -> None:
+        Clock.unschedule(self.change_font)
+        super(StartScreen, self).on_leave(*args)
+
+    def change_font(self, *args) -> None:
+        text = MarkupLabel(self.ids.title.text).markup[1]
+        current_font_index = self.fonts.index(self.ids.title.font_family)
+        current_text_index = self.texts.index(text)
+
+        while True:
+            font_index = randrange(0, len(self.fonts))
+            text_index = randrange(0, len(self.texts))
+            if font_index != current_font_index and text_index != current_text_index:
+                break
+
+        self.ids.title.text = f'[font={self.fonts[font_index]}]{self.texts[text_index]}[/font]'
+
+
+class AppSettingsScreen(CustomScreen):
+    def __init__(self, **kw):
+        super(AppSettingsScreen, self).__init__(**kw)
+
+    def on_kv_post(self, base_widget) -> None:
+        keys = list(self.app_config['themes'].keys())
+        self.ids.color_spinner.text = self.app_config['current_theme']
+        self.ids.color_spinner.values = keys
+
+    def save_config(self):
+        App.get_running_app().configuration.config_dict['app']['current_theme'] = self.ids.color_spinner.text
+        App.get_running_app().configuration.save_config()
 
 
 class SupportScreen(CustomScreen):
@@ -158,7 +248,7 @@ class SupportScreen(CustomScreen):
         self.text_boxes = []
         self.heights = []
 
-    def on_enter(self, *args) -> None:
+    def on_kv_post(self, base_widget) -> None:
         for index in range(len(self.questions)):
             b1 = BoxLayout()
             b1.orientation = 'vertical'
@@ -178,6 +268,7 @@ class SupportScreen(CustomScreen):
 
             self.ids.question_box.add_widget(b1)
         self.ids.question_box.height = self.get_height()
+        super(SupportScreen, self).on_kv_post(base_widget)
 
     def get_height(self) -> int:
         result = 0
@@ -201,10 +292,6 @@ class SupportScreen(CustomScreen):
         for widget in answer_box.children:
             answer_box.remove_widget(widget)
 
-    def reset(self) -> None:
-        for widget in self.ids.question_box.children:
-            self.ids.question_box.remove_widget(widget)
-
 
 class ConnectionScreen(CustomScreen):
     status = ObjectProperty()
@@ -218,13 +305,13 @@ class ConnectionScreen(CustomScreen):
         self.response_thread.event_handler.add_function(self.check_response)
 
         self.bluetooth_connection_thread = DisposableLoopThread()
-        self.bluetooth_connection_thread.add_event(self.check_bluetooth_connection)
+        self.bluetooth_connection_thread.add_function(self.check_bluetooth_connection)
 
     def on_enter(self, *args) -> None:
         self.bluetooth_connection_thread.save_start()
 
     def check_bluetooth_connection(self) -> None:
-        if TESTCASE or bluetooth_client.has_paired_devices():
+        if TESTCASE or bluetooth_client.has_paired_devices(NAME):
             if not TESTCASE:
                 bluetooth_client.create_socket_stream(NAME)
             self.wlan.height = self.wlan.minimum_height
@@ -232,7 +319,7 @@ class ConnectionScreen(CustomScreen):
         else:
             self.wlan.height = 0
             self.status.text = f'Turn on your bluetooth function and connect to the device {NAME}'
-        time.sleep(1)
+        sleep(1)
 
     def send_data(self, name: str, password: str) -> None:
         if TESTCASE:
@@ -252,10 +339,10 @@ class ConnectionScreen(CustomScreen):
                 converted_data = esp32_data.split(SEPARATOR)
                 wlan_client.connect(converted_data[1], int(converted_data[2]))
             self.status.text = f'Connection with {bluetooth_client.paired_device_name}'
-            time.sleep(1)
+            sleep(1)
             if 'WS1' in server_response:
                 self.status.text = f'Server successfully created'
-                time.sleep(1)
+                sleep(1)
                 self.manager.current = 'control'
         else:
             self.status.text = 'Connection failed'
@@ -278,8 +365,8 @@ class ControlScreen(CustomScreen):
         self.receive_thread = DisposableLoopThread()
         self.send_thread = DisposableLoopThread()
 
-        self.receive_thread.add_event(self.receive_data)
-        self.send_thread.add_event(self.send_data)
+        self.receive_thread.add_function(self.receive_data)
+        self.send_thread.add_function(self.send_data)
         self.send_thread.interval_sec = self.machine_config['tick']
 
         self.speed = "0"
@@ -341,60 +428,13 @@ class ControlScreen(CustomScreen):
         self.go_back('start')
 
 
-class MenuScreen(CustomScreen):
-    def __init__(self, **kwargs):
-        super(MenuScreen, self).__init__(**kwargs)
-        self.nav_bar_buttons = []
-
-        self.nav_bar = None
-
-    def on_enter(self, *args) -> None:
-        self.nav_bar = App.get_running_app().root.ids.nav_bar
-        if self.nav_bar.size_hint_y is None:
-            self.nav_bar.size_hint_y = 0.2
-
-            settings_group = self.manager.screen_groups['settings']
-            for settings in settings_group:
-                btn = Button(text=settings)
-                btn.bind(on_release=self.nav_bar_btn_clicked)
-                self.nav_bar_buttons.append(btn)
-                self.nav_bar.add_widget(btn)
-
-    def on_leave(self, *args) -> None:
-        if self.manager.current not in self.manager.screen_groups['settings']:
-            self.nav_bar.size_hint_y = None
-            self.nav_bar.height = 0
-            super(MenuScreen, self).on_leave(*args)
-
-    def nav_bar_btn_clicked(self, *args) -> None:
-        index = self.nav_bar_buttons.index(args[0])
-        current_index = self.manager.screen_groups['settings'].index(self.manager.current)
-        if current_index > index:
-            transition = 'right'
-        else:
-            transition = 'left'
-
-        self.manager.go_to_screen_of_group('settings', index, transition)
-
-    def close_menu(self, *args) -> None:
-        children = self.nav_bar.children
-        for index in range(len(children)):
-            self.nav_bar.remove_widget(self.nav_bar.children[0])
-
-        self.nav_bar.size_hint_y = None
-        self.nav_bar.height = 0
-        self.nav_bar_buttons.clear()
-
-        self.go_back('control')
-
-
 class SettingsScreen(MenuScreen):
     def __init__(self, **kwargs):
         super(SettingsScreen, self).__init__(**kwargs)
 
     def on_enter(self, *args) -> None:
         super(SettingsScreen, self).on_enter(*args)
-        self.ids.tick_field.text = str(self.machine_config['tick'])
+        self.ids.tick_field.text = str(self.machine_config['tick']['value'])
 
     def save_config(self, *args) -> None:
         tick = self.ids.tick_field.text
@@ -436,13 +476,16 @@ class DroneRoot(BoxLayout):
 
 class DroneApp(App):
     configuration = Configuration('./data/config.json', True)
+    current_theme = StringProperty()
 
     def __init__(self, **kwargs):
         super(DroneApp, self).__init__(**kwargs)
+        self.current_theme = self.configuration.config_dict['app']['current_theme']
         self.configuration.on_config_changed.add_function(self.on_config_changed)
 
     def on_config_changed(self):
         self.configuration.load_config()
+        self.current_theme = self.configuration.config_dict['app']['current_theme']
 
     def build(self):
         self.load_kv_files()
