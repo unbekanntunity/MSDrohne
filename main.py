@@ -185,8 +185,7 @@ class MenuScreen(CustomScreen):
         self.manager.go_to_screen_of_group('settings', index, transition)
 
     def close_menu(self, *args) -> None:
-        children = self.nav_bar.children
-        for index in range(len(children)):
+        for index in range(len( self.nav_bar.children)):
             self.nav_bar.remove_widget(self.nav_bar.children[0])
 
         self.nav_bar.size_hint_y = None
@@ -500,6 +499,7 @@ class WaypointsScreen(MenuScreen):
     def __init__(self, **kwargs):
         super(WaypointsScreen, self).__init__(**kwargs)
         self.waypoints = self.app_config['waypoints']
+        self.pos_xs = [.1, .1, .42]
 
         self.grids = []
         self.edit_buttons = []
@@ -513,22 +513,29 @@ class WaypointsScreen(MenuScreen):
 
         # Temporäre Objekte für das bearbeitende Wegpunkt
         self.fields = []
+        self.current_edit = None
 
     def on_enter(self, *args) -> None:
         self.waypoints = self.app_config['waypoints']
 
         list_area = self.ids.list_area
         list_area.height = self.get_height()
-        frame_height = list_area.height / len(self.waypoints)
+
+        if len(self.waypoints) != 0:
+            frame_height = list_area.height / len(self.waypoints)
 
         for (index, key, value) in zip(range(len(self.waypoints)), self.waypoints.keys(), self.waypoints.values()):
             gl = FloatLayout(size=list_area.size)
 
             title_label = Label(text=key, size_hint=(None, None), pos_hint={'x': .45, 'y': .5}, font_size=20)
-            altitude_label = Label(text=f'altitude: {value["altitude"]}', size_hint=(None, None), pos_hint={'x': .1, 'y': .2})
-            latitude_label = Label(text=f'latitude: {value["latitude"]}', size_hint=(None, None), pos_hint={'x': .1, 'y': -.1})
-            longitude_label = Label(text=f'longitude: {value["longitude"]}', size_hint=(None, None), pos_hint={'x': .42, 'y': .2})
-            date_label = Label(text=f'last update: {value["date"]}', size_hint=(None, None), pos_hint={'x': .50, 'y': -.1})
+            altitude_label = Label(text=f'altitude: {value["altitude"]}', size_hint=(None, None), pos_hint={'x': self.pos_xs[0], 'y': .2})
+            latitude_label = Label(text=f'latitude: {value["latitude"]}', size_hint=(None, None), pos_hint={'x': self.pos_xs[1], 'y': -.1})
+            longitude_label = Label(text=f'longitude: {value["longitude"]}', size_hint=(None, None), pos_hint={'x': self.pos_xs[2], 'y': .2})
+            date_label = Label(text=f'last update: {value["date"]}', size_hint=(None, None), pos_hint={'x': .51, 'y': -.1})
+
+            self.adjust_pos_hint(altitude_label, '1', altitude_label.text.split(': ')[1])
+            self.adjust_pos_hint(latitude_label, '1', latitude_label.text.split(': ')[1])
+            self.adjust_pos_hint(longitude_label, '1', longitude_label.text.split(': ')[1])
 
             gl.add_widget(title_label)
             gl.add_widget(altitude_label)
@@ -567,32 +574,30 @@ class WaypointsScreen(MenuScreen):
         self.remove_waypoint_widgets()
         super(WaypointsScreen, self).on_leave(*args)
 
-    def get_height(self):
-        return len(self.waypoints) * 140
-
-    def remove_waypoint_widgets(self):
+    def remove_waypoint_widgets(self) -> None:
         children = self.ids.list_area.children
         for index in range(len(children)):
             self.ids.list_area.remove_widget(self.ids.list_area.children[0])
 
-    def clear_waypoints(self, *args):
-        self.remove_buttons.clear()
-        self.edit_buttons.clear()
-        self.grids.clear()
-        self.remove_waypoint_widgets()
-        self.app_config['waypoints'].clear()
-        self.configuration.save_config()
+    def go_back_to_menu(self, *args) -> None:
+        for index in range(len(self.waypoints)):
+            self.remove_waypoint(self.remove_buttons[0])
+        self.manager.get_screen('control').status = ''
 
     def edit_waypoint(self, *args):
+        if len(self.fields) != 0:
+            self.save_edited_waypoint(self.current_edit)
+
         edit_btn = args[0]
+        self.current_edit = edit_btn
         index = self.edit_buttons.index(edit_btn)
         labels = [self.altitude_labels[index], self.latitude_labels[index], self.longitude_labels[index]]
 
-        for label in labels:
+        for label, pos_x in zip(labels, self.pos_xs):
             temp = label.text.split(':')[0]
 
             ti = TextInput(multiline=False)
-            ti.pos_hint = {'x': label.pos_hint['x'] + 0.011 * len(temp), 'y': label.pos_hint['y'] + 0.26}
+            ti.pos_hint = {'x': pos_x + 0.011 * len(temp), 'y': label.pos_hint['y'] + 0.26}
             ti.size_hint = label.size_hint
             ti.size = (label.texture_size[0], label.texture_size[1] + 10)
 
@@ -620,6 +625,10 @@ class WaypointsScreen(MenuScreen):
             "date": last_update_date,
         }
 
+        self.adjust_pos_hint(self.altitude_labels[index], self.altitude_labels[index].text.split(': ')[1], self.fields[0].text)
+        self.adjust_pos_hint(self.latitude_labels[index], self.latitude_labels[index].text.split(': ')[1], self.fields[1].text)
+        self.adjust_pos_hint(self.longitude_labels[index], self.longitude_labels[index].text.split(': ')[1], self.fields[2].text)
+
         self.altitude_labels[index].text = 'altitude: ' + self.fields[0].text
         self.latitude_labels[index].text = 'latitude: ' + self.fields[1].text
         self.longitude_labels[index].text = 'longitude: ' + self.fields[2].text
@@ -634,8 +643,38 @@ class WaypointsScreen(MenuScreen):
         edit_btn.unbind(on_release=self.save_edited_waypoint)
         edit_btn.bind(on_release=self.edit_waypoint)
 
-    def remove_waypoint(self, *args):
-        print("remove waypoint")
+    def remove_waypoint(self, *args) -> None:
+        index = self.remove_buttons.index(args[0])
+
+        if self.current_edit == self.edit_buttons[index]:
+            self.fields.clear()
+            self.current_edit = None
+
+        self.app_config['waypoints'].pop(self.title_labels[index].text)
+        self.configuration.save_config()
+        self.waypoints = self.app_config['waypoints']
+
+        self.ids.list_area.remove_widget(self.grids[index])
+        self.ids.list_area.height = self.get_height()
+
+        self.edit_buttons.pop(index)
+        self.grids.pop(index)
+        self.title_labels.pop(index)
+        self.altitude_labels.pop(index)
+        self.longitude_labels.pop(index)
+        self.latitude_labels.pop(index)
+        self.date_labels.pop(index)
+        self.remove_buttons.pop(index)
+
+    def get_height(self) -> int:
+        return len(self.waypoints) * 140
+
+    @staticmethod
+    def adjust_pos_hint(label, text_before, text_after) -> None:
+        label.pos_hint = {
+            'x': label.pos_hint['x'] + (len(text_before) - len(text_after)) * -0.0055,
+            'y': label.pos_hint['y']
+        }
 
 # *******************************************************************
 

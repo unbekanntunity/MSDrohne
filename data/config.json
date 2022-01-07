@@ -90,19 +90,55 @@
         "waypoints": {
             "new waypoint": {
                 "altitude": "0",
-                "date": "01/07/2022, 18:21:19",
+                "date": "01/07/2022, 19:21:32",
                 "latitude": "0",
-                "longitude": "100"
+                "longitude": "0"
             },
             "new waypoint(1)": {
                 "altitude": "0",
-                "date": "01/07/2022, 18:16:03",
+                "date": "01/07/2022, 19:21:32",
                 "latitude": "0",
                 "longitude": "0"
             },
             "new waypoint(2)": {
                 "altitude": "0",
-                "date": "01/07/2022, 18:16:03",
+                "date": "01/07/2022, 19:21:32",
+                "latitude": "0",
+                "longitude": "0"
+            },
+            "new waypoint(3)": {
+                "altitude": "0",
+                "date": "01/07/2022, 19:21:32",
+                "latitude": "0",
+                "longitude": "0"
+            },
+            "new waypoint(4)": {
+                "altitude": "0",
+                "date": "01/07/2022, 19:21:32",
+                "latitude": "0",
+                "longitude": "0"
+            },
+            "new waypoint(5)": {
+                "altitude": "0",
+                "date": "01/07/2022, 19:21:33",
+                "latitude": "0",
+                "longitude": "0"
+            },
+            "new waypoint(6)": {
+                "altitude": "0",
+                "date": "01/07/2022, 19:21:33",
+                "latitude": "0",
+                "longitude": "0"
+            },
+            "new waypoint(7)": {
+                "altitude": "0",
+                "date": "01/07/2022, 19:21:33",
+                "latitude": "0",
+                "longitude": "0"
+            },
+            "new waypoint(8)": {
+                "altitude": "0",
+                "date": "01/07/2022, 19:21:33",
                 "latitude": "0",
                 "longitude": "0"
             }
