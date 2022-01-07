@@ -10,9 +10,17 @@ import kivy
 kivy.require('2.0.0')
 
 from kivy.app import App
+from kivy.uix.label import Label
 from kivy.uix.button import Button
+from kivy.uix.textinput import TextInput
+
+from kivy.graphics import Color
+from kivy.graphics import Line
+
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.anchorlayout import AnchorLayout
+from kivy.uix.floatlayout import FloatLayout
+
 from kivy.uix.screenmanager import Screen, ScreenManager
 
 from kivy.clock import Clock
@@ -24,8 +32,10 @@ from communication import client
 from misc.custom_threads import DisposableLoopThread
 from misc.configuration import Configuration
 from customwidgets.joystick import *
+
 from time import sleep
 from random import randrange
+from datetime import datetime
 
 import os
 import platform
@@ -37,6 +47,7 @@ import platform
 TESTCASE = True
 NAME = 'mpy-uart'
 SEPARATOR = '|'
+DEFAULT_WP_PREFIX = 'new waypoint'
 
 KV_DIRECTORY = './kv_files'
 FONTS_DIRECTORY = './data/fonts'
@@ -77,8 +88,9 @@ class CustomScreen(Screen):
         super(CustomScreen, self).__init__(**kw)
         App.get_running_app().configuration.on_config_changed.add_function(self.on_config_changed)
 
-        self.machine_config = App.get_running_app().configuration.config_dict['machine']
-        self.app_config = App.get_running_app().configuration.config_dict['app']
+        self.configuration = App.get_running_app().configuration
+        self.machine_config = self.configuration.config_dict['machine']
+        self.app_config = self.configuration.config_dict['app']
 
     def go_back(self, screen_name) -> None:
         self.manager.transition.direction = 'right'
@@ -88,8 +100,10 @@ class CustomScreen(Screen):
         self.manager.transition.direction = 'left'
 
     def on_config_changed(self):
-        self.machine_config = App.get_running_app().configuration.config_dict['machine']
-        self.app_config = App.get_running_app().configuration.config_dict['app']
+        self.configuration = App.get_running_app().configuration
+
+        self.machine_config = self.configuration.config_dict['machine']
+        self.app_config = self.configuration.config_dict['app']
 
 
 class MyScreenManager(ScreenManager):
@@ -130,16 +144,21 @@ class MyScreenManager(ScreenManager):
             raise ValueError(f'screen manager cant find the group, {group_name}')
 
     def go_to_screen_of_group(self, group_name, index, transition_direction='right'):
-        if group_name in self.screen_groups:
-            group = self.screen_groups[group_name]
-            self.transition.direction = transition_direction
-            self.current = group[index]
+        try:
+            if group_name in self.screen_groups:
+                group = self.screen_groups[group_name]
+                self.transition.direction = transition_direction
+                self.current = group[index]
+        except Exception:
+            print(index)
+            print(group_name)
 
 
 class MenuScreen(CustomScreen):
+    nav_bar_buttons = []
+
     def __init__(self, **kwargs):
         super(MenuScreen, self).__init__(**kwargs)
-        self.nav_bar_buttons = []
 
         self.nav_bar = None
 
@@ -156,12 +175,6 @@ class MenuScreen(CustomScreen):
                 self.nav_bar.add_widget(btn)
         super(MenuScreen, self).on_pre_enter(*args)
 
-    def on_pre_leave(self, *args) -> None:
-        if self.manager.current not in self.manager.screen_groups['settings']:
-            self.nav_bar.size_hint_y = None
-            self.nav_bar.height = 0
-            super(MenuScreen, self).on_pre_leave(*args)
-
     def nav_bar_btn_clicked(self, *args) -> None:
         index = self.nav_bar_buttons.index(args[0])
         current_index = self.manager.screen_groups['settings'].index(self.manager.current)
@@ -169,7 +182,6 @@ class MenuScreen(CustomScreen):
             transition = 'right'
         else:
             transition = 'left'
-
         self.manager.go_to_screen_of_group('settings', index, transition)
 
     def close_menu(self, *args) -> None:
@@ -180,7 +192,6 @@ class MenuScreen(CustomScreen):
         self.nav_bar.size_hint_y = None
         self.nav_bar.height = 0
         self.nav_bar_buttons.clear()
-
         self.go_back('control')
 
 
@@ -227,8 +238,8 @@ class AppSettingsScreen(CustomScreen):
         self.ids.color_spinner.values = keys
 
     def save_config(self):
-        App.get_running_app().configuration.config_dict['app']['current_theme'] = self.ids.color_spinner.text
-        App.get_running_app().configuration.save_config()
+        self.app_config['current_theme'] = self.ids.color_spinner.text
+        self.configuration.save_config()
 
 
 class SupportScreen(CustomScreen):
@@ -360,6 +371,8 @@ class ControlScreen(CustomScreen):
 
     battery = StringProperty()
 
+    status = StringProperty('Ready to take off')
+
     def __init__(self, **kwargs):
         super(ControlScreen, self).__init__(**kwargs)
         self.receive_thread = DisposableLoopThread()
@@ -398,6 +411,27 @@ class ControlScreen(CustomScreen):
             if not TESTCASE:
                 # Damit der Esp32 eine Connection hat, um die Sensordaten zu senden
                 wlan_client.send_message('ping')
+
+    def set_waypoint(self, *args):
+        waypoints = self.app_config['waypoints']
+
+        name = DEFAULT_WP_PREFIX
+        i = 0
+        while name in waypoints.keys():
+            i += 1
+            name = DEFAULT_WP_PREFIX + '(' + str(i) + ')'
+
+        new_waypoint = {
+            "date": datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+            "altitude": self.altitude,
+            "longitude": self.longitude,
+            "latitude": self.latitude
+        }
+
+        self.app_config['waypoints'][name] = new_waypoint
+        self.configuration.save_config()
+
+        self.status = f'Waypoint: {name} setted'
 
     def on_config_changed(self):
         super(ControlScreen, self).on_config_changed()
@@ -440,20 +474,20 @@ class SettingsScreen(MenuScreen):
         tick = self.ids.tick_field.text
         result = self.try_set_tick(tick)
         if result:
-            App.get_running_app().configuration.save_config()
+            self.configuration.save_config()
             self.notify()
 
+        self.manager.get_screen('control').status = 'Settings saved'
         self.close_menu(None)
 
-    @staticmethod
-    def try_set_tick(tick: str) -> bool:
+    def try_set_tick(self, tick: str) -> bool:
         int_tick = 0
         try:
             int_tick = int(tick)
         except ValueError:
             return False
 
-        App.get_running_app().configuration.config_dict['machine']['tick'] = int_tick
+        self.machine_config['tick']['value'] = int_tick
         return True
 
     def notify(self) -> None:
@@ -463,7 +497,145 @@ class SettingsScreen(MenuScreen):
 
 
 class WaypointsScreen(MenuScreen):
-    pass
+    def __init__(self, **kwargs):
+        super(WaypointsScreen, self).__init__(**kwargs)
+        self.waypoints = self.app_config['waypoints']
+
+        self.grids = []
+        self.edit_buttons = []
+        self.remove_buttons = []
+
+        self.title_labels = []
+        self.altitude_labels = []
+        self.latitude_labels = []
+        self.longitude_labels = []
+        self.date_labels = []
+
+        # Temporäre Objekte für das bearbeitende Wegpunkt
+        self.fields = []
+
+    def on_enter(self, *args) -> None:
+        self.waypoints = self.app_config['waypoints']
+
+        list_area = self.ids.list_area
+        list_area.height = self.get_height()
+        frame_height = list_area.height / len(self.waypoints)
+
+        for (index, key, value) in zip(range(len(self.waypoints)), self.waypoints.keys(), self.waypoints.values()):
+            gl = FloatLayout(size=list_area.size)
+
+            title_label = Label(text=key, size_hint=(None, None), pos_hint={'x': .45, 'y': .5}, font_size=20)
+            altitude_label = Label(text=f'altitude: {value["altitude"]}', size_hint=(None, None), pos_hint={'x': .1, 'y': .2})
+            latitude_label = Label(text=f'latitude: {value["latitude"]}', size_hint=(None, None), pos_hint={'x': .1, 'y': -.1})
+            longitude_label = Label(text=f'longitude: {value["longitude"]}', size_hint=(None, None), pos_hint={'x': .42, 'y': .2})
+            date_label = Label(text=f'last update: {value["date"]}', size_hint=(None, None), pos_hint={'x': .50, 'y': -.1})
+
+            gl.add_widget(title_label)
+            gl.add_widget(altitude_label)
+            gl.add_widget(latitude_label)
+            gl.add_widget(longitude_label)
+            gl.add_widget(date_label)
+
+            self.title_labels.append(title_label)
+            self.altitude_labels.append(altitude_label)
+            self.latitude_labels.append(latitude_label)
+            self.longitude_labels.append(longitude_label)
+            self.date_labels.append(date_label)
+
+            edit_button = RoundedButton(text='edit', pos_hint={'x': .8, 'y': .6})
+            edit_button.size_hint = (None, 0.3)
+            edit_button.bind(on_release=self.edit_waypoint)
+            remove_button = RoundedButton(text='remove', pos_hint={'x': .8, 'y': .2})
+            remove_button.size_hint = (None, 0.3)
+            remove_button.bind(on_release=self.remove_waypoint)
+
+            gl.add_widget(edit_button)
+            gl.add_widget(remove_button)
+
+            with gl.canvas.before:
+                Color(rgba=[.5, .5, .5, 1])
+                Line(width=1, rectangle=(0, index * frame_height, list_area.width, frame_height))
+
+            self.grids.append(gl)
+            self.edit_buttons.append(edit_button)
+            self.remove_buttons.append(remove_button)
+            list_area.add_widget(gl)
+
+        super(WaypointsScreen, self).on_enter(args)
+
+    def on_leave(self, *args) -> None:
+        self.remove_waypoint_widgets()
+        super(WaypointsScreen, self).on_leave(*args)
+
+    def get_height(self):
+        return len(self.waypoints) * 140
+
+    def remove_waypoint_widgets(self):
+        children = self.ids.list_area.children
+        for index in range(len(children)):
+            self.ids.list_area.remove_widget(self.ids.list_area.children[0])
+
+    def clear_waypoints(self, *args):
+        self.remove_buttons.clear()
+        self.edit_buttons.clear()
+        self.grids.clear()
+        self.remove_waypoint_widgets()
+        self.app_config['waypoints'].clear()
+        self.configuration.save_config()
+
+    def edit_waypoint(self, *args):
+        edit_btn = args[0]
+        index = self.edit_buttons.index(edit_btn)
+        labels = [self.altitude_labels[index], self.latitude_labels[index], self.longitude_labels[index]]
+
+        for label in labels:
+            temp = label.text.split(':')[0]
+
+            ti = TextInput(multiline=False)
+            ti.pos_hint = {'x': label.pos_hint['x'] + 0.011 * len(temp), 'y': label.pos_hint['y'] + 0.26}
+            ti.size_hint = label.size_hint
+            ti.size = (label.texture_size[0], label.texture_size[1] + 10)
+
+            ti.text = label.text.split(': ')[1]
+            ti.font_size = label.font_size
+            self.fields.append(ti)
+            self.grids[index].add_widget(ti)
+
+        edit_btn.text = 'save'
+        edit_btn.unbind(on_release=self.edit_waypoint)
+        edit_btn.bind(on_release=self.save_edited_waypoint)
+
+    def save_edited_waypoint(self, *args):
+        edit_btn = args[0]
+
+        index = self.edit_buttons.index(edit_btn)
+        title = self.title_labels[index].text
+
+        last_update_date = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+
+        self.app_config['waypoints'][title] = {
+            "altitude": self.fields[0].text,
+            "latitude": self.fields[1].text,
+            "longitude": self.fields[2].text,
+            "date": last_update_date,
+        }
+
+        self.altitude_labels[index].text = 'altitude: ' + self.fields[0].text
+        self.latitude_labels[index].text = 'latitude: ' + self.fields[1].text
+        self.longitude_labels[index].text = 'longitude: ' + self.fields[2].text
+        self.date_labels[index].text = 'last update: ' + last_update_date
+
+        self.configuration.save_config()
+        for field in self.fields:
+            self.grids[index].remove_widget(field)
+        self.fields.clear()
+
+        edit_btn.text = 'edit'
+        edit_btn.unbind(on_release=self.save_edited_waypoint)
+        edit_btn.bind(on_release=self.edit_waypoint)
+
+    def remove_waypoint(self, *args):
+        print("remove waypoint")
 
 # *******************************************************************
 

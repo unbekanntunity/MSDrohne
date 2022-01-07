@@ -160,8 +160,8 @@
 
 <ControlScreen>:
     name: 'control'
-    BoxLayout:
-        orientation: 'vertical'
+    AnchorLayout:
+        anchor_y: 'top'
         BoxLayout:
             id: top_a
             spacing: 30
@@ -172,20 +172,28 @@
                 text: 'back'
                 on_press: root.go_back('start')
             Label:
-                text: 'Ready for take off'
+                text: root.status
                 color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
             RoundedButton:
                 text: 'menü'
                 on_press: root.manager.current = 'settings'
-        BoxLayout:
-            id: center_a
-            orientation: 'vertical'
-            Label:
-                text: 'CONTROL'
-                color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
-            BoxLayout:
-                id: joystick_a
-                orientation: 'horizontal'
+    AnchorLayout:
+        pos: 0, -100
+        padding: 20
+        anchor_x: 'right'
+        anchor_y: 'top'
+        orientation: 'horizontal'
+        RoundedButton:
+            size_hint_x: None
+            size_hint_y: None
+            text: 'set'
+            on_release: root.set_waypoint()
+    BoxLayout:
+        pos: 0, -100
+        id: joystick_a
+        orientation: 'horizontal'
+    AnchorLayout:
+        anchor_y: 'bottom'
         BoxLayout:
             size_hint_y: None
             height: root.height / 6
@@ -212,7 +220,7 @@
             size_hint_x: None
             size_hint_y: None
             text: 'back'
-            on_release: root.go_back('start')
+            on_release: root.close_menu()
     AnchorLayout:
         BoxLayout:
             size_hint_x: 0.75
@@ -246,11 +254,46 @@
 
 <WaypointsScreen>:
     name: 'waypoints'
-    BoxLayout:
-        orientation: 'vertical'
-        Label:
-            text: 'waypoint'
-            color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
+    AnchorLayout:
+        padding: 20
+        anchor_x: 'left'
+        anchor_y: 'top'
+        RoundedButton:
+            size_hint_x: None
+            size_hint_y: None
+            text: 'back'
+            on_release: root.close_menu()
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'top'
+        FloatLayout:
+            size_hint_y: .2
+            Label:
+                pos_hint: {'x':  .45, 'y': 0}
+                size_hint: (None, None)
+                text: 'Waypoints'
+                font_size: 50
+            RoundedButton:
+                pos_hint: {'x':  .8, 'y': .25}
+                size_hint: (None, .5)
+                text: 'clear'
+                on_release: root.clear_waypoints()
+    AnchorLayout:
+        anchor_y: 'bottom'
+        size_hint_y: 0.8
+        canvas.before:
+            Color:
+                rgba: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
+            Line:
+                width: 1
+                rectangle: self.x, self.y, self.width, self.height
+        ScrollView:
+            BoxLayout:
+                id: list_area
+                orientation: 'vertical'
+                size_hint_y: None
+                height: root.get_height()
+
 
 <DroneRoot>:
     canvas.before:

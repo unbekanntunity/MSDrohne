@@ -86,6 +86,26 @@
                     ]
                 }
             }
+        },
+        "waypoints": {
+            "new waypoint": {
+                "altitude": "0",
+                "date": "01/07/2022, 18:21:19",
+                "latitude": "0",
+                "longitude": "100"
+            },
+            "new waypoint(1)": {
+                "altitude": "0",
+                "date": "01/07/2022, 18:16:03",
+                "latitude": "0",
+                "longitude": "0"
+            },
+            "new waypoint(2)": {
+                "altitude": "0",
+                "date": "01/07/2022, 18:16:03",
+                "latitude": "0",
+                "longitude": "0"
+            }
         }
     },
     "machine": {

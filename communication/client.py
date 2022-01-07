@@ -2,7 +2,6 @@
 # Eine Klasse für die Kommunikation mit der Drohne (ESP32)
 # ************************************************************
 from datetime import datetime
-from jnius import autoclass
 from time import sleep
 
 import socket
@@ -89,6 +88,8 @@ class BluetoothClient(object):
 
 # TODO: Doc aufbessern
 class AndroidBluetoothClient(BluetoothClient):
+    from jnius import autoclass
+
     """
     Implementierung für Android-Geräte.
     Parent: BluetoothClient
