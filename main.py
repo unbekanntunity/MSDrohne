@@ -39,18 +39,25 @@ from datetime import datetime
 
 import os
 import platform
+import gettext
 
 # ******************************************************************
 
 # ************************** Konstanten ****************************
 
 TESTCASE = True
+
 NAME = 'mpy-uart'
 SEPARATOR = '|'
 DEFAULT_WP_PREFIX = 'new waypoint'
 
 KV_DIRECTORY = './kv_files'
 FONTS_DIRECTORY = './data/fonts'
+
+LANGUAGE_DICTIONARY = {
+    'en': 'English',
+    'ge': 'German'
+}
 
 # ******************************************************************
 
@@ -77,6 +84,74 @@ wlan_client = client.WLANClient()
 # Alle in der .kv-file verwendeten Klassen, müssen auch einer Pythonskript deklariert werden
 class RoundedButton(Button):
     pass
+
+
+class AppSettings(BoxLayout):
+    translated_languages = {}
+    translated_theme_names = {}
+
+    def on_kv_post(self, base_widget) -> None:
+        self.add_settings()
+        super(AppSettings, self).on_kv_post(base_widget)
+
+    def add_settings(self) -> None:
+        """
+        Fügt die Optionen für die Einstellungen hinzu und übersetzt diese direkt
+        """
+
+        self.translated_theme_names.clear()
+        self.translated_languages.clear()
+
+        app = App.get_running_app()
+        app_config = app.configuration.config_dict['app']
+
+        # Stellt sicher, dass die derzeitige Sprache verwendet wird
+        app.translation = gettext.translation('base', localedir='locales', languages=[app_config['current_language']])
+        app.translation.install()
+
+        # Lies die vordefinierten Farbthemen von der Konfiguration
+        theme_names = list(app_config['themes'].keys())
+
+        # Übersetzte die Namen und speichert diese ab
+        for theme_name in theme_names:
+            self.translated_theme_names[app.translation.gettext(theme_name)] = theme_name
+
+        # Verwende nun die übersetzten Farbschemen für den Spinner
+        self.ids.color_spinner.text = app.translation.gettext(app_config['current_theme'])
+        self.ids.color_spinner.values = self.translated_theme_names.keys()
+
+        # Übersetzte die Namen der Sprachen im Dict, damit wir später die Werte vergleichen
+        # können und den Kürzel erhalten.
+        # In der Konfiguration wird nähmlich nur der Kürzel gespeichert.
+        # Am Anfang sind sie auf Englisch und werden dann in die derzeitig verwendete Sprache übersetzt
+        for (short, language) in LANGUAGE_DICTIONARY.items():
+            self.translated_languages[short] = app.translation.gettext(language)
+
+        # Verwende nun die übersetzten Farbschemen für den Spinner
+        self.ids.language_spinner.text = self.translated_languages[app_config['current_language']]
+        self.ids.language_spinner.values = self.translated_languages.values()
+
+    def validate_config(self):
+        return True
+
+    # Speicher die Einstellungen und aktualisiere die Daten beispielsweise,
+    # die Hintergrundfarbe oder die Sprache
+    def save_config(self):
+        # Speicher die Farbthema ab
+        config = App.get_running_app().configuration
+        app_config = config.config_dict['app']
+        app_config['current_theme'] = self.translated_theme_names[self.ids.color_spinner.text]
+
+        # Finde den Kürzel und speicher diesen ab
+        for (short, language) in self.translated_languages.items():
+            if self.ids.language_spinner.text == language:
+                app_config['current_language'] = short
+
+        config.save_config()
+        # Aktualisiere die Texte in den Spinner
+        self.add_settings()
+
+        App.get_running_app().update_text()
 
 # *******************************************************************
 
@@ -164,6 +239,10 @@ class MenuScreen(CustomScreen):
 
     def on_pre_enter(self, *args) -> None:
         self.nav_bar = App.get_running_app().root.ids.nav_bar
+        # Wurde die Navigationsleiste schon erstellt?
+        # Wenn nein dann erstelle sie
+        # Tipp diese Funktion wird immer aufgerufen, auch wenn beispielsweise vom
+        # Wegpunktbildschirm zu den Einstellungen wechselt
         if self.nav_bar.size_hint_y is None:
             self.nav_bar.size_hint_y = 0.1
 
@@ -185,7 +264,8 @@ class MenuScreen(CustomScreen):
         self.manager.go_to_screen_of_group('settings', index, transition)
 
     def close_menu(self, *args) -> None:
-        for index in range(len( self.nav_bar.children)):
+        # Zerstöre alle Knöpfe und minimiere den Bereich für die Navigationsleiste
+        for index in range(len(self.nav_bar.children)):
             self.nav_bar.remove_widget(self.nav_bar.children[0])
 
         self.nav_bar.size_hint_y = None
@@ -213,6 +293,7 @@ class StartScreen(CustomScreen):
         Clock.unschedule(self.change_font)
         super(StartScreen, self).on_leave(*args)
 
+    # Wird von einem Thread ausgeführt
     def change_font(self, *args) -> None:
         text = MarkupLabel(self.ids.title.text).markup[1]
         current_font_index = self.fonts.index(self.ids.title.font_family)
@@ -228,16 +309,13 @@ class StartScreen(CustomScreen):
 
 
 class AppSettingsScreen(CustomScreen):
-    def __init__(self, **kw):
-        super(AppSettingsScreen, self).__init__(**kw)
-
-    def on_kv_post(self, base_widget) -> None:
-        keys = list(self.app_config['themes'].keys())
-        self.ids.color_spinner.text = self.app_config['current_theme']
-        self.ids.color_spinner.values = keys
+    app_settings = ObjectProperty(None)
 
     def save_config(self):
-        self.app_config['current_theme'] = self.ids.color_spinner.text
+        validation = self.app_settings.validate_config()
+        if validation:
+            self.app_settings.save_config()
+
         self.configuration.save_config()
 
 
@@ -328,7 +406,7 @@ class ConnectionScreen(CustomScreen):
             self.bluetooth_connection_thread.stop()
         else:
             self.wlan.height = 0
-            self.status.text = f'Turn on your bluetooth function and connect to the device {NAME}'
+            self.status.text = translate(f'Turn on your bluetooth function and connect to the device') + NAME
         sleep(1)
 
     def send_data(self, name: str, password: str) -> None:
@@ -351,11 +429,11 @@ class ConnectionScreen(CustomScreen):
             self.status.text = f'Connection with {bluetooth_client.paired_device_name}'
             sleep(1)
             if 'WS1' in server_response:
-                self.status.text = f'Server successfully created'
+                self.status.text = translate('Server successfully created')
                 sleep(1)
                 self.manager.current = 'control'
         else:
-            self.status.text = 'Connection failed'
+            self.status.text = translate('Connection failed')
             self.wlan.height = 0
 
             self.response_thread.stop()
@@ -370,7 +448,7 @@ class ControlScreen(CustomScreen):
 
     battery = StringProperty()
 
-    status = StringProperty('Ready to take off')
+    status = StringProperty()
 
     def __init__(self, **kwargs):
         super(ControlScreen, self).__init__(**kwargs)
@@ -390,6 +468,7 @@ class ControlScreen(CustomScreen):
         self.r_joystick = JoyStick()
         self.l_joystick = JoyStick()
 
+        self.status = translate('Ready to take off')
         self.created = False
 
         if not TESTCASE:
@@ -430,7 +509,7 @@ class ControlScreen(CustomScreen):
         self.app_config['waypoints'][name] = new_waypoint
         self.configuration.save_config()
 
-        self.status = f'Waypoint: {name} setted'
+        self.status = translate('Waypoint') + ': ' + name + ' ' + translate('set')
 
     def on_config_changed(self):
         super(ControlScreen, self).on_config_changed()
@@ -462,6 +541,8 @@ class ControlScreen(CustomScreen):
 
 
 class SettingsScreen(MenuScreen):
+    app_settings = ObjectProperty(None)
+
     def __init__(self, **kwargs):
         super(SettingsScreen, self).__init__(**kwargs)
 
@@ -472,11 +553,14 @@ class SettingsScreen(MenuScreen):
     def save_config(self, *args) -> None:
         tick = self.ids.tick_field.text
         result = self.try_set_tick(tick)
-        if result:
+
+        app_settings_validation = self.app_settings.validate_config()
+        if result and app_settings_validation:
+            self.app_settings.save_config()
             self.configuration.save_config()
             self.notify()
 
-        self.manager.get_screen('control').status = 'Settings saved'
+        self.manager.get_screen('control').status = translate('Settings saved')
         self.close_menu(None)
 
     def try_set_tick(self, tick: str) -> bool:
@@ -689,6 +773,11 @@ class DroneApp(App):
     configuration = Configuration('./data/config.json', True)
     current_theme = StringProperty()
 
+    translated_labels = []
+    translated_parts = []
+
+    translation = None
+
     def __init__(self, **kwargs):
         super(DroneApp, self).__init__(**kwargs)
         self.current_theme = self.configuration.config_dict['app']['current_theme']
@@ -698,7 +787,23 @@ class DroneApp(App):
         self.configuration.load_config()
         self.current_theme = self.configuration.config_dict['app']['current_theme']
 
+    def bind_text(self, label, text, entire_text):
+        self.translated_labels.append(label)
+        translated_text = self.translation.gettext(text)
+
+        self.translated_parts.append(translated_text)
+        return entire_text.replace(text, translated_text)
+
+    def update_text(self):
+        for index, label in enumerate(self.translated_labels):
+            translated_text = self.translation.gettext(self.translated_parts[index])
+            label.text = label.text.replace(self.translated_parts[index], translated_text)
+            self.translated_parts[index] = translated_text
+
     def build(self):
+        self.translation = gettext.translation('base', localedir='locales',
+                                               languages=[self.configuration.config_dict['app']['current_language']])
+        self.translation.install()
         self.load_kv_files()
         return DroneRoot()
 
@@ -708,6 +813,10 @@ class DroneApp(App):
         for file in files:
             path = KV_DIRECTORY + '/' + file
             Builder.load_file(path)
+
+
+def translate(message) -> str:
+    return App.get_running_app().translation.gettext(message)
 
 # *******************************************************************
 

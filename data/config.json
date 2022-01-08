@@ -1,8 +1,9 @@
 {
     "app": {
-        "current_theme": "dark",
+        "current_language": "ge",
+        "current_theme": "Dark",
         "themes": {
-            "dark": {
+            "Dark": {
                 "bg_color": {
                     "fixed": true,
                     "type": "list",
@@ -44,7 +45,7 @@
                     ]
                 }
             },
-            "light": {
+            "Light": {
                 "bg_color": {
                     "fixed": true,
                     "type": "list",
@@ -102,13 +103,7 @@
             },
             "new waypoint(2)": {
                 "altitude": "0",
-                "date": "01/07/2022, 19:21:32",
-                "latitude": "0",
-                "longitude": "0"
-            },
-            "new waypoint(3)": {
-                "altitude": "0",
-                "date": "01/07/2022, 19:21:32",
+                "date": "01/08/2022, 19:54:30",
                 "latitude": "0",
                 "longitude": "0"
             },
@@ -139,6 +134,12 @@
             "new waypoint(8)": {
                 "altitude": "0",
                 "date": "01/07/2022, 19:21:33",
+                "latitude": "0",
+                "longitude": "0"
+            },
+            "new waypoint(9)": {
+                "altitude": "0",
+                "date": "01/08/2022, 11:53:04",
                 "latitude": "0",
                 "longitude": "0"
             }

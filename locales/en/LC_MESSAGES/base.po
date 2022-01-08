@@ -1,0 +1,198 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2022-01-08 13:30+0100\n"
+"PO-Revision-Date: 2022-01-08 13:31+0100\n"
+"Last-Translator: BLIVE <byeblive@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=cp1252\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+
+
+msgid "Find device"
+msgstr "Find device"
+
+msgid "Support"
+msgstr "Support"
+
+msgid "Settings"
+msgstr "Settings"
+
+msgid "Return"
+msgstr "Return"
+
+msgid "Color theme"
+msgstr "Color theme"
+
+msgid "Save"
+msgstr "Save"
+
+msgid "Dark"
+msgstr "Dark"
+
+msgid "Light"
+msgstr "Light"
+
+msgid "Turn on your bluetooth function and connect to the device"
+msgstr "Turn on your bluetooth function and connect to the device"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Password"
+msgstr "Password"
+
+msgid "Send"
+msgstr "Send"
+
+msgid "Ready to take off"
+msgstr "Ready to take off"
+
+msgid "Waypoint"
+msgstr "Waypoint"
+
+msgid "set"
+msgstr "set"
+
+msgid "Menu"
+msgstr "Menu"
+
+msgid "Ticks"
+msgstr "Ticks"
+
+msgid "Waypoints"
+msgstr "Waypoints"
+
+msgid "Settings saved"
+msgstr "Settings saved"
+
+msgid "Clear"
+msgstr "Clear"
+
+msgid "Altitude"
+msgstr "Altitude"
+
+msgid "Latitude"
+msgstr "Latitude"
+
+msgid "Longitude"
+msgstr "Longitude"
+
+msgid "Last update"
+msgstr "Last update"
+
+msgid "Edit"
+msgstr "Edit"
+
+msgid "Remove"
+msgstr "Remove"
+
+msgid "Language"
+msgstr "Language"
+
+msgid "Server successfully created"
+msgstr "Server successfully created"
+
+msgid "English"
+msgstr "English"
+
+msgid "German"
+msgstr "German"
+
+# German - Englisch
+msgid "Finde Gerät"
+msgstr "Find device"
+
+msgid "Hilfe"
+msgstr "Support"
+
+msgid "Einstellungen"
+msgstr "Settings"
+
+msgid "Zurück"
+msgstr "Return"
+
+msgid "Farbthema"
+msgstr "Color theme"
+
+msgid "Speichern"
+msgstr "Save"
+
+msgid "Dunkel"
+msgstr "Dark"
+
+msgid "Licht"
+msgstr "Light"
+
+msgid "Schalte dein Bluetooth-Funktion ein und verbinde dich mit dem Gerät"
+msgstr "Turn on your bluetooth function and connect to the device"
+
+msgid "Passwort"
+msgstr "Password"
+
+msgid "Senden"
+msgstr "Send"
+
+msgid "Bereit"
+msgstr "Ready to take off"
+
+msgid "Wegpunkt"
+msgstr "Waypoint"
+
+msgid "gesetzt"
+msgstr "set"
+
+msgid "Menü"
+msgstr "Menu"
+
+msgid "Ticks"
+msgstr "Ticks"
+
+msgid "Wegpunkte"
+msgstr "Waypoints"
+
+msgid "Einstellungen gespeichert"
+msgstr "Settings saved"
+
+msgid "Alles löschen"
+msgstr "Clear"
+
+msgid "Höhe"
+msgstr "Altitude"
+
+msgid "Breitengrad"
+msgstr "Latitude"
+
+msgid "Längengrad"
+msgstr "Longitude"
+
+msgid "Zuletzt bearbeitet"
+msgstr "Last update"
+
+msgid "Bearbeiten"
+msgstr "Edit"
+
+msgid "Löschen"
+msgstr "Remove"
+
+msgid "Sprache"
+msgstr "Language"
+
+msgid "Server erfolgreich erstellt"
+msgstr "Server successfully created"
+
+msgid "Connection failed"
+msgstr "Connection failed"
+
+msgid "Englisch"
+msgstr "English"
+
+msgid "Deutsch"
+msgstr "German"
+
+

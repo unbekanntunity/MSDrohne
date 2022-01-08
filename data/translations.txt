@@ -2,32 +2,50 @@ import gettext
 _ = gettext.gettext
 
 
-def startup():
+def define_translations_start():
     _('Find device')
     _('Support')
     _('Settings')
 
+
+def define_translation_app_settings():
     _('Return')
-    _('Color theme')
+    _('Settings')
+    _('Color theme:')
     _('Save')
     _('Dark')
     _('Light')
 
+
+def define_translation_find_device():
+    _('Return')
     _('Turn on your bluetooth function and connect to the device')
     _('Name')
     _('Password')
     _('Send')
 
+
+def define_translation_control():
+    _('Return')
     _('Ready to take off')
-    _('Waypoint')
+    _('Waypoint: ')
     _('set')
     _('Menu')
 
-    _('Ticks')
+
+def define_translation_settings():
+    _('Return')
+    _('Settings')
+    _('Ticks:')
+    _('Save')
     _('Settings')
     _('Waypoints')
     _('Configuration saved')
 
+
+def define_translation_waypoints():
+    _('Return')
+    _('Waypoints')
     _('Clear')
     _('Altitude')
     _('Latitude')
@@ -38,4 +56,4 @@ def startup():
 
 
 if __name__ == '__main__':
-    startup()
+    define_translations_start()

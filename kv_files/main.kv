@@ -20,7 +20,7 @@
         RoundedButton:
             size_hint_x: None
             size_hint_y: None
-            text: 'settings'
+            text: app.bind_text(self, 'Settings', 'Settings')
             on_release: root.manager.current = 'appSettings'
     BoxLayout:
         orientation: 'vertical'
@@ -37,14 +37,31 @@
             spacing: 40
             padding: root.width / 4, 20, root.width / 4, 20
             RoundedButton:
-                text: 'Find Device'
+                text: app.bind_text(self, 'Find device', 'Find device')
                 on_release: root.manager.current = 'connection'
             RoundedButton:
-                text: 'Support'
+                text: app.bind_text(self, 'Support', 'Support')
                 on_release: root.manager.current = 'support'
+
+<AppSettings>
+    orientation: 'vertical'
+    spacing: 10
+    BoxLayout:
+        Label:
+            text: app.bind_text(self, 'Color theme', 'Color theme:')
+            color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
+        Spinner:
+            id: color_spinner
+    BoxLayout:
+        Label:
+            text: app.bind_text(self, 'Language', 'Language:')
+            color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
+        Spinner:
+            id: language_spinner
 
 <AppSettingsScreen>
     name: 'appSettings'
+    app_settings: app_settings
     AnchorLayout:
         padding: 20
         anchor_x: 'left'
@@ -52,7 +69,7 @@
         RoundedButton:
             size_hint_x: None
             size_hint_y: None
-            text: 'back'
+            text: app.bind_text(self, 'Return', 'Return')
             on_release: root.go_back('start')
     AnchorLayout:
         BoxLayout:
@@ -68,22 +85,16 @@
                     width: 1
                     rectangle: self.x, self.y, self.width, self.height
             Label:
-                text: 'Settings'
+                text: app.bind_text(self, 'Settings', 'Settings')
                 color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
-            BoxLayout:
-                id: boxlayout
-                Label:
-                    id: color_label
-                    text: 'Color theme:'
-                    color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
-                Spinner:
-                    id: color_spinner
+            AppSettings:
+                id: app_settings
             AnchorLayout:
                 anchor_x: 'center'
                 anchor_y: 'center'
                 Button:
                     size_hint_x: 0.5
-                    text: 'save'
+                    text: app.bind_text(self, 'Save', 'Save')
                     on_release: root.save_config()
 
 <SupportScreen>:
@@ -95,7 +106,7 @@
         RoundedButton:
             size_hint_x: None
             size_hint_y: None
-            text: 'back'
+            text: app.bind_text(self, 'Return', 'Return')
             on_release: root.go_back('start')
     AnchorLayout:
         ScrollView:
@@ -128,7 +139,7 @@
             RoundedButton:
                 size_hint_x: None
                 size_hint_y: None
-                text: 'back'
+                text: app.bind_text(self, 'Return', 'Return')
                 on_press: root.go_back('start')
         AnchorLayout:
             padding: root.width / 5
@@ -147,16 +158,15 @@
                         rectangle: self.x, self.y, self.width, self.height
                 TextInput:
                     id: name_field
-                    text: 'Name'
+                    text: app.bind_text(self, 'Name', 'Name')
                     multiline: False
                 TextInput:
                     id: password_field
-                    text: 'Passwort'
+                    text: app.bind_text(self, 'Password', 'Password')
                     multiline: False
                 RoundedButton:
-                    text: 'Senden'
+                    text: app.bind_text(self, 'Send', 'Send')
                     on_release: root.send_data(root.ids.name_field.text, root.ids.password_field.text)
-
 
 <ControlScreen>:
     name: 'control'
@@ -169,13 +179,13 @@
             height: root.height / 6
             RoundedButton:
                 id: back_btn
-                text: 'back'
+                text: app.bind_text(self, 'Return', 'Return')
                 on_press: root.go_back('start')
             Label:
                 text: root.status
                 color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
             RoundedButton:
-                text: 'menü'
+                text: app.bind_text(self, 'Menu', 'Menu')
                 on_press: root.manager.current = 'settings'
     AnchorLayout:
         pos: 0, -100
@@ -207,10 +217,11 @@
                 text: f'{root.battery}%'
                 color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
             Label:
-                text: 'strong'
+                text: app.bind_text(self, 'strong', 'strong')
                 color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
 
 <SettingsScreen>:
+    app_settings: app_settings
     name: 'settings'
     AnchorLayout:
         padding: 20
@@ -224,7 +235,7 @@
     AnchorLayout:
         BoxLayout:
             size_hint_x: 0.75
-            size_hint_y: 0.4
+            size_hint_y: 0.6
             orientation: 'vertical'
             padding: 20
             spacing: 20
@@ -235,21 +246,23 @@
                     width: 1
                     rectangle: self.x, self.y, self.width, self.height
             Label:
-                text: 'Settings'
+                text: app.bind_text(self, 'Settings', 'Settings')
                 color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
             BoxLayout:
                 Label:
-                    text: 'ticks:'
+                    text: app.bind_text(self, 'Ticks', 'Ticks:')
                     color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
                 TextInput:
                     id: tick_field
                     multiline: False
+            AppSettings:
+                id: app_settings
             AnchorLayout:
                 anchor_x: 'center'
                 anchor_y: 'center'
                 Button:
                     size_hint_x: 0.5
-                    text: 'save'
+                    text: app.bind_text(self, 'Save', 'Save')
                     on_release: root.save_config()
 
 <WaypointsScreen>:
@@ -271,7 +284,7 @@
             Label:
                 pos_hint: {'x':  .45, 'y': 0}
                 size_hint: (None, None)
-                text: 'Waypoints'
+                text: app.bind_text(self, 'Waypoints', 'Waypoints')
                 font_size: 50
             RoundedButton:
                 pos_hint: {'x':  .8, 'y': .25}

@@ -1,0 +1,2 @@
+C:\Users\nguye\AppData\Local\Programs\Python\Python38\Tools\i18n\msgfmt.py -o
+base.mo base
