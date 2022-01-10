@@ -155,6 +155,28 @@ class JoyStick(Widget):
         self.process_touch = False
         super().on_touch_up(touch)
 
+    def get_center_pt(self):
+        """
+        Gibt die relative Position des inneren Kreises zurück.
+        Falls dieser außerhalb des äußeren Kreises ist, wird ein Wert von 1 zurückgegeben.
+
+
+        Returns
+        -------
+        (x, y): tuple(float, float)
+            Die Werte für die relative Position
+        """
+
+        x = (1 - (self.center_x / self.js_center_x)) * 10
+        y = (1 - (self.center_y / self.js_center_y)) * 10
+
+        if x > 1:
+            x = 1
+        if y > 1:
+            y = 1
+
+        return (x, y)
+
     # TODO: args entfernen
     def set_center(self, *args) -> None:
         """

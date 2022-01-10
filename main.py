@@ -51,6 +51,8 @@ NAME = 'mpy-uart'
 SEPARATOR = '|'
 DEFAULT_WP_PREFIX = 'new waypoint'
 
+SWIPE_MINIMUM_DISTANCE = 50
+
 KV_DIRECTORY = './kv_files'
 FONTS_DIRECTORY = './data/fonts'
 
@@ -188,7 +190,7 @@ class MyScreenManager(ScreenManager):
             'settings': ['settings', 'waypoints']
         }
 
-    def get_next_screen_of_group(self, group_name: str) -> None:
+    def go_next_screen_of_group(self, group_name: str) -> None:
         if group_name in self.screen_groups:
             group = self.screen_groups[group_name]
             if self.current in group:
@@ -203,7 +205,7 @@ class MyScreenManager(ScreenManager):
         else:
             raise ValueError(f'screen manager cant find the group, {group_name}')
 
-    def get_previous_screen_of_group(self, group_name: str) -> None:
+    def go_previous_screen_of_group(self, group_name: str) -> None:
         if group_name in self.screen_groups:
             group = self.screen_groups[group_name]
             if self.current in group:
@@ -219,14 +221,10 @@ class MyScreenManager(ScreenManager):
             raise ValueError(f'screen manager cant find the group, {group_name}')
 
     def go_to_screen_of_group(self, group_name, index, transition_direction='right'):
-        try:
-            if group_name in self.screen_groups:
-                group = self.screen_groups[group_name]
-                self.transition.direction = transition_direction
-                self.current = group[index]
-        except Exception:
-            print(index)
-            print(group_name)
+        if group_name in self.screen_groups:
+            group = self.screen_groups[group_name]
+            self.transition.direction = transition_direction
+        self.current = group[index]
 
 
 class MenuScreen(CustomScreen):
@@ -273,6 +271,12 @@ class MenuScreen(CustomScreen):
         self.nav_bar_buttons.clear()
         self.go_back('control')
 
+    def on_touch_up(self, touch):
+        if touch.x < touch.ox - SWIPE_MINIMUM_DISTANCE:
+            self.manager.go_next_screen_of_group('settings')
+        elif touch.x > touch.ox + SWIPE_MINIMUM_DISTANCE:
+            self.manager.go_previous_screen_of_group('settings')
+
 
 # *******************************************************************
 
@@ -293,7 +297,6 @@ class StartScreen(CustomScreen):
         Clock.unschedule(self.change_font)
         super(StartScreen, self).on_leave(*args)
 
-    # Wird von einem Thread ausgeführt
     def change_font(self, *args) -> None:
         text = MarkupLabel(self.ids.title.text).markup[1]
         current_font_index = self.fonts.index(self.ids.title.font_family)
@@ -336,6 +339,7 @@ class SupportScreen(CustomScreen):
         self.text_boxes = []
         self.heights = []
 
+    # Wird beim Laden der kv-Dateien aufgerufen
     def on_kv_post(self, base_widget) -> None:
         for index in range(len(self.questions)):
             b1 = BoxLayout()
@@ -398,6 +402,9 @@ class ConnectionScreen(CustomScreen):
     def on_enter(self, *args) -> None:
         self.bluetooth_connection_thread.save_start()
 
+    def on_leave(self, *args) -> None:
+        self.bluetooth_connection_thread.stop()
+
     def check_bluetooth_connection(self) -> None:
         if TESTCASE or bluetooth_client.has_paired_devices(NAME):
             if not TESTCASE:
@@ -457,7 +464,7 @@ class ControlScreen(CustomScreen):
 
         self.receive_thread.add_function(self.receive_data)
         self.send_thread.add_function(self.send_data)
-        self.send_thread.interval_sec = self.machine_config['tick']
+        self.send_thread.interval_sec = self.machine_config['tick']['value']
 
         self.speed = "0"
         self.altitude = "0"
@@ -473,7 +480,8 @@ class ControlScreen(CustomScreen):
 
         if not TESTCASE:
             self.receive_thread.save_start()
-            self.send_thread.save_start()
+
+        self.send_thread.save_start()
 
     def on_enter(self, *args) -> None:
         if not self.created:
@@ -516,10 +524,14 @@ class ControlScreen(CustomScreen):
         self.send_thread.interval_sec = self.machine_config['tick']
 
     def send_data(self) -> None:
-        message = f'LJ{SEPARATOR}{self.joystick.js_center_x}{SEPARATOR}{self.joystick.js_center_y}'
-        wlan_client.send_message(message)
-        message = f'RJ{SEPARATOR}{self.joystick.js_center_x}{SEPARATOR}{self.joystick.js_center_y}'
-        wlan_client.send_message(message)
+        r_relative_pos = self.r_joystick.get_center_pt()
+        l_relative_pos = self.l_joystick.get_center_pt()
+
+        if not TESTCASE:
+            message = f'RJ{SEPARATOR}{r_relative_pos[0]}{SEPARATOR}{r_relative_pos[1]}'
+            wlan_client.send_message(message)
+            message = f'LJ{SEPARATOR}{l_relative_pos[0]}{SEPARATOR}{l_relative_pos[1]}'
+            wlan_client.send_message(message)
 
     def receive_data(self) -> None:
         response = wlan_client.wait_for_response()
@@ -770,6 +782,8 @@ class DroneRoot(BoxLayout):
 
 
 class DroneApp(App):
+    __version__ = "0.1"
+
     configuration = Configuration('./data/config.json', True)
     current_theme = StringProperty()
 
