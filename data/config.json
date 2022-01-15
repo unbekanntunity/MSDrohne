@@ -1,7 +1,9 @@
 {
     "app": {
-        "current_language": "ge",
+        "current_language": "en",
         "current_theme": "Dark",
+        "swipe_distance": 5.0,
+        "testcase": true,
         "themes": {
             "Dark": {
                 "bg_color": {
@@ -82,56 +84,14 @@
         },
         "waypoints": {
             "new waypoint": {
-                "altitude": "0",
-                "date": "01/07/2022, 19:21:32",
+                "altitude": "1.00000000000000",
+                "date": "01/15/2022, 09:31:40",
                 "latitude": "0",
                 "longitude": "0"
             },
             "new waypoint(1)": {
                 "altitude": "0",
-                "date": "01/07/2022, 19:21:32",
-                "latitude": "0",
-                "longitude": "0"
-            },
-            "new waypoint(2)": {
-                "altitude": "0",
-                "date": "01/08/2022, 19:54:30",
-                "latitude": "0",
-                "longitude": "0"
-            },
-            "new waypoint(4)": {
-                "altitude": "0",
-                "date": "01/07/2022, 19:21:32",
-                "latitude": "0",
-                "longitude": "0"
-            },
-            "new waypoint(5)": {
-                "altitude": "0",
-                "date": "01/07/2022, 19:21:33",
-                "latitude": "0",
-                "longitude": "0"
-            },
-            "new waypoint(6)": {
-                "altitude": "0",
-                "date": "01/07/2022, 19:21:33",
-                "latitude": "0",
-                "longitude": "0"
-            },
-            "new waypoint(7)": {
-                "altitude": "0",
-                "date": "01/07/2022, 19:21:33",
-                "latitude": "0",
-                "longitude": "0"
-            },
-            "new waypoint(8)": {
-                "altitude": "0",
-                "date": "01/07/2022, 19:21:33",
-                "latitude": "0",
-                "longitude": "0"
-            },
-            "new waypoint(9)": {
-                "altitude": "0",
-                "date": "01/08/2022, 11:53:04",
+                "date": "01/15/2022, 09:22:52",
                 "latitude": "0",
                 "longitude": "0"
             }

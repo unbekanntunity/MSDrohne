@@ -13,97 +13,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: pygettext.py 1.5\n"
 
-
-msgid "Find device"
-msgstr "Find device"
-
-msgid "Support"
-msgstr "Support"
-
-msgid "Settings"
-msgstr "Settings"
-
-msgid "Return"
-msgstr "Return"
-
-msgid "Color theme"
-msgstr "Color theme"
-
-msgid "Save"
-msgstr "Save"
-
-msgid "Dark"
-msgstr "Dark"
-
-msgid "Light"
-msgstr "Light"
-
-msgid "Turn on your bluetooth function and connect to the device"
-msgstr "Turn on your bluetooth function and connect to the device"
-
-msgid "Name"
-msgstr "Name"
-
-msgid "Password"
-msgstr "Password"
-
-msgid "Send"
-msgstr "Send"
-
-msgid "Ready to take off"
-msgstr "Ready to take off"
-
-msgid "Waypoint"
-msgstr "Waypoint"
-
-msgid "set"
-msgstr "set"
-
-msgid "Menu"
-msgstr "Menu"
-
-msgid "Ticks"
-msgstr "Ticks"
-
-msgid "Waypoints"
-msgstr "Waypoints"
-
-msgid "Settings saved"
-msgstr "Settings saved"
-
-msgid "Clear"
-msgstr "Clear"
-
-msgid "Altitude"
-msgstr "Altitude"
-
-msgid "Latitude"
-msgstr "Latitude"
-
-msgid "Longitude"
-msgstr "Longitude"
-
-msgid "Last update"
-msgstr "Last update"
-
-msgid "Edit"
-msgstr "Edit"
-
-msgid "Remove"
-msgstr "Remove"
-
-msgid "Language"
-msgstr "Language"
-
-msgid "Server successfully created"
-msgstr "Server successfully created"
-
-msgid "English"
-msgstr "English"
-
-msgid "German"
-msgstr "German"
-
 # German - Englisch
 msgid "Finde Gerät"
 msgstr "Find device"
@@ -195,4 +104,12 @@ msgstr "English"
 msgid "Deutsch"
 msgstr "German"
 
+msgid "An"
+msgstr "On"
+
+msgid "Aus"
+msgstr "Off"
+
+msgid "Wischdistanz"
+msgstr "Swipe distance"
 

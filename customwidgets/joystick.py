@@ -55,7 +55,7 @@ class JoyStick(Widget):
         Ja: Wenn die Berührung innerhalb der äußeren Kreises war
         Nein: Wenn die Berührung außerhalb der äußeren Kreises war
 
-    Methods
+    Event Methods
     -------
     on_touch_down(touch):
         Wird bei der ersten Berührung, also beim Absetzen aufgerufen.
@@ -63,6 +63,9 @@ class JoyStick(Widget):
         Wird aufgerufen, wenn der Finger auf den Display bewegt wird.
     on_touch_up(touch):
         Wird beim aufsetzen des Fingers aufgerufen.
+
+    Methods
+    -------
     set_center():
         Positioniert den inneren Kreis (beweglicher Teil) im Zentrum des Kreises
     update_center(x, y):

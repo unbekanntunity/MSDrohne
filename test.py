@@ -1,41 +1,22 @@
-import gettext
-_ = gettext.gettext
+import os
+os.environ['KIVY_GL_BACKEND'] = 'angle_sdl2'
 
+import kivy
+kivy.require('2.0.0')
 
-def startup():
-    _('Find device')
-    _('Support')
-    _('Settings')
+from kivy.app import App
+from kivy.uix.textinput import TextInput
+from kivy.uix.anchorlayout import AnchorLayout
 
-    _('Return')
-    _('Color theme')
-    _('Save')
-    _('Dark')
-    _('Light')
+class Root(AnchorLayout):
+    pass
 
-    _('Turn on your bluetooth function and connect to the device')
-    _('Name')
-    _('Password')
-    _('Send')
+class TestApp(App):
+    __version__ = "0.1"
 
-    _('Ready to take off')
-    _('Waypoint')
-    _('set')
-    _('Menu')
-
-    _('Ticks')
-    _('Settings')
-    _('Waypoints')
-    _('Configuration saved')
-
-    _('Clear')
-    _('Altitude')
-    _('Latitude')
-    _('Longitude')
-    _('Last update')
-    _('Edit')
-    _('Remove')
+    def build(self):
+        return Root()
 
 
 if __name__ == '__main__':
-    startup()
+    TestApp().run()

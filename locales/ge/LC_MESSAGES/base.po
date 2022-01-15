@@ -106,3 +106,12 @@ msgstr "Englisch"
 
 msgid "German"
 msgstr "Deutsch"
+
+msgid "On"
+msgstr "An"
+
+msgid "Off"
+msgstr "Aus"
+
+msgid "Swipe distance"
+msgstr "Wischdistanz"

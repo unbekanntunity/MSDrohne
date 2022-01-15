@@ -42,6 +42,14 @@
             RoundedButton:
                 text: app.bind_text(self, 'Support', 'Support')
                 on_release: root.manager.current = 'support'
+    AnchorLayout:
+        anchor_x: 'left'
+        anchor_y: 'bottom'
+        Label:
+            size_hint_x: None
+            size_hint_y: None
+            text: 'version: ' + app.__version__
+            color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
 
 <AppSettings>
     orientation: 'vertical'
@@ -58,6 +66,29 @@
             color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
         Spinner:
             id: language_spinner
+    BoxLayout:
+        Label:
+            text: app.bind_text(self, 'Test', 'Test:')
+            state: 'down' if app.configuration.config_dict['app']['testcase'] else 'normal'
+        ToggleButton:
+            size_hint_x: 0.5
+            text: app.bind_text(self, 'Off', 'Off')
+            state: 'down' if root.current_test_mode is False else 'normal'
+            group: 'testmode'
+            on_release: root.current_test_mode = False
+        ToggleButton:
+            size_hint_x: 0.5
+            text: app.bind_text(self, 'On', 'On')
+            state: 'down' if root.current_test_mode else 'normal'
+            group: 'testmode'
+            on_release: root.current_test_mode = True
+    BoxLayout:
+        Label:
+            text: app.bind_text(self, 'Swipe distance', 'Swipe distance:')
+        NumericTextInput:
+            number_range: (0, 1000)
+            id: swipe_distance_text_input
+            text: str(app.configuration.config_dict['app']['swipe_distance'])
 
 <AppSettingsScreen>
     name: 'appSettings'
@@ -72,30 +103,35 @@
             text: app.bind_text(self, 'Return', 'Return')
             on_release: root.go_back('start')
     AnchorLayout:
-        BoxLayout:
+        ScrollView:
             size_hint_x: 0.75
-            size_hint_y: 0.4
-            orientation: 'vertical'
-            padding: 20
-            spacing: 20
+            size_hint_y: 0.7
             canvas.before:
                 Color:
                     rgba: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
                 Line:
                     width: 1
                     rectangle: self.x, self.y, self.width, self.height
-            Label:
-                text: app.bind_text(self, 'Settings', 'Settings')
-                color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
-            AppSettings:
-                id: app_settings
-            AnchorLayout:
-                anchor_x: 'center'
-                anchor_y: 'center'
-                Button:
-                    size_hint_x: 0.5
-                    text: app.bind_text(self, 'Save', 'Save')
-                    on_release: root.save_config()
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: 600
+                padding: 20
+                spacing: 20
+                Label:
+                    text: app.bind_text(self, 'Settings', 'Settings')
+                    font_size: 40
+                    size_hint_y: None
+                    color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
+                AppSettings:
+                    id: app_settings
+                AnchorLayout:
+                    anchor_x: 'center'
+                    anchor_y: 'center'
+                    Button:
+                        size_hint: (.5, .3)
+                        text: app.bind_text(self, 'Save', 'Save')
+                        on_release: root.save_config()
 
 <SupportScreen>:
     name: 'support'
@@ -130,26 +166,26 @@
     name: 'connection'
     status: status_label
     wlan: wlan_grid
-    RelativeLayout:
-        AnchorLayout:
+    AnchorLayout:
+        size_hint_x: None
+        anchor_x: 'left'
+        anchor_y: 'top'
+        padding: 20
+        RoundedButton:
             size_hint_x: None
-            anchor_x: 'left'
-            anchor_y: 'top'
-            padding: 20
-            RoundedButton:
-                size_hint_x: None
-                size_hint_y: None
-                text: app.bind_text(self, 'Return', 'Return')
-                on_press: root.go_back('start')
+            size_hint_y: None
+            text: app.bind_text(self, 'Return', 'Return')
+            on_press: root.go_back('start')
+    AnchorLayout:
         AnchorLayout:
-            padding: root.width / 5
+            size_hint: (0.6, 0.3)
             Label:
                 id: status_label
             BoxLayout:
                 id: wlan_grid
                 orientation: 'vertical'
-                padding: 40
-                spacing: 20
+                padding: 20
+                spacing: 10
                 canvas.before:
                     Color:
                         rgba: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
@@ -160,13 +196,20 @@
                     id: name_field
                     text: app.bind_text(self, 'Name', 'Name')
                     multiline: False
+                    size_hint_y: .2
                 TextInput:
                     id: password_field
                     text: app.bind_text(self, 'Password', 'Password')
                     multiline: False
-                RoundedButton:
-                    text: app.bind_text(self, 'Send', 'Send')
-                    on_release: root.send_data(root.ids.name_field.text, root.ids.password_field.text)
+                    size_hint_y: .2
+                AnchorLayout:
+                    size_hint_y: .3
+                    anchor_y: 'bottom'
+                    RoundedButton:
+                        size_hint: (.3, .8)
+                        text: app.bind_text(self, 'Send', 'Send')
+                        on_release: root.send_data(root.ids.name_field.text, root.ids.password_field.text)
+
 
 <ControlScreen>:
     name: 'control'
@@ -233,37 +276,40 @@
             text: 'back'
             on_release: root.close_menu()
     AnchorLayout:
-        BoxLayout:
+        ScrollView:
             size_hint_x: 0.75
             size_hint_y: 0.6
-            orientation: 'vertical'
-            padding: 20
-            spacing: 20
             canvas.before:
                 Color:
                     rgba: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
                 Line:
                     width: 1
                     rectangle: self.x, self.y, self.width, self.height
-            Label:
-                text: app.bind_text(self, 'Settings', 'Settings')
-                color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
             BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: 500
+                padding: 20
+                spacing: 20
                 Label:
-                    text: app.bind_text(self, 'Ticks', 'Ticks:')
+                    text: app.bind_text(self, 'Settings', 'Settings')
                     color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
-                TextInput:
-                    id: tick_field
-                    multiline: False
-            AppSettings:
-                id: app_settings
-            AnchorLayout:
-                anchor_x: 'center'
-                anchor_y: 'center'
-                Button:
-                    size_hint_x: 0.5
-                    text: app.bind_text(self, 'Save', 'Save')
-                    on_release: root.save_config()
+                BoxLayout:
+                    Label:
+                        text: app.bind_text(self, 'Ticks', 'Ticks:')
+                        color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
+                    TextInput:
+                        id: tick_field
+                        multiline: False
+                AppSettings:
+                    id: app_settings
+                AnchorLayout:
+                    anchor_x: 'center'
+                    anchor_y: 'center'
+                    Button:
+                        size_hint: (.5, .3)
+                        text: app.bind_text(self, 'Save', 'Save')
+                        on_release: root.save_config()
 
 <WaypointsScreen>:
     name: 'waypoints'
