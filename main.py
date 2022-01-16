@@ -3,10 +3,9 @@
 # *******************************************************************
 
 # **************************** Imports ****************a**************
-import os
-os.environ['KIVY_GL_BACKEND'] = 'angle_sdl2'
 
 import kivy
+
 kivy.require('2.0.0')
 
 from kivy.app import App
@@ -38,6 +37,7 @@ from time import sleep
 from random import randrange
 from datetime import datetime
 
+import os
 import platform
 import gettext
 
@@ -87,7 +87,7 @@ class RoundedButton(Button):
 
 class NumericTextInput(TextInput):
     """
-    Klasse für die Implentierung eines Textfeldes, was nur numerische Eingaben akzeptiert.
+    Klasse für die Implementierung eines Textfeldes, was nur numerische Eingaben akzeptiert.
 
     Attributes
     ----------
@@ -101,12 +101,17 @@ class NumericTextInput(TextInput):
     input_filter: str
         default: float
         Ein von Kivy implementierter Filter, der dafür sorgt, dass nur Zahlen angenommen werden.
+    filter_type: str
+        default: float
+        Gibt an ob, nur ganze Zahlen oder auch Fließkommanzahlen angegeben werden können-
     """
 
     positive_values = BooleanProperty(True)
     negative_values = BooleanProperty(False)
 
     number_range = BoundedNumericProperty([0, 0])
+
+    filter_type = StringProperty('float')
 
     def __init__(self, **kwargs) -> None:
         """
@@ -120,7 +125,7 @@ class NumericTextInput(TextInput):
         """
 
         super(NumericTextInput, self).__init__(**kwargs)
-        self.input_filter = 'float'
+        self.input_filter = self.filter_type
 
     def on_kv_post(self, base_widget) -> None:
         """
@@ -129,7 +134,7 @@ class NumericTextInput(TextInput):
         im Eingabefeld steht
         """
 
-        if self.text is '':
+        if self.text == '':
             self.text = '0'
         super(NumericTextInput, self).on_kv_post(base_widget)
 
@@ -334,6 +339,7 @@ class CustomScreen(Screen):
         Wird aufgerufen, sobald dieser Bildschirm aufgerufen wird. Da es sich jedoch um eine
         Basisklasse handelt, wird diese Funktion auch aufgerufen wenn einer der Erbbildschirmen
         aufgerufen wird.
+        Diese Signatur wird von Kivy vorgegeben.
         """
 
         self.manager.transition.direction = 'left'
@@ -367,9 +373,10 @@ class MyScreenManager(ScreenManager):
     def __init__(self, **kwargs):
         """
         Erstellt alle nötigen Variablen für die Klasse.
+        Diese Signatur wird von Kivy vorgegeben.
 
         Parameters
-        ---------
+        ----------
         kwargs: any
             Durch die Zwei sterne vor dem Namen kann man eine undefinierte Anzahl von Parameter
             übergeben werden. kw kann also beliebig viele Parameter mit variablen Namen darstellen.
@@ -495,9 +502,10 @@ class MenuScreen(CustomScreen):
     def __init__(self, **kwargs):
         """
         Erstellt alle nötigen Variablen für die Klasse.
+        Diese Signatur wird von Kivy vorgegeben.
 
         Parameters
-        ---------
+        ----------
         kwargs: any
             Durch die Zwei sterne vor dem Namen kann man eine undefinierte Anzahl von Parameter
             übergeben werden. kw kann also beliebig viele Parameter mit variablen Namen darstellen.
@@ -517,12 +525,13 @@ class MenuScreen(CustomScreen):
             - Die Animation ist beendet
             - Der Bildschirm ist gerendert
 
+        Diese Signatur wird von Kivy vorgegeben.
+
         Parameters
-        ---------
+        ----------
         args: any
-            Durch den einen Stern vor dem Namen können  beliebig viele positionelle Argumente
+            Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
             angenommen werden.
-            Dieses Signatur wird von Kivy vorgegeben.
         """
 
         self.nav_bar = App.get_running_app().root.ids.nav_bar
@@ -544,13 +553,13 @@ class MenuScreen(CustomScreen):
         Wird aufgerufen, wenn ein Knopf der Navigationsleiste gedrückt wird.
         Sobald ein Knopf gedrückt wird, soll der Bildschirm zu den gewünschten Ziel gewechselt werden.
 
+        Diese Signatur wird von Kivy vorgegeben.
 
         Parameters
-        ---------
+        ----------
         args: any
             Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
             angenommen werden.
-            Dieses Signatur wird von Kivy vorgegeben.
         """
 
         index = self.nav_bar_buttons.index(args[0])
@@ -565,6 +574,14 @@ class MenuScreen(CustomScreen):
         """
         Die Funktion wird aufgerufen, wenn ein bestimmter Knopf(Zurück-Knopf) gedrückt wird.
         Dann werden alle Knöpfe und der Bereich für die Navigationsleiste minimiert.
+
+        Diese Signatur wird von Kivy vorgegeben.
+
+        Parameters
+        ----------
+        args: any
+            Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
+            angenommen werden.
         """
 
         # Zerstöre alle Knöpfe
@@ -585,6 +602,8 @@ class MenuScreen(CustomScreen):
         Diese Funktion ist für die Wischfunktion in den Menübildschirm verantwortlich.
         Basierend auf die Richtung der Wisches, wird der nächste Bildschirm oder der vorherige
         Bildschirm aufgerufen.
+
+        Diese Signatur wird von Kivy vorgegeben.
 
         Parameters
         ----------
@@ -620,15 +639,20 @@ class StartScreen(CustomScreen):
     def __init__(self, **kw):
         """
         Erstellt alle nötigen Variablen für die Klasse.
+        Diese Signatur wird von Kivy vorgegeben.
 
         Parameters
-        ---------
+        ----------
         kwargs: any
             Durch die Zwei sterne vor dem Namen kann man eine undefinierte Anzahl von Parameter
             übergeben werden. kw kann also beliebig viele Parameter mit variablen Namen darstellen.
         """
 
         super(StartScreen, self).__init__(**kw)
+        # map lässt alle Element in der Liste durch eine Funktion laufen.
+        # os.listdir gibt uns nur die Dateinamen aus
+        # Damit wird die Schriftarten mit den HTML Tags verwenden können, brauchen wir die relativen Pfade zum
+        # Projektverzeichnis. Aus diesen Grund werden alle Dateinamen mit den Verzeichnis Namen kombiniert.
         self.fonts = list(map(lambda x: f'{FONTS_DIRECTORY}/{x}', os.listdir(FONTS_DIRECTORY)))
         self.texts = ['Welcome', 'Willkommen']
 
@@ -637,12 +661,14 @@ class StartScreen(CustomScreen):
         Wird aufgerufen, sobald dieser Bildschirm aufgerufen wird.
         Diese Funktion startet den Thread, der dann wiederum die Animation abspielt.
 
+        Diese Signatur wird von Kivy vorgegeben.
+
         Parameters
-        ---------
+        ----------
         args: any
             Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
             angenommen werden.
-            Dieses Signatur wird von Kivy vorgegeben.
+            Diese Signatur wird von Kivy vorgegeben.
         """
 
         print(f'{self.width} x {self.height}')
@@ -652,31 +678,34 @@ class StartScreen(CustomScreen):
     def on_leave(self, *args) -> None:
         """
         Wird aufgerufen, sobald der Benutzer diesen Bildschirm verlässt.
-        Sobald der Benutzer dien Bildschirm verlässt, wird der Thread gestoppt.
+        Sobald der Benutzer diesen Bildschirm verlässt, wird der Thread gestoppt.
+
+        Diese Signatur wird von Kivy vorgegeben.
 
         Parameters
-        ---------
+        ----------
         args: any
             Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
             angenommen werden.
-            Dieses Signatur wird von Kivy vorgegeben.
+            Diese Signatur wird von Kivy vorgegeben.
         """
         Clock.unschedule(self.change_font)
         super(StartScreen, self).on_leave(*args)
 
     def change_font(self, *args) -> None:
         """
-        Wird von einem Thread in bestimmten Intervalltakten ausgeführt.
+        Wird von einem Thread in bestimmten Intervall takten ausgeführt.
 
         Diese Funktion wählt zufällig eine Schriftart und ein Text aus und verändert dementsprechend
         den Titelbildschirm.
 
+        Diese Signatur wird von Kivy vorgegeben.
+
         Parameters
-        ---------
+        ----------
         args: any
             Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
             angenommen werden.
-            Dieses Signatur wird von Kivy vorgegeben.
         """
 
         text = MarkupLabel(self.ids.title.text).markup[1]
@@ -704,24 +733,53 @@ class AppSettingsScreen(CustomScreen):
 
 
 class SupportScreen(CustomScreen):
+    """
+    Support Bildschirm.
+    Der Bildschirm soll die FAQs anzeigen.
+
+    Attributes
+    ----------
+    questions: list
+        Liste mit dem Fragen.
+    answers: list
+        Liste mit dem Antworten.
+    entry: list
+        Beinhaltet die einzelnen Fragen.
+    question_boxes: list
+        Beinhaltet die Boxlayouts, in den die Frage angezeigt wird.
+    text_boxes: list
+        Beinhaltet die Layouts, in den die Antworten angezeigt werden.
+    """
+
     def __init__(self, **kwargs):
+        """
+        Erstellt alle nötigen Variablen für die Klasse.
+        Diese Signatur wird von Kivy vorgegeben.
+
+        Parameters
+        ----------
+        kwargs: any
+            Durch die Zwei sterne vor dem Namen kann man eine undefinierte Anzahl von Parameter
+            übergeben werden. kwargs kann also beliebig viele Parameter mit variablen Namen darstellen.
+        """
+
         super(SupportScreen, self).__init__(**kwargs)
 
-        self.questions = ['bluetooth', 'wlan1', 'wlan']
-        self.questions = ['bluetooth', 'wlan1', 'wlan',
-                          'bluetooth', 'wlan', 'wlan']
-        self.answers = []
-
-        for question in self.questions:
-            self.answers.append(question + 'A')
+        self.questions = ['Question not found?']
+        self.answers = ['Write a email to msdrone@exmaple.com']
 
         self.entry = []
         self.question_boxes = []
         self.text_boxes = []
-        self.heights = []
 
-    # Wird beim Laden der kv-Dateien aufgerufen
     def on_kv_post(self, base_widget) -> None:
+        """
+        Wird aufgerufen, sobald die kv-Datei geladen wird. In dieser Phase sollen die Fragen dynamisch
+        durch diese Funktion generiert werden.
+
+        Diese Signatur wird von Kivy vorgegeben.
+        """
+
         for index in range(len(self.questions)):
             b1 = BoxLayout()
             b1.orientation = 'vertical'
@@ -744,34 +802,119 @@ class SupportScreen(CustomScreen):
         super(SupportScreen, self).on_kv_post(base_widget)
 
     def get_height(self) -> int:
-        result = 0
+        """
+        Berechnet die Gesamthöhe des Layouts
+
+        Returns
+        -------
+        height: int
+            Gesamthöhe
+        """
+
+        height = 0
         for box in self.question_boxes:
-            result += box.height
-        return result + 50
+            height += box.height
+        return height + 50
 
     def trigger_box(self, *args) -> None:
+        """
+        Wird durch ein Knopf ausgelöst und öffnet bzw. schließt die Box, je nach den momentanen Zustand der Box.
+        Diese Signatur wird von Kivy vorgegeben.
+
+        Parameters
+        ----------
+        args: any
+            Der eine Stern symbolisiert, dass eine beliebige Anzahl von positionellen Argumenten übergeben kann.
+            In unseren Fall wird dass immer der Knopf sein, der diese Funktion auslöst.
+        """
+
         index = self.question_boxes.index(args[0])
         selected_text_box = self.text_boxes[index]
+        # Ist die Box zu?
         if len(selected_text_box.children) == 0:
             self.open_box(selected_text_box, index)
         else:
             self.close_box(selected_text_box)
 
     def open_box(self, answer_box: BoxLayout, index: int) -> None:
+        """
+        Öffnet die Antwortbox einer beliebigen Fragebox.
+
+        Parameters
+        ----------
+        answer_box: BoxLayout
+            Die Antwortbox.
+        index: int
+            Die Position der Antwort in der Liste(self.answers).
+        """
+
         answer_box.add_widget(Button(text=self.answers[index]))
 
     @staticmethod
     def close_box(answer_box: BoxLayout) -> None:
+        """
+        Schließt die Antwortbox wieder, indem alle Elemente in der Antwortbox
+        gelöscht werden.
+
+        Statische Funktion sind Funktionen, die auch ohne Klasseninstanz aufgerufen werden können
+        und daher keine Variablen der Instanz benötigen. Aus diesen Grund fällt auch das 'self' weg.
+
+        Parameters
+        ----------
+        answer_box: BoxLayout
+            Die Antwortbox.
+        """
+
         for widget in answer_box.children:
             answer_box.remove_widget(widget)
 
 
 class ConnectionScreen(CustomScreen):
+    """
+    Verbindungsbildschirm. In diesen Bildschirm wird eine Verbindung zum ESP32 aufgebaut.
+
+    Reihenfolge:
+    Im ersten Schritt über Bluetooth und dann im zweiten Schritt über WLAN.
+    Als erstes werden WLAN-name und Passwort über Bluetooth übermittelt.
+    Wir vertrauen darauf dass der Benutzer sich mithilfe der Bluetooth Funktion seines Betriebssystems
+    mit dem ESP32 verbunden hat.
+
+    Anschließend nachdem der ESP32 sich mit dem Netz verbunden hat und ein WLAN-Server erstellt hat,
+    senden wir unsere IP-Adresse. Setzt natürlich voraus, dass wir uns ebenfalls im Netzwerk befinden.
+
+    Wenn alles geglückt ist, kann man zum nächsten Bildschirm gehen.
+
+    Attributes
+    ----------
+    status: Label
+        Ein Text, welches den momentanen Status anzeigt.
+    wlan: GridLayout
+        Das Eingabefeld für den Namen und für das Passwort.
+        Sobald das Layout erscheint, wird das Status-Label verdrängt.
+    response_thread: DisposableLoopThread
+        Ein Thread, der periodisch Daten vom ESP32 empfängt.
+        Daten: Höhe, Breitengrad, Längengrad, Geschwindigkeit u.s.w.
+    bluetooth_connection_thread: DisposableLoopThread
+        Ein Thread, der überprüft, ob die Bluetooth-Funktion angeschaltet wurde.
+    """
+
     status = ObjectProperty()
     wlan = ObjectProperty()
 
     def __init__(self, **kwargs):
+        """
+        Erstellt alle nötigen Variablen für die Klasse.
+        Diese Signatur wird von Kivy vorgegeben.
+
+        Parameters
+        ----------
+        kwargs: any
+            Durch die zwei Sterne vor dem Namen kann man eine undefinierte Anzahl von Parameter
+            übergeben werden. kwargs kann also beliebig viele Parameter mit variablen Namen darstellen.
+        """
+
         super(ConnectionScreen, self).__init__(**kwargs)
+
         self.connected = False
 
         self.response_thread = DisposableLoopThread()
@@ -781,44 +924,107 @@ class ConnectionScreen(CustomScreen):
         self.bluetooth_connection_thread.add_function(self.check_bluetooth_connection)
 
     def on_enter(self, *args) -> None:
+        """
+        Wird aufgerufen, sobald dieser Bildschirm aufgerufen wird.
+        Diese Funktion startet den Bluetooth-Thread.
+
+        Diese Signatur wird von Kivy vorgegeben.
+
+        Parameters
+        ----------
+        args: any
+            Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
+            angenommen werden.
+        """
+
         super(ConnectionScreen, self).on_enter(*args)
         self.bluetooth_connection_thread.save_start()
 
     def on_leave(self, *args) -> None:
+        """
+        Wird aufgerufen, sobald Benutzer die Bildschirm verlassen wird.
+        Diese Funktion stoppt den Bluetooth-Thread.
+
+        Diese Signatur wird von Kivy vorgegeben.
+
+        Parameters
+        ----------
+        args: any
+            Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
+            angenommen werden.
+        """
+
         self.bluetooth_connection_thread.stop()
 
     def check_bluetooth_connection(self) -> None:
+        """
+        Überprüft, ob Bluetooth angezeigt wird und ob man sich mit dem richtigen Gerät (ESP32) verbunden ist.
+        Wenn Ja erstellt die Funktion ein Socket, worüber dann die Kommunikation stattfindet.
+        """
+
         if self.app_config['testcase'] or bluetooth_client.has_paired_devices(NAME):
             if not self.app_config['testcase']:
                 bluetooth_client.create_socket_stream(NAME)
             self.wlan.height = self.wlan.minimum_height
-            self.bluetooth_connection_thread.stop()
+            if self.connected:
+                self.bluetooth_connection_thread.stop()
         else:
             self.wlan.height = 0
             self.status.text = translate(f'Turn on your bluetooth function and connect to the device') + NAME
         sleep(1)
 
     def send_data(self, name: str, password: str) -> None:
+        """
+        Wird aufgerufen, sobald der Benutzer den 'Senden'-Knopf auf dem WLAN-GridLayout drückt.
+        Dann werden die Texte der beiden Eingabefelder als Name und Passwort als Argumente übergeben.
+
+        Diese Funktion sendet dann die Daten zum ESP32.
+
+        Parameters
+        ----------
+        name: str
+            Name des WLAN-Netzwerkes
+        password: str
+            Passwort des WLAN-Netzwerkes
+        """
+
         if self.app_config['testcase']:
             self.manager.current = 'control'
         else:
+            # Format: WLAN|NAME|PASSWORT
             bluetooth_client.socket.send(f'WLAN{SEPARATOR}{name}{SEPARATOR}{password}')
             self.response_thread.save_start()
 
     def check_response(self) -> None:
+        """
+        Diese Funktion wird periodisch vom response_thread ausgeführt.
+        Diese Funktion wartet auf folgende Antworten des ESP32...
+            - Status für die Verbindungsaufbau mit dem Netzwerk, mithilfe der Daten, die wir zuvor in der
+                send_data Funktion gesendet haben.
+            - Die Informationen über das Gerät wie z.b IP-Adresse.
+            - Status für das Erstellen des WLAN-Servers.
+        und sendet...
+            - Die IP-Adresse dieses Gerätes.
+
+        Erst wenn alle Rückmeldungen positiv (Endung mit 1) sind, kann man zum Bedingungsbildschirm weitergehen.
+        """
+
         wlan_response = bluetooth_client.wait_for_response(flag='WC')
         esp32_data = bluetooth_client.wait_for_response(flag='STAINFO')
         bluetooth_client.socket.send(f'WLANDATA{SEPARATOR}{wlan_client.get_ip_address()}')
         server_response = bluetooth_client.wait_for_response(flag='WS')
 
+        # WC -> WLAN-Connection
         if 'WC1' and wlan_client.paired_device_ip in wlan_response:
             if 'STAINFO' in esp32_data:
                 converted_data = esp32_data.split(SEPARATOR)
                 wlan_client.connect(converted_data[1], int(converted_data[2]))
             self.status.text = f'Connection with {bluetooth_client.paired_device_name}'
             sleep(1)
+            # WS -> WLAN-Server
             if 'WS1' in server_response:
-                self.status.text = translate('Server successfully created')
+                self.connected = True
+                self.status.text = translate('Server successfully created.\nYou can turn off ur bluetooth.')
                 sleep(1)
                 self.manager.current = 'control'
         else:
@@ -829,30 +1035,72 @@ class ConnectionScreen(CustomScreen):
 
 
 class ControlScreen(CustomScreen):
-    altitude = StringProperty()
-    speed = StringProperty()
+    """
+    Bedingungsbildschirm.
+    Das ist der eigentliche Hauptbildschirm, in der die Drohne gesteuert werden kann.
 
-    latitude = StringProperty()
-    longitude = StringProperty()
+    Attributes
+    ----------
+    altitude: str (Property)
+        Enthält Daten zu der Höhe.
+    speed: str (Property)
+        Enthält Daten zur Geschwindigkeit.
+    latitude: str (Property)
+        Enthält Daten zu den Längengrad.
+    longitude: str (Property)
+        Enthält Daten zu den Breitengrad.
+    -> Bis hier werden alle Daten vom ESP32 übermittelt.
+    battery: str (Property)
+        Enthält Daten zu den momentanen Akkustand.
 
-    battery = StringProperty()
+    status: str (Property)
+        Gibt den momentanen Status an.
+
+    receive_thread: DisposableLoopThread
+        Ein Thread, der im Hintergrund die Daten empfängt, die über den ESP32 gesendet werden.
+        Es handelt sich vorrangig Sensordaten.
+    send_thread: DisposableLoopThread
+        Ein Thread, der im Hintergrund Daten zum ESP32 sendet.
+        Es handelt sich vorrangig um die Position der Joysticks, die für die Steuerung verwendet werden.
+
+    r_joystick: Joystick
+        Rechter Joystick
+    l_joystick: Joystick
+        Linker Joystick
+
+    created: bool
+        Wurden die Joystick schon erstellt?
+    """
+
+    altitude = StringProperty('0')
+    speed = StringProperty('0')
+
+    latitude = StringProperty('0')
+    longitude = StringProperty('0')
+
+    battery = StringProperty('100')
 
     status = StringProperty()
 
     def __init__(self, **kwargs):
         super(ControlScreen, self).__init__(**kwargs)
+        """
+        Erstellt alle nötigen Variablen für die Klasse und startet die Threads
+        Diese Signatur wird von Kivy vorgegeben.
+
+        Parameters
+        ----------
+        kwargs: any
+            Durch die Zwei sterne vor dem Namen kann man eine undefinierte Anzahl von Parameter
+            übergeben werden. kw kann also beliebig viele Parameter mit variablen Namen darstellen.
+        """
+
         self.receive_thread = DisposableLoopThread()
         self.send_thread = DisposableLoopThread()
 
         self.receive_thread.add_function(self.receive_data)
         self.send_thread.add_function(self.send_data)
         self.send_thread.interval_sec = self.machine_config['tick']['value']
-
-        self.speed = "0"
-        self.altitude = "0"
-        self.longitude = "0"
-        self.latitude = "0"
-        self.battery = "0"
 
         self.r_joystick = JoyStick()
         self.l_joystick = JoyStick()
@@ -866,30 +1114,60 @@ class ControlScreen(CustomScreen):
         self.send_thread.save_start()
 
     def on_enter(self, *args) -> None:
+        """
+        Wird aufgerufen, sobald dieser Bildschirm aufgerufen wird.
+        Diese Funktion erstellt die Joysticks und positioniert sie richtig.
+        Zudem wird hier die erste Nachricht über das WLAN an den ESP32 gesendet.
+
+        Diese Signatur wird von Kivy vorgegeben.
+
+        Parameters
+        ----------
+        args: any
+            Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
+            angenommen werden.
+        """
+
         super(ControlScreen, self).on_enter(*args)
+        # Wurden die Joysticks schon erstellt?
         if not self.created:
             self.ids.joystick_a.add_widget(self.r_joystick)
             self.ids.joystick_a.add_widget(self.l_joystick)
 
-            self.ids.back_btn.bind(on_press=self.back_to_main)
+            self.ids.back_btn.bind(on_release=self.back_to_main)
 
             Clock.schedule_once(self.r_joystick.set_center, 0.01)
             Clock.schedule_once(self.l_joystick.set_center, 0.01)
             self.created = True
 
             if not self.app_config['testcase']:
-                # Damit der Esp32 eine Connection hat, um die Sensordaten zu senden
+                # Damit der ESP32 eine Connection hat, um die Sensordaten zu senden
                 wlan_client.send_message('ping')
 
     def set_waypoint(self, *args):
+        """
+        Diese Funktion wird von ein Knopf aufgerufen.
+        Diese Funktion dient dazu ein Wegpunkt zu setzen.
+
+        Diese Signatur wird von Kivy vorgegeben.
+
+        Parameters
+        ----------
+        args: any
+            Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
+            angenommen werden.
+        """
+
         waypoints = self.app_config['waypoints']
 
+        # Erstelle dynamisch den Namen des Wegpunkts, ohne dass sie sich doppeln
         name = DEFAULT_WP_PREFIX
         i = 0
         while name in waypoints.keys():
             i += 1
             name = DEFAULT_WP_PREFIX + '(' + str(i) + ')'
 
+        # Erstelle den Wegpunkt mithilfe der momentanen Sensordaten
         new_waypoint = {
             "date": datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
             "altitude": self.altitude,
@@ -897,35 +1175,70 @@ class ControlScreen(CustomScreen):
             "latitude": self.latitude
         }
 
+        # Speicher den Wegpunkt in der Konfigurationsdatei
         self.app_config['waypoints'][name] = new_waypoint
         self.configuration.save_config()
 
+        # Status: Wegpunkt: NAME erstellt
         self.status = translate('Waypoint') + ': ' + name + ' ' + translate('set')
 
-    def on_config_changed(self):
+    def on_config_changed(self) -> None:
+        """
+        Wird aufgerufen, sobald die Konfiguration gespeichert wird, egal ob in diesen oder in einen anderen Bildschirm.
+        In dieser Funktion werden die Intervalle in den die Positionen der Joysticks gesendet, mit dem
+        aktuellen Wert überschrieben.
+        """
+
         super(ControlScreen, self).on_config_changed()
         self.send_thread.interval_sec = self.machine_config['tick']['value']
 
     def send_data(self) -> None:
+        """
+        Wird von dem send_thread aufgerufen.
+        In dieser Funktion werden die relativen Positionen der inneren, beweglichen Kreise zu den äußeren Kreise
+        ermittelt und zum ESP32 gesendet.
+        """
+
         r_relative_pos = self.r_joystick.get_center_pt()
         l_relative_pos = self.l_joystick.get_center_pt()
 
         if not self.app_config['testcase']:
+            # Format: RJ|POS_X|POS_Y
             message = f'RJ{SEPARATOR}{r_relative_pos[0]}{SEPARATOR}{r_relative_pos[1]}'
             wlan_client.send_message(message)
+            # Format: LJ|POS_X|POS_Y
             message = f'LJ{SEPARATOR}{l_relative_pos[0]}{SEPARATOR}{l_relative_pos[1]}'
             wlan_client.send_message(message)
 
     def receive_data(self) -> None:
-        response = wlan_client.wait_for_response()
-        datas = response.split(SEPARATOR)
+        """
+        Wird von dem receive_thread aufgerufen.
+        In dieser Funktion werden die Daten vom ESP32 empfangen, aufbereitet und in den
+        zugehörigen Variablen gespeichert.
+        """
 
-        self.altitude = datas[0]
-        self.speed = datas[1]
-        self.latitude = datas[2]
-        self.longitude = datas[3]
+        # Format ALTITUDE|SPEED|LATITUDE|LONGITUDE
+        response = wlan_client.wait_for_response(only_paired_device=True)
+        data = response.split(SEPARATOR)
+
+        self.altitude = data[0]
+        self.speed = data[1]
+        self.latitude = data[2]
+        self.longitude = data[3]
 
     def back_to_main(self, *args) -> None:
+        """
+        Wird von einem Knopf aufgerufen, wodurch der Benutzer wieder zum Startbildschirm gelangt.
+        Dabei wird der ESP32 die Clients zurückgesetzt.
+        Diese Signatur wird von Kivy vorgegeben.
+
+        Parameters
+        ----------
+        args: any
+            Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
+            angenommen werden.
+        """
+
         if not self.app_config['testcase']:
             wlan_client.send_message(f'CMD{SEPARATOR}reset')
 
@@ -936,21 +1249,57 @@ class ControlScreen(CustomScreen):
 
 
 class SettingsScreen(MenuScreen):
+    """
+    Einstellungsbildschirm im Bedingungsbildschirm.
+    Die Einstellungen umfassen neben den Appeinstellungen vom Appeinstellungenbildschirm
+    auch Einstellungen für den ESP32.
+
+    Attributes
+    ----------
+    app_settings: AppSettings
+        Die Appeinstellungen
+    """
+
     app_settings = ObjectProperty(None)
 
-    def __init__(self, **kwargs):
-        super(SettingsScreen, self).__init__(**kwargs)
-
     def on_enter(self, *args) -> None:
+        """
+        Wird aufgerufen, sobald dieser Bildschirm aufgerufen wird.
+        In dieser Funktion werden lediglich die Daten von der Konfigurationsdatei gelesen
+        und in die Felder in den Einstellungen eingesetzt.
+
+        Diese Signatur wird von Kivy vorgegeben.
+
+        Parameters
+        ----------
+        args: any
+            Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
+            angenommen werden.
+        """
+
         super(SettingsScreen, self).on_enter(*args)
         self.ids.tick_field.text = str(self.machine_config['tick']['value'])
 
     def save_config(self, *args) -> None:
-        tick = self.ids.tick_field.text
-        result = self.try_set_tick(tick)
+        """
+        Wird aufgerufen, der Speicher-knopf gedrückt wird.
+        In dieser Funktion werden die Einstellungen gespeichert.
 
+        Diese Signatur wird von Kivy vorgegeben.
+
+        Parameters
+        ----------
+        args: any
+            Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
+            angenommen werden.
+        """
+
+        tick = self.ids.tick_field.text
+        self.machine_config['tick']['value'] = int(tick)
+
+        # Sind die Werte korrekt?
         app_settings_validation = self.app_settings.validate_config()
-        if result and app_settings_validation:
+        if app_settings_validation:
             self.app_settings.save_config()
             self.configuration.save_config()
             self.notify()
@@ -958,27 +1307,59 @@ class SettingsScreen(MenuScreen):
         self.manager.get_screen('control').status = translate('Settings saved')
         self.close_menu(None)
 
-    def try_set_tick(self, tick: str) -> bool:
-        int_tick = 0
-        try:
-            int_tick = int(tick)
-        except ValueError:
-            return False
-
-        self.machine_config['tick']['value'] = int_tick
-        return True
-
     def notify(self) -> None:
+        """
+        In dieser Funktion wird der ESP32 mithilfe eines Command benachrichtigt,
+        der dann die übergebene Konfigurationsdatei nimmt und sich abspeichert.
+        """
+
         if not self.app_config['testcase']:
             json_string = self.config_obj.get_json_string_from_dict(self.machine_config)
             wlan_client.send_message(f'CMD{SEPARATOR}set_config{SEPARATOR}{json_string}')
 
 
 class WaypointsScreen(MenuScreen):
+    """
+    Wegpunktbildschirm.
+    In diesen Bildschirm werden alle Wegpunkte angezeigt,
+    die dann bearbeitet, gelöscht werden können.
+
+    Attributes
+    ----------
+    waypoints: dict
+        Enthält alle Wegpunkte.
+    columns: list
+        Enthält alle Zeilen, sprich die UI-Komponente der einzelnen Wegpunkte.
+    edit_buttons: list
+        Enthält alle Knöpfe für das Bearbeiten eines Wegpunktes.
+    remove_buttons: list
+        Enthält alle Knöpfe für das Löschen eines Wegpunktes.
+    grids: list
+        Enthält das Gitter der einzelnen Wegpunkte.
+        In diesen Gitter sind unteranderen die Sensordaten, im Form von Labels gespeichert.
+
+    title_labels: list
+        Enthält die Labels für die Namen der Wegpunkte
+    altitude_labels: list
+        Enthält die Labels für die Höhen der Wegpunkte
+    latitude_labels: list
+        Enthält die Labels für die Breitengrade der Wegpunkte
+    longitude_labels: list
+        Enthält die Labels für die Längengrade der Wegpunkte
+    date_labels: list
+        Enthält die Labels, die das Datum angeben, zu wann der Wegpunkt zuletzt
+        bearbeitet wurde.
+
+    fields: list
+        Wenn der Benutzer ein Wegpunkt berbeitet, verwenden wir Textfelder,
+        die die Labels temporär ersetzten. Diese Textfelder werden hier gespeichert.
+    current_edit: Button
+        Beinhaltet den Bearbeitungsknopf des Wegpunktes, der gerade bearbeitet wird.
+    """
+
     def __init__(self, **kwargs):
         super(WaypointsScreen, self).__init__(**kwargs)
         self.waypoints = self.app_config['waypoints']
-        self.pos_xs = [.1, .1, .42]
 
         self.columns = []
         self.edit_buttons = []
@@ -996,6 +1377,19 @@ class WaypointsScreen(MenuScreen):
         self.current_edit = None
 
     def on_enter(self, *args) -> None:
+        """
+        Wird aufgerufen, sobald dieser Bildschirm aufgerufen wird.
+        In dieser Funktion wird die Liste(UI) dynamisch generiert.
+
+        Diese Signatur wird von Kivy vorgegeben.
+
+        Parameters
+        ----------
+        args: any
+            Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
+            angenommen werden.
+        """
+
         self.waypoints = self.app_config['waypoints']
 
         list_area = self.ids.list_area
@@ -1058,30 +1452,80 @@ class WaypointsScreen(MenuScreen):
         super(WaypointsScreen, self).on_enter(args)
 
     def on_leave(self, *args) -> None:
+        """
+        Wird aufgerufen, sobald Benutzer die Bildschirm verlassen wird.
+        In dieser Funktion werden die davor erzeugten Elementen wieder zerstört.
+
+        Diese Signatur wird von Kivy vorgegeben.
+
+        Parameters
+        ----------
+        args: any
+            Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
+            angenommen werden.
+        """
+
         self.remove_waypoint_widgets()
         super(WaypointsScreen, self).on_leave(*args)
 
     def remove_waypoint_widgets(self) -> None:
+        """
+        In dieser Funktion findet eigentlich erst die Zerstörung der Elemente statt.
+        Zudem wird die Liste geleert.
+        """
+
         children = self.ids.list_area.children
         for index in range(len(children)):
             self.ids.list_area.remove_widget(self.ids.list_area.children[0])
+        self.waypoints.clear()
 
     def go_back_to_menu(self, *args) -> None:
-        for index in range(len(self.waypoints)):
-            self.remove_waypoint(self.remove_buttons[0])
+        """
+        Wird aufgerufen, wenn der Benutzer auf den Zurück-Knopf drückt.
+        Dann werden alle Wegpunkte gelöscht(UI, Liste in der Klasseninstanz).
+        Damit ist nicht die Liste in der Konfigurationsdatei gemeint.
+
+        Diese Signatur wird von Kivy vorgegeben.
+
+        Parameters
+        ----------
+        args: any
+            Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
+            angenommen werden.
+        """
+
+        self.remove_waypoint_widgets()
         self.manager.get_screen('control').status = ''
 
     def edit_waypoint(self, *args):
+        """
+        Wird aufgerufen, wenn der Benutzer auf den Berabeitung-Knopf drückt.
+        Dann werden alle Labels im Gitter gelöscht (Layout in den sich die Labels
+        mit den Sensordaten befinden) und durch 'numerische Textfelder' ersetzt.
+        Zudem wird aus den Berabeitung-Knopf ein Speichern-Knopf, der die Veränderungen speichert.
+
+        Diese Signatur wird von Kivy vorgegeben.
+
+        Parameters
+        ----------
+        args: any
+            Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
+            angenommen werden.
+        """
+
+        # Wenn gerade ein Knopf bearbeitet wird, wird der gespeichert und
+        # der gewünschte Wegpunkt bearbeitet.
         if len(self.fields) != 0:
             self.save_edited_waypoint(self.current_edit)
 
+        # Speicher den zuletzt gesetzten Knopf temporär ab
         edit_btn = args[0]
         self.current_edit = edit_btn
         index = self.edit_buttons.index(edit_btn)
         labels = [self.altitude_labels[index], self.latitude_labels[index], self.longitude_labels[index]]
 
+        # Ersetzte jedes Label mit Eingabefelder
         children = self.grids[index].children
-
         for i, label in enumerate(labels):
             box = children[(len(children) - 1) - i]
             box.remove_widget(label)
@@ -1094,11 +1538,26 @@ class WaypointsScreen(MenuScreen):
             self.fields.append(ti)
             box.add_widget(ti)
 
+        # Mach aus den Berabeitung-Knopf ein Speichern-Knopf, der die Veränderungen speichert.
         edit_btn.text = 'save'
         edit_btn.unbind(on_release=self.edit_waypoint)
         edit_btn.bind(on_release=self.save_edited_waypoint)
 
     def save_edited_waypoint(self, *args):
+        """
+        Funktion die vom Speichern-Knopf aufgerufen wird.
+        Dort werden dann die Textfelder wieder durch die Labels ersetzt, wobei die
+        der Inhalt der Textfelder genommen werden
+
+        Diese Signatur wird von Kivy vorgegeben.
+
+        Parameters
+        ----------
+        args: any
+            Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
+            angenommen werden.
+        """
+
         edit_btn = args[0]
 
         index = self.edit_buttons.index(edit_btn)
@@ -1106,16 +1565,10 @@ class WaypointsScreen(MenuScreen):
 
         last_update_date = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
 
-        self.app_config['waypoints'][title] = {
-            "altitude": self.fields[0].text,
-            "latitude": self.fields[1].text,
-            "longitude": self.fields[2].text,
-            "date": last_update_date,
-        }
-
         lists = [self.altitude_labels, self.latitude_labels, self.longitude_labels, self.date_labels]
+        numbers = []
 
-        self.configuration.save_config()
+        # Ersetzte jedes Eingabefelder mit Labels
         children = self.grids[index].children
         for i, field in enumerate(self.fields):
             number = float(self.fields[i].text)
@@ -1128,7 +1581,18 @@ class WaypointsScreen(MenuScreen):
             temp_l = Label(text=str(number))
             widget.add_widget(temp_l)
             lists[i][index] = temp_l
+            numbers.append(number)
 
+        # Erstelle den neuen Wegpunkt
+        self.app_config['waypoints'][title] = {
+            "altitude": str(numbers[0]),
+            "latitude": str(numbers[1]),
+            "longitude": str(numbers[2]),
+            "date": last_update_date
+        }
+
+        # Speichern den neuen Wegpunkt in die Konfigurationsdatei ab
+        self.configuration.save_config()
         self.fields.clear()
 
         edit_btn.text = 'edit'
@@ -1136,19 +1600,36 @@ class WaypointsScreen(MenuScreen):
         edit_btn.bind(on_release=self.edit_waypoint)
 
     def remove_waypoint(self, *args) -> None:
-        index = self.remove_buttons.index(args[0])
+        """
+        Funktion die vom Löschen-Knopf aufgerufen wird.
 
+        Diese Signatur wird von Kivy vorgegeben.
+
+        Parameters
+        ----------
+        args: any
+            Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
+            angenommen werden.
+         """
+
+        # Lösche den Knopf aus temporären Variablen
+        # Denn es kann auch sein, dass man den Wegpunkt bearbeitet und während man
+        # den Wegpunkt bearbeitet löscht.
+        index = self.remove_buttons.index(args[0])
         if self.current_edit == self.edit_buttons[index]:
             self.fields.clear()
             self.current_edit = None
 
+        # Lösche den Wegpunkt aus der Konfigurationsdatei
         self.app_config['waypoints'].pop(self.title_labels[index].text)
         self.configuration.save_config()
         self.waypoints = self.app_config['waypoints']
 
+        # Lösche das Widget aus der Liste in der UI
         self.ids.list_area.remove_widget(self.columns[index])
         self.ids.list_area.height = self.get_height()
 
+        # Lösche die UI-Komponenten aus den Listen
         self.edit_buttons.pop(index)
         self.columns.pop(index)
         self.grids.pop(index)
@@ -1160,16 +1641,16 @@ class WaypointsScreen(MenuScreen):
         self.remove_buttons.pop(index)
 
     def get_height(self) -> int:
+        """
+        Berechnet die Höhe anhand der Anzahl der Wegpunkte.
+
+        Returns
+        -------
+        <nameless>: int
+            Die Gesamthöhe.
+        """
+
         return len(self.waypoints) * (self.width / 5.5)
-
-    @staticmethod
-    def adjust_pos_hint(label, text_before, text_after) -> None:
-        print('ss')
-        label.pos_hint = {
-            'x': label.pos_hint['x'] + (len(text_before) - len(text_after)) * -0.0055,
-            'y': label.pos_hint['y']
-        }
-
 
 # *******************************************************************
 
@@ -1177,6 +1658,10 @@ class WaypointsScreen(MenuScreen):
 
 
 class DroneRoot(BoxLayout):
+    """
+    Das Root Widget.
+    Jedes 
+    """
     pass
 
 

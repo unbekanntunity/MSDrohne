@@ -3,10 +3,9 @@
 # *******************************************************************
 
 # **************************** Imports ****************a**************
-import os
-os.environ['KIVY_GL_BACKEND'] = 'angle_sdl2'
 
 import kivy
+
 kivy.require('2.0.0')
 
 from kivy.app import App
@@ -130,7 +129,7 @@ class NumericTextInput(TextInput):
         im Eingabefeld steht
         """
 
-        if self.text is '':
+        if self.text == '':
             self.text = '0'
         super(NumericTextInput, self).on_kv_post(base_widget)
 
@@ -523,7 +522,7 @@ class MenuScreen(CustomScreen):
         args: any
             Durch den einen Stern vor dem Namen können  beliebig viele positionelle Argumente
             angenommen werden.
-            Dieses Signatur wird von Kivy vorgegeben.
+            Diese Signatur wird von Kivy vorgegeben.
         """
 
         self.nav_bar = App.get_running_app().root.ids.nav_bar
@@ -551,7 +550,7 @@ class MenuScreen(CustomScreen):
         args: any
             Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
             angenommen werden.
-            Dieses Signatur wird von Kivy vorgegeben.
+            Diese Signatur wird von Kivy vorgegeben.
         """
 
         index = self.nav_bar_buttons.index(args[0])
@@ -643,7 +642,7 @@ class StartScreen(CustomScreen):
         args: any
             Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
             angenommen werden.
-            Dieses Signatur wird von Kivy vorgegeben.
+            Diese Signatur wird von Kivy vorgegeben.
         """
 
         print(f'{self.width} x {self.height}')
@@ -660,7 +659,7 @@ class StartScreen(CustomScreen):
         args: any
             Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
             angenommen werden.
-            Dieses Signatur wird von Kivy vorgegeben.
+            Diese Signatur wird von Kivy vorgegeben.
         """
         Clock.unschedule(self.change_font)
         super(StartScreen, self).on_leave(*args)
@@ -677,7 +676,7 @@ class StartScreen(CustomScreen):
         args: any
             Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
             angenommen werden.
-            Dieses Signatur wird von Kivy vorgegeben.
+            Diese Signatur wird von Kivy vorgegeben.
         """
 
         text = MarkupLabel(self.ids.title.text).markup[1]
@@ -981,9 +980,10 @@ class WaypointsScreen(MenuScreen):
         self.waypoints = self.app_config['waypoints']
         self.pos_xs = [.1, .1, .42]
 
-        self.grids = []
+        self.columns = []
         self.edit_buttons = []
         self.remove_buttons = []
+        self.grids = []
 
         self.title_labels = []
         self.altitude_labels = []
@@ -1005,49 +1005,55 @@ class WaypointsScreen(MenuScreen):
             frame_height = list_area.height / len(self.waypoints)
 
         for (index, key, value) in zip(range(len(self.waypoints)), self.waypoints.keys(), self.waypoints.values()):
-            gl = FloatLayout(size=list_area.size)
 
-            title_label = Label(text=key, size_hint=(None, None), pos_hint={'x': .45, 'y': .5}, font_size=20)
-            altitude_label = Label(text=f'altitude: {value["altitude"]}', size_hint=(None, None),
-                                   pos_hint={'x': self.pos_xs[0], 'y': .2})
-            latitude_label = Label(text=f'latitude: {value["latitude"]}', size_hint=(None, None),
-                                   pos_hint={'x': self.pos_xs[1], 'y': -.1})
-            longitude_label = Label(text=f'longitude: {value["longitude"]}', size_hint=(None, None),
-                                    pos_hint={'x': self.pos_xs[2], 'y': .2})
-            date_label = Label(text=f'last update: {value["date"]}', size_hint=(None, None),
-                               pos_hint={'x':  ((self.width / 1384) / 100) + .405, 'y': -.1})
+            main = FloatLayout(size=list_area.size)
 
-            gl.add_widget(title_label)
-            gl.add_widget(altitude_label)
-            gl.add_widget(latitude_label)
-            gl.add_widget(longitude_label)
-            gl.add_widget(date_label)
-
+            anchor = AnchorLayout(anchor_y='top', pos_hint={'x': .0, 'y': .0})
+            title_label = Label(text=key, size_hint=(.1, .3), font_size=20)
+            anchor.add_widget(title_label)
             self.title_labels.append(title_label)
-            self.altitude_labels.append(altitude_label)
-            self.latitude_labels.append(latitude_label)
-            self.longitude_labels.append(longitude_label)
-            self.date_labels.append(date_label)
 
-            edit_button = RoundedButton(text='edit', pos_hint={'x': .8, 'y': .6})
-            edit_button.size_hint = (None, 0.3)
+            grid = GridLayout(cols=2, size_hint=(.8, .7), pos_hint={'x': 0, 'y': 0})
+
+            names = ['altitude', 'latitude', 'longitude', 'last update']
+            values_names = ['altitude', 'latitude', 'longitude', 'date']
+            lists = [self.altitude_labels, self.latitude_labels, self.longitude_labels, self.date_labels]
+
+            for i in range(4):
+                t_b = BoxLayout()
+                label_name = Label(text=names[i])
+                label_value = Label(text=str(value[values_names[i]]))
+                t_b.add_widget(label_name)
+                t_b.add_widget(label_value)
+                lists[i].append(label_value)
+                grid.add_widget(t_b)
+            self.grids.append(grid)
+
+            box_anchor = AnchorLayout(anchor_x='right', pos_hint={'x': 0, 'y': 0})
+            box = BoxLayout(orientation='vertical', size_hint=(0.2, 1), padding=20, spacing=10)
+
+            edit_button = RoundedButton(text='edit', size_hint_y=.4)
             edit_button.bind(on_release=self.edit_waypoint)
-
-            remove_button = RoundedButton(text='remove', pos_hint={'x': .8, 'y': .2})
-            remove_button.size_hint = (None, 0.3)
+            remove_button = RoundedButton(text='remove', size_hint_y=.4)
             remove_button.bind(on_release=self.remove_waypoint)
+            box.add_widget(edit_button)
+            box.add_widget(remove_button)
+            box_anchor.add_widget(box)
 
-            gl.add_widget(edit_button)
-            gl.add_widget(remove_button)
+            self.edit_buttons.append(edit_button)
+            self.remove_buttons.append(remove_button)
 
-            with gl.canvas.before:
+            main.add_widget(anchor)
+            main.add_widget(box_anchor)
+            main.add_widget(grid)
+
+            with main.canvas.before:
                 Color(rgba=[.5, .5, .5, 1])
                 Line(width=1, rectangle=(0, index * frame_height, list_area.width, frame_height))
 
-            self.grids.append(gl)
-            self.edit_buttons.append(edit_button)
-            self.remove_buttons.append(remove_button)
-            list_area.add_widget(gl)
+            self.columns.append(main)
+
+            list_area.add_widget(main)
 
         super(WaypointsScreen, self).on_enter(args)
 
@@ -1074,18 +1080,19 @@ class WaypointsScreen(MenuScreen):
         index = self.edit_buttons.index(edit_btn)
         labels = [self.altitude_labels[index], self.latitude_labels[index], self.longitude_labels[index]]
 
-        for label, pos_x in zip(labels, self.pos_xs):
-            temp = label.text.split(':')[0]
+        children = self.grids[index].children
 
-            ti = TextInput(multiline=False)
-            ti.pos_hint = {'x': pos_x + 0.011 * len(temp), 'y': label.pos_hint['y'] + 0.26}
-            ti.size_hint = label.size_hint
-            ti.size = (label.texture_size[0], label.texture_size[1] + 10)
+        for i, label in enumerate(labels):
+            box = children[(len(children) - 1) - i]
+            box.remove_widget(label)
 
-            ti.text = label.text.split(': ')[1]
+            ti = NumericTextInput(multiline=False)
+
+            ti.text = label.text
             ti.font_size = label.font_size
+
             self.fields.append(ti)
-            self.grids[index].add_widget(ti)
+            box.add_widget(ti)
 
         edit_btn.text = 'save'
         edit_btn.unbind(on_release=self.edit_waypoint)
@@ -1099,67 +1106,75 @@ class WaypointsScreen(MenuScreen):
 
         last_update_date = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
 
+        lists = [self.altitude_labels, self.latitude_labels, self.longitude_labels, self.date_labels]
+        numbers = []
+
+        children = self.grids[index].children
+
+        for i, field in enumerate(self.fields):
+            number = float(self.fields[i].text)
+            if number.is_integer():
+                number = int(number)
+
+            widget = children[(len(children) - 1) - i]
+            widget.remove_widget(field)
+
+            temp_l = Label(text=str(number))
+            widget.add_widget(temp_l)
+            lists[i][index] = temp_l
+            numbers.append(number)
+
         self.app_config['waypoints'][title] = {
-            "altitude": self.fields[0].text,
-            "latitude": self.fields[1].text,
-            "longitude": self.fields[2].text,
-            "date": last_update_date,
+            "altitude": str(numbers[0]),
+            "latitude": str(numbers[1]),
+            "longitude": str(numbers[2]),
+            "date": last_update_date
         }
 
-        self.adjust_pos_hint(self.altitude_labels[index], self.altitude_labels[index].text.split(': ')[1],
-                             self.fields[0].text)
-        self.adjust_pos_hint(self.latitude_labels[index], self.latitude_labels[index].text.split(': ')[1],
-                             self.fields[1].text)
-        self.adjust_pos_hint(self.longitude_labels[index], self.longitude_labels[index].text.split(': ')[1],
-                             self.fields[2].text)
-
-        self.altitude_labels[index].text = 'altitude: ' + self.fields[0].text
-        self.latitude_labels[index].text = 'latitude: ' + self.fields[1].text
-        self.longitude_labels[index].text = 'longitude: ' + self.fields[2].text
-        self.date_labels[index].text = 'last update: ' + last_update_date
-
         self.configuration.save_config()
-        for field in self.fields:
-            self.grids[index].remove_widget(field)
         self.fields.clear()
 
         edit_btn.text = 'edit'
         edit_btn.unbind(on_release=self.save_edited_waypoint)
         edit_btn.bind(on_release=self.edit_waypoint)
 
-    def remove_waypoint(self, *args) -> None:
-        index = self.remove_buttons.index(args[0])
 
-        if self.current_edit == self.edit_buttons[index]:
-            self.fields.clear()
-            self.current_edit = None
+def remove_waypoint(self, *args) -> None:
+    index = self.remove_buttons.index(args[0])
 
-        self.app_config['waypoints'].pop(self.title_labels[index].text)
-        self.configuration.save_config()
-        self.waypoints = self.app_config['waypoints']
+    if self.current_edit == self.edit_buttons[index]:
+        self.fields.clear()
+        self.current_edit = None
 
-        self.ids.list_area.remove_widget(self.grids[index])
-        self.ids.list_area.height = self.get_height()
+    self.app_config['waypoints'].pop(self.title_labels[index].text)
+    self.configuration.save_config()
+    self.waypoints = self.app_config['waypoints']
 
-        self.edit_buttons.pop(index)
-        self.grids.pop(index)
-        self.title_labels.pop(index)
-        self.altitude_labels.pop(index)
-        self.longitude_labels.pop(index)
-        self.latitude_labels.pop(index)
-        self.date_labels.pop(index)
-        self.remove_buttons.pop(index)
+    self.ids.list_area.remove_widget(self.columns[index])
+    self.ids.list_area.height = self.get_height()
 
-    def get_height(self) -> int:
-        return len(self.waypoints) * (self.width / 5.5)
+    self.edit_buttons.pop(index)
+    self.columns.pop(index)
+    self.grids.pop(index)
+    self.title_labels.pop(index)
+    self.altitude_labels.pop(index)
+    self.longitude_labels.pop(index)
+    self.latitude_labels.pop(index)
+    self.date_labels.pop(index)
+    self.remove_buttons.pop(index)
 
-    @staticmethod
-    def adjust_pos_hint(label, text_before, text_after) -> None:
-        print('ss')
-        label.pos_hint = {
-            'x': label.pos_hint['x'] + (len(text_before) - len(text_after)) * -0.0055,
-            'y': label.pos_hint['y']
-        }
+
+def get_height(self) -> int:
+    return len(self.waypoints) * (self.width / 5.5)
+
+
+@staticmethod
+def adjust_pos_hint(label, text_before, text_after) -> None:
+    print('ss')
+    label.pos_hint = {
+        'x': label.pos_hint['x'] + (len(text_before) - len(text_after)) * -0.0055,
+        'y': label.pos_hint['y']
+    }
 
 
 # *******************************************************************

@@ -115,7 +115,7 @@
             BoxLayout:
                 orientation: 'vertical'
                 size_hint_y: None
-                height: 600
+                height: 700
                 padding: 20
                 spacing: 20
                 Label:
@@ -288,7 +288,7 @@
             BoxLayout:
                 orientation: 'vertical'
                 size_hint_y: None
-                height: 500
+                height: 800
                 padding: 20
                 spacing: 20
                 Label:
@@ -298,8 +298,9 @@
                     Label:
                         text: app.bind_text(self, 'Ticks', 'Ticks:')
                         color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
-                    TextInput:
+                    NumericTextInput:
                         id: tick_field
+                        filter_type: 'int'
                         multiline: False
                 AppSettings:
                     id: app_settings
