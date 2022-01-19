@@ -164,6 +164,9 @@ class AndroidBluetoothClient(BluetoothClient):
             if self.socket is not None:
                 self.socket.connect()
 
+    def get_paired_devices(self):
+        return list(map(lambda x: x.getName(), self.bluetoothAdapter.getDefaultAdapter().getBondedDevices().toArray()))
+
     def has_paired_devices(self, name: str = '') -> bool:
         """
         Überprüft, ob der Client eine Bluetooth-Verbindung hat.
@@ -178,14 +181,14 @@ class AndroidBluetoothClient(BluetoothClient):
 
         Returns
         -------
-        <nameless>: bool
+        <nameless>: boola
             Das Ergebnis der Suche.
         """
 
-        paired_devices = self.bluetoothAdapter.getDefaultAdapter().getBondedDevices().toArray()
+        paired_devices = self.get_paired_devices()
         if len(paired_devices) != 0:
             if name != '':
-                return name in paired_devices
+                return name in map(lambda x: x.getName(), paired_devices)
             else:
                 return True
         return False
@@ -288,7 +291,7 @@ class WLANClient(object):
                             return data
                 else:
                     return data
-            sleep(0.1)
+            sleep(1)
 
     def reset(self) -> None:
         """
@@ -313,7 +316,3 @@ class WLANClient(object):
 
         h_name = socket.gethostname()
         return socket.gethostbyname(h_name)
-
-
-if __name__ == '__main__':
-    help(WLANClient)

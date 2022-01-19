@@ -1,6 +1,6 @@
 {
     "app": {
-        "current_language": "en",
+        "current_language": "ge",
         "current_theme": "Dark",
         "swipe_distance": 5.0,
         "testcase": true,
@@ -83,6 +83,24 @@
             }
         },
         "waypoints": {
+            "new waypoint": {
+                "altitude": "0",
+                "date": "01/19/2022, 10:19:14",
+                "latitude": "0",
+                "longitude": "0"
+            },
+            "new waypoint(1)": {
+                "altitude": "0",
+                "date": "01/19/2022, 10:19:14",
+                "latitude": "0",
+                "longitude": "0"
+            },
+            "new waypoint(2)": {
+                "altitude": "0",
+                "date": "01/19/2022, 10:19:14",
+                "latitude": "0",
+                "longitude": "0"
+            }
         }
     },
     "machine": {

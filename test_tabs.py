@@ -4,9 +4,9 @@
 
 # **************************** Imports ****************a**************
 import os
-os.environ['KIVY_GL_BACKEND'] = 'angle_sdl2'
 
 import kivy
+
 kivy.require('2.0.0')
 
 from kivy.app import App
@@ -57,15 +57,6 @@ LANGUAGE_DICTIONARY = {
     'ge': 'German'
 }
 
-
-CON_INTERVAL = .5
-CON_STATUS = {
-    100: 'strong',
-    50: 'acceptable',
-    20: 'weak',
-    10: 'too weak',
-}
-
 # ******************************************************************
 
 # ********************* Plattformspezifisch ************************
@@ -75,7 +66,7 @@ os_on_device = platform.system
 
 # Je nach Betriebssystem, werden andere Bibliotheken und
 # Funktionen für die Bluetooth-Kommunikation verwendet
-if 'Android' in os_on_device:
+if 'Android' or 'Linux' in os_on_device:
     bluetooth_client: client.AndroidBluetoothClient = client.AndroidBluetoothClient()
 else:
     bluetooth_client: client.BluetoothClient = client.BluetoothClient()
@@ -974,7 +965,11 @@ class ConnectionScreen(CustomScreen):
         Wenn Ja erstellt die Funktion ein Socket, worüber dann die Kommunikation stattfindet.
         """
 
-        if self.app_config['testcase'] or ('Android' in os_on_device and bluetooth_client.has_paired_devices(NAME)):
+        print(bluetooth_client.get_paired_devices())
+        print(self.app_config['testcase'])
+        print(bluetooth_client.has_paired_devices(NAME))
+        if self.app_config['testcase'] or ('Android' or 'Linux' in os_on_device and bluetooth_client.has_paired_devices(NAME)):
+            print("I AM IN")
             for widget in self.wlan.children:
                 self.set_visible_widget(widget, hide=False)
             self.status.text = ''
@@ -982,6 +977,7 @@ class ConnectionScreen(CustomScreen):
             if not self.app_config['testcase'] and self.socket_created:
                 bluetooth_client.create_socket_stream(NAME)
                 self.socket_created = True
+                print("socket created")
             if self.connected:
                 self.bluetooth_connection_thread.stop()
         else:
@@ -1110,7 +1106,6 @@ class ControlScreen(CustomScreen):
 
     latitude = StringProperty('0')
     longitude = StringProperty('0')
-    esp_connection = StringProperty('strong')
 
     battery = StringProperty('100')
 
@@ -1131,21 +1126,13 @@ class ControlScreen(CustomScreen):
 
         self.receive_thread = DisposableLoopThread()
         self.send_thread = DisposableLoopThread()
-        self.connection_thread = DisposableLoopThread()
-
-        self.connection_thread.add_function(self.check_connection)
-        self.connection_thread.interval_sec = CON_INTERVAL
 
         self.receive_thread.add_function(self.receive_data)
-        self.receive_thread.interval_sec = self.machine_config['tick']['value']
-
         self.send_thread.add_function(self.send_data)
         self.send_thread.interval_sec = self.machine_config['tick']['value']
 
         self.r_joystick = JoyStick()
         self.l_joystick = JoyStick()
-
-        self.esp_connection = translate('strong')
 
         self.status = translate('Ready to take off')
         self.created = False
@@ -1170,7 +1157,6 @@ class ControlScreen(CustomScreen):
         if not self.app_config['testcase']:
             self.receive_thread.save_start()
             self.send_thread.save_start()
-            self.connection_thread.save_start()
 
         # Wurden die Joysticks schon erstellt?
         if not self.created:
@@ -1186,12 +1172,6 @@ class ControlScreen(CustomScreen):
             if not self.app_config['testcase']:
                 # Damit der ESP32 eine Connection hat, um die Sensordaten zu senden
                 wlan_client.send_message('ping')
-
-    def on_leave(self, *args) -> None:
-        if not self.app_config['testcase']:
-            self.receive_thread.stop()
-            self.send_thread.stop()
-            self.connection_thread.stop()
 
     def set_waypoint(self, *args):
         """
@@ -1267,38 +1247,13 @@ class ControlScreen(CustomScreen):
         """
 
         # Format ALTITUDE|SPEED|LATITUDE|LONGITUDE
-        response = wlan_client.wait_for_response(flag='GEODATA', only_paired_device=True)
+        response = wlan_client.wait_for_response(only_paired_device=True)
         data = response.split(SEPARATOR)
 
         self.altitude = data[0]
         self.speed = data[1]
         self.latitude = data[2]
         self.longitude = data[3]
-
-    def check_connection(self) -> None:
-        esp_con = self.check_esp_connection()
-        own_con = self.check_own_connection()
-
-        warning = ''
-        if esp_con == CON_STATUS[:-1]:
-            warning += translate('WARNING: WEAK CONNECTION(ESP32)')
-        if own_con == CON_STATUS[:-1]:
-            warning += translate('WARNING: WEAK CONNECTION(DEVICE)')
-
-        if warning is not '':
-            self.status = warning
-
-        self.esp_connection = translate(esp_con)
-
-    def check_esp_connection(self) -> (int, str):
-        response = wlan_client.wait_for_response(flag='CONDATA', only_paired_device=True)
-        data = response.split(SEPARATOR)
-
-        return self.get_connectivity(data[1])
-
-    # TODO: Implement own Connection check
-    def check_own_connection(self) -> (int, str):
-        return self.get_connectivity(100)
 
     def back_to_main(self, *args) -> None:
         """
@@ -1323,14 +1278,6 @@ class ControlScreen(CustomScreen):
         self.receive_thread.stop()
 
         self.go_back('start')
-
-    @staticmethod
-    def get_connectivity(value) -> str:
-        result = CON_STATUS[0]
-        for border, status in CON_STATUS.items():
-            if value > border:
-                result = status
-        return result
 
 
 class SettingsScreen(MenuScreen):

@@ -66,14 +66,29 @@ class DisposableLoopThread(Thread):
         """
         Startet den Thread, wobei jeder Thread nur einmal gestartet werden kann. Diese Funktion ist
         also gegenüber der in der Elternklasse: Thread()-Klasse definierten, start()-Funktion zu empfehlen.
-
-        Notiz: Die stop()-Funktion stoppt zwar die Ausführung der Funktionen, aber stoppt den Thread nicht.
         """
 
         if self.started:
-            self.proceed = True
+            self.restart()
         else:
             self.start()
+
+    def restart(self) -> None:
+        """
+        Startet den Thread neu, indem der Konstruktor aufgerufen wird und setzt sie wieder mit den
+        alten Variablen gleich.
+        """
+
+        interval_sec = self.interval_sec
+        event_handler = self.event_handler
+        on_finished_event_handler = self.on_finished_events
+
+        self.__init__()
+        self.interval_sec = interval_sec
+        self.event_handler = event_handler
+        self.on_finished_events = on_finished_event_handler
+
+        self.save_start()
 
     def run(self) -> None:
         """
@@ -84,8 +99,8 @@ class DisposableLoopThread(Thread):
         """
 
         while self.proceed:
-            sleep(self.interval_sec)
             self.results = self.event_handler.invoke()
+            sleep(self.interval_sec)
 
     def start(self) -> None:
         """
@@ -101,7 +116,6 @@ class DisposableLoopThread(Thread):
     def stop(self) -> None:
         """
         Stoppt die Ausführung der im 'self.events' definierten Funktionen.
-        Stoppt jedoch nicht den Thread.
         """
 
         self.proceed = False

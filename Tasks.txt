@@ -1,28 +1,7 @@
-Task:
+Daten von ESP32 anpassen
+Hovermode einbauen
+Design überarbeiten -> KIVYMD
 
-- Buildozer installieren und android apk bauen
-
-- Testen:
-case1: Bluetooth durchgägnig an 
-case2: Bluettoth vor der eingabe des WLAN abbrechen
-
-
-- Kamera
-- Kamera bild anzeigen lassen
-
-
-- Menü
--> Dropdown liste generieren lassen
-Automatische Kategorien und Widget bassierend auf die Datentypen
-
-
-- Dokumentation ui
-Dropdownliste anpassen
-
-Dokumentation
-Readme vervollständigen
-
-Discord einrichten und email einrichten
 
 notes:
  canvas.before:

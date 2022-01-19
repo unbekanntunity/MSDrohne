@@ -178,7 +178,13 @@
             on_press: root.go_back('start')
     AnchorLayout:
         AnchorLayout:
-            size_hint: (0.6, 0.3)
+            size_hint: (.6, .3)
+            canvas.before:
+                Color:
+                    rgba: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
+                Line:
+                    width: 0.5
+                    rectangle: self.x, self.y, self.width, self.height
             Label:
                 id: status_label
             BoxLayout:
@@ -186,12 +192,6 @@
                 orientation: 'vertical'
                 padding: 20
                 spacing: 10
-                canvas.before:
-                    Color:
-                        rgba: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
-                    Line:
-                        width: 0.5
-                        rectangle: self.x, self.y, self.width, self.height
                 TextInput:
                     id: name_field
                     text: app.bind_text(self, 'Name', 'Name')
@@ -260,7 +260,7 @@
                 text: f'{root.battery}%'
                 color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
             Label:
-                text: app.bind_text(self, 'strong', 'strong')
+                text: f'{root.esp_connection}'
                 color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
 
 <SettingsScreen>:
