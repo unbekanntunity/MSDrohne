@@ -113,3 +113,6 @@ msgstr "Off"
 msgid "Wischdistanz"
 msgstr "Swipe distance"
 
+msgid "Gespeicherte Netzwerke"
+msgstr "Saved networks"
+

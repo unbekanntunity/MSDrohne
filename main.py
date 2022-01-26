@@ -1010,6 +1010,9 @@ class ConnectionScreen(CustomScreen):
         """
         Wird aufgerufen, sobald der Benutzer den 'Senden'-Knopf auf dem WLAN-GridLayout drückt.
         Dann werden die Texte der beiden Eingabefelder als Name und Passwort als Argumente übergeben.
+        Zudem überprüft diese Funktion, ob das Netzwerk schonmal verwendet wurde und wenn nicht,
+        kann der Benutzer dieses Netzwerk speichern.
+        Als verwendet gilt, wenn Name und Passwort schonmal gesendet wurden.
 
         Diese Funktion sendet dann die Daten zum ESP32.
 
@@ -1020,6 +1023,34 @@ class ConnectionScreen(CustomScreen):
         password: str
             Passwort des WLAN-Netzwerkes
         """
+
+        networks = self.app_config['networks']
+        names = []
+        passwords = []
+
+        # Networks ist eine Liste mit "Dictionaries"
+        # {
+        #   "name": "name"
+        #   "password": "password"
+        # }
+        # Das wird erstmal in zwei Listen umgeformt die jeweils die Namen und jeweils die
+        # Passwörter beinhalten
+        for network in networks:
+            temp_name = list(network.keys())[0]
+            temp_password = network[temp_name]
+
+            names.append(temp_name)
+            passwords.append(temp_password)
+
+        if name not in names and password not in passwords:
+            print('Do u want to save ur data?')
+            networks.append(
+                {
+                    "name": name,
+                    "password": password
+                }
+            )
+            print('Data saved')
 
         if self.app_config['testcase']:
             self.manager.current = 'control'
@@ -1065,6 +1096,10 @@ class ConnectionScreen(CustomScreen):
             self.wlan.height = 0
 
             self.response_thread.stop()
+
+    def show_saved_networks(self):
+        networks = self.app_config['networks']
+        print(networks)
 
 
 class ControlScreen(CustomScreen):

@@ -115,3 +115,6 @@ msgstr "Aus"
 
 msgid "Swipe distance"
 msgstr "Wischdistanz"
+
+msgid "Saved networks"
+msgstr "Gespeicherte Netzwerke"

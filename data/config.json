@@ -101,7 +101,13 @@
                 "latitude": "0",
                 "longitude": "0"
             }
-        }
+        },
+        "networks" : [
+            {
+                "name" : "test",
+                "password" : "test"
+            }
+        ]
     },
     "machine": {
         "tick": {
