@@ -165,7 +165,6 @@
 <ConnectionScreen>:
     name: 'connection'
     status: status_label
-    wlan: wlan_grid
     AnchorLayout:
         size_hint_x: None
         anchor_x: 'left'
@@ -187,33 +186,6 @@
                     rectangle: self.x, self.y, self.width, self.height
             Label:
                 id: status_label
-            BoxLayout:
-                id: wlan_grid
-                orientation: 'vertical'
-                padding: 20
-                spacing: 10
-                TextInput:
-                    id: name_field
-                    text: app.bind_text(self, 'Name', 'Name')
-                    multiline: False
-                    size_hint_y: .2
-                TextInput:
-                    id: password_field
-                    text: app.bind_text(self, 'Password', 'Password')
-                    multiline: False
-                    size_hint_y: .2
-                BoxLayout:
-                    spacing: 10
-                    size_hint_y: .3
-                    anchor_y: 'bottom'
-                    RoundedButton:
-                        size_hint: (1, .8)
-                        text: app.bind_text(self, 'Send', 'Send')
-                        on_release: root.send_data(root.ids.name_field.text, root.ids.password_field.text)
-                    RoundedButton:
-                        size_hint: (1, .8)
-                        text: app.bind_text(self, 'Saved networks', 'Saved networks')
-                        on_release: root.show_saved_networks()
 
 <ControlScreen>:
     name: 'control'

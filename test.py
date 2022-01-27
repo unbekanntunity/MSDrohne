@@ -12,6 +12,8 @@ from kivy.uix.label import Label
 class Root(AnchorLayout):
     pass
 
+def ping():
+    print("asdasd")
 
 class TestApp(App):
     __version__ = "0.1"
@@ -31,6 +33,7 @@ def hide_widget(widget, dohide=True):
     elif dohide:
         widget.saved_attrs = widget.height, widget.size_hint_y, widget.opacity, widget.disabled
         widget.height, widget.size_hint_y, widget.opacity, widget.disabled = 0, None, 0, True
+
 
 if __name__ == '__main__':
     TestApp().run()

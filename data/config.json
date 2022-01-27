@@ -111,7 +111,6 @@
     },
     "machine": {
         "tick": {
-            "type": "int",
             "value": 1
         }
     }

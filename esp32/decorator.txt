@@ -1,0 +1,15 @@
+from drohnev2.functools import wraps
+
+def command(cmd_type='public'):
+    def actual_decorator(func):
+        @wraps(func)
+        def wrapper(self, connection, passed_type, address, *args):
+            if cmd_type == 'private':
+                if passed_type == 'private':
+                    return func(self, connection, passed_type, address, *args)
+                else:
+                    print('permission denied')
+            else:
+                return func(self, connection, passed_type, *args)
+        return wrapper
+    return actual_decorator

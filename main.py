@@ -75,10 +75,6 @@ os_on_device = platform.system
 
 # Je nach Betriebssystem, werden andere Bibliotheken und
 # Funktionen für die Bluetooth-Kommunikation verwendet
-if 'Android' in os_on_device:
-    bluetooth_client: client.AndroidBluetoothClient = client.AndroidBluetoothClient()
-else:
-    bluetooth_client: client.BluetoothClient = client.BluetoothClient()
 
 wlan_client = client.WLANClient()
 
@@ -898,204 +894,78 @@ class ConnectionScreen(CustomScreen):
     ----------
     status: Label
         Ein Text, welches den momentanen Status anzeigt.
-    wlan: GridLayout
-        Das Eingabefeld für den Namen und für das Passwort.
-        Sobald das Layout erscheint, wird das Status-Label verdrängt.
-    response_thread: DisposableLoopThread
-        Ein Thread, der periodisch Daten vom ESP32 empfängt.
-        Daten: Höhe, Breitengrad, Längengrad, Geschwindigkeit u.s.w.
-    bluetooth_connection_thread: DisposableLoopThread
-        Ein Thread, der überprüft, ob die Bluetooth-Funktion angeschaltet wurde.
     """
 
     status = ObjectProperty()
-    wlan = ObjectProperty()
 
-    def __init__(self, **kwargs):
-        """
-        Erstellt alle nötigen Variablen für die Klasse.
-        Diese Signatur wird von Kivy vorgegeben.
+    def __init__(self, **kw):
+        super(ConnectionScreen, self).__init__(**kw)
+        self.ip = '192.168.178.30'
+        self.port = '9192'
 
-        Parameters
-        ----------
-        kwargs: any
-            Durch die zwei Sterne vor dem Namen kann man eine undefinierte Anzahl von Parameter
-            übergeben werden. kwargs kann also beliebig viele Parameter mit variablen Namen darstellen.
-        """
+        self.waiting_text = translate('Waiting for response')
 
-        super(ConnectionScreen, self).__init__(**kwargs)
+        self.max_steps = 4
+        self.current_step = 0
 
-        self.connected = False
+        self.waiting_anim_thread = DisposableLoopThread()
+        self.waiting_anim_thread.add_function(self.wait_anim)
 
-        self.response_thread = DisposableLoopThread()
-        self.response_thread.event_handler.add_function(self.check_response)
+        self.register_thread = DisposableLoopThread()
+        self.register_thread.add_function(self.register_ip)
 
-        self.bluetooth_connection_thread = DisposableLoopThread()
-        self.bluetooth_connection_thread.add_function(self.check_bluetooth_connection)
+        self.receive_thread = DisposableLoopThread()
+        self.receive_thread.add_function(self.receive_response)
 
-        self.socket_created = False
+    def on_kv_post(self, base_widget) -> None:
+        self.status.text = self.waiting_text
 
     def on_enter(self, *args) -> None:
-        """
-        Wird aufgerufen, sobald dieser Bildschirm aufgerufen wird.
-        Diese Funktion startet den Bluetooth-Thread.
-
-        Diese Signatur wird von Kivy vorgegeben.
-
-        Parameters
-        ----------
-        args: any
-            Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
-            angenommen werden.
-        """
-
-        self.bluetooth_connection_thread.save_start()
-        super(ConnectionScreen, self).on_enter(*args)
+        self.waiting_anim_thread.save_start()
+        self.register_thread.save_start()
 
     def on_leave(self, *args) -> None:
-        """
-        Wird aufgerufen, sobald Benutzer die Bildschirm verlassen wird.
-        Diese Funktion stoppt den Bluetooth-Thread.
+        self.waiting_anim_thread.stop()
+        self.register_thread.stop()
+        self.receive_thread.stop()
 
-        Diese Signatur wird von Kivy vorgegeben.
-
-        Parameters
-        ----------
-        args: any
-            Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
-            angenommen werden.
-        """
-
-        self.bluetooth_connection_thread.stop()
-
-    def check_bluetooth_connection(self) -> None:
-        """
-        Überprüft, ob Bluetooth angezeigt wird und ob man sich mit dem richtigen Gerät (ESP32) verbunden ist.
-        Wenn Ja erstellt die Funktion ein Socket, worüber dann die Kommunikation stattfindet.
-        """
-
-        if self.app_config['testcase'] or ('Android' in os_on_device and bluetooth_client.has_paired_devices(NAME)):
-            for widget in self.wlan.children:
-                self.set_visible_widget(widget, hide=False)
-            self.status.text = ''
-
-            if not self.app_config['testcase'] and self.socket_created:
-                bluetooth_client.create_socket_stream(NAME)
-                self.socket_created = True
-            if self.connected:
-                self.bluetooth_connection_thread.stop()
+    def wait_anim(self):
+        self.current_step += 1
+        if self.current_step == self.max_steps:
+            self.status.text = self.waiting_text
+            self.current_step = 0
         else:
-            if bluetooth_client.socket is not None:
-                bluetooth_client.socket.close()
-                bluetooth_client.socket = None
-            self.socket_created = False
+            self.status.text += '.'
 
-            for widget in self.wlan.children:
-                self.set_visible_widget(widget)
+    def register_ip(self):
+        sent_request = False
+        try:
+            wlan_client.connect(self.ip, int(self.port))
+            wlan_client.send_message(f'CMD|register_ip|{wlan_client.get_ip_address()}')
+            sent_request = True
+        except Exception as e:
+            print(e)
+            pass
 
-            self.status.text = translate(f'Turn on your bluetooth function and connect to the device') \
-                               + ' ' + NAME
+        if sent_request:
+            self.register_thread.stop()
+            self.receive_thread.save_start()
 
     @staticmethod
-    def set_visible_widget(widget, hide=True):
-        if hasattr(widget, 'saved_attrs'):
-            if not hide:
-                widget.height, widget.size_hint_y, widget.opacity, widget.disabled = widget.saved_attrs
-                del widget.saved_attrs
-        elif hide:
-            widget.saved_attrs = widget.height, widget.size_hint_y, widget.opacity, widget.disabled
-            widget.height, widget.size_hint_y, widget.opacity, widget.disabled = 0, None, 0, True
+    def unregister_ip():
+        wlan_client.send_message(f'CMD|unregister_ip|{wlan_client.get_ip_address()}')
+        wlan_client.reset()
 
-    def send_data(self, name: str, password: str) -> None:
-        """
-        Wird aufgerufen, sobald der Benutzer den 'Senden'-Knopf auf dem WLAN-GridLayout drückt.
-        Dann werden die Texte der beiden Eingabefelder als Name und Passwort als Argumente übergeben.
-        Zudem überprüft diese Funktion, ob das Netzwerk schonmal verwendet wurde und wenn nicht,
-        kann der Benutzer dieses Netzwerk speichern.
-        Als verwendet gilt, wenn Name und Passwort schonmal gesendet wurden.
-
-        Diese Funktion sendet dann die Daten zum ESP32.
-
-        Parameters
-        ----------
-        name: str
-            Name des WLAN-Netzwerkes
-        password: str
-            Passwort des WLAN-Netzwerkes
-        """
-
-        networks = self.app_config['networks']
-        names = []
-        passwords = []
-
-        # Networks ist eine Liste mit "Dictionaries"
-        # {
-        #   "name": "name"
-        #   "password": "password"
-        # }
-        # Das wird erstmal in zwei Listen umgeformt die jeweils die Namen und jeweils die
-        # Passwörter beinhalten
-        for network in networks:
-            temp_name = list(network.keys())[0]
-            temp_password = network[temp_name]
-
-            names.append(temp_name)
-            passwords.append(temp_password)
-
-        if name not in names and password not in passwords:
-            print('Do u want to save ur data?')
-            networks.append(
-                {
-                    "name": name,
-                    "password": password
-                }
-            )
-            print('Data saved')
-
-        if self.app_config['testcase']:
-            self.manager.current = 'control'
-        else:
-            # Format: WLAN|NAME|PASSWORT
-            bluetooth_client.socket.send(f'WLAN{SEPARATOR}{name}{SEPARATOR}{password}')
-            self.response_thread.save_start()
-
-    def check_response(self) -> None:
-        """
-        Diese Funktion wird periodisch vom response_thread ausgeführt.
-        Diese Funktion wartet auf folgende Antworten des ESP32...
-            - Status für die Verbindungsaufbau mit dem Netzwerk, mithilfe der Daten, die wir zuvor in der
-                send_data Funktion gesendet haben.
-            - Die Informationen über das Gerät wie z.b IP-Adresse.
-            - Status für das Erstellen des WLAN-Servers.
-        und sendet...
-            - Die IP-Adresse dieses Gerätes.
-
-        Erst wenn alle Rückmeldungen positiv (Endung mit 1) sind, kann man zum Bedingungsbildschirm weitergehen.
-        """
-
-        wlan_response = bluetooth_client.wait_for_response(flag='WC')
-        esp32_data = bluetooth_client.wait_for_response(flag='STAINFO')
-        bluetooth_client.socket.send(f'WLANDATA{SEPARATOR}{wlan_client.get_ip_address()}')
-        server_response = bluetooth_client.wait_for_response(flag='WS')
-
-        # WC -> WLAN-Connection
-        if 'WC1' and wlan_client.paired_device_ip in wlan_response:
-            if 'STAINFO' in esp32_data:
-                converted_data = esp32_data.split(SEPARATOR)
-                wlan_client.connect(converted_data[1], int(converted_data[2]))
-            self.status.text = f'Connection with {bluetooth_client.paired_device_name}'
-            sleep(1)
-            # WS -> WLAN-Server
-            if 'WS1' in server_response:
-                self.connected = True
-                self.status.text = translate('Server successfully created.\nYou can turn off ur bluetooth.')
-                sleep(1)
+    def receive_response(self):
+        try:
+            response = wlan_client.wait_for_response(flag='REGISTER')
+            response_split = response.split(SEPARATOR)
+            if response_split[1] == '1':
                 self.manager.current = 'control'
-        else:
-            self.status.text = translate('Connection failed')
-            self.wlan.height = 0
-
-            self.response_thread.stop()
+            elif response_split[1] == '0':
+                self.status.text = translate('Connection to esp32 failed. Please try again')
+        except Exception as e:
+            pass
 
     def show_saved_networks(self):
         networks = self.app_config['networks']
@@ -1301,14 +1171,14 @@ class ControlScreen(CustomScreen):
         zugehörigen Variablen gespeichert.
         """
 
-        # Format ALTITUDE|SPEED|LATITUDE|LONGITUDE
+        # Format GEODATA|ALTITUDE|SPEED|LATITUDE|LONGITUDE
         response = wlan_client.wait_for_response(flag='GEODATA', only_paired_device=True)
         data = response.split(SEPARATOR)
 
-        self.altitude = data[0]
-        self.speed = data[1]
-        self.latitude = data[2]
-        self.longitude = data[3]
+        self.altitude = data[1]
+        self.speed = data[2]
+        self.latitude = data[3]
+        self.longitude = data[4]
 
     def check_connection(self) -> None:
         esp_con = self.check_esp_connection()
@@ -1320,7 +1190,7 @@ class ControlScreen(CustomScreen):
         if own_con == CON_STATUS[:-1]:
             warning += translate('WARNING: WEAK CONNECTION(DEVICE)')
 
-        if warning is not '':
+        if warning != '':
             self.status = warning
 
         self.esp_connection = translate(esp_con)
@@ -1351,7 +1221,6 @@ class ControlScreen(CustomScreen):
         if not self.app_config['testcase']:
             wlan_client.send_message(f'CMD{SEPARATOR}reset')
 
-        bluetooth_client.reset()
         wlan_client.reset()
 
         self.send_thread.stop()

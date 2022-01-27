@@ -1,0 +1,41 @@
+#:kivy 2.0.0
+
+<ListItem>:
+    text: self.network_name
+    secondary_text: self.network_password
+
+    on_size:
+        self.ids._right_container.width = container.width
+        self.ids._right_container.x = container.width
+
+    IconLeftWidget:
+        icon: "arrow-up-down"
+
+    RightContainer:
+        id: container
+
+        MDIconButton:
+            icon: "pencil-outline"
+
+        MDIconButton:
+            icon: "delete-outline"
+
+<NetworkRoot>:
+    AnchorLayout:
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_x: .8
+            padding: 20
+            spacing: 20
+            MDLabel:
+                halign: "center"
+                font_size: 20
+                adaptive_height: True
+                text: 'Network configuration'
+            RoundedCard:
+                style: 'outlined'
+                line_color: (0.2, 0.2, 0.2, 0.8)
+
+                ScrollView:
+                    MDList:
+                        id: network_list

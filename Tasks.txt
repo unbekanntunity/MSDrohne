@@ -1,6 +1,7 @@
-Daten von ESP32 anpassen
 Hovermode einbauen
 Design überarbeiten -> KIVYMD
+
+Farbtheme rausnehmen
 
 
 notes:
