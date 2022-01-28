@@ -1,4 +1,5 @@
 #:kivy 2.0.0
+#:import get_color_from_hex kivy.utils.get_color_from_hex
 
 <ListItem>:
     text: self.network_name
@@ -25,17 +26,75 @@
         BoxLayout:
             orientation: 'vertical'
             size_hint_x: .8
-            padding: 20
+            padding: 30
             spacing: 20
-            MDLabel:
-                halign: "center"
-                font_size: 20
-                adaptive_height: True
-                text: 'Network configuration'
-            RoundedCard:
+            BoxLayout:
+                size_hint_y: .1
+                spacing: 20
+                MDLabel:
+                    halign: "left"
+                    font_size: 20
+                    text: 'Network configuration'
+                MDFillRoundFlatIconButton:
+                    icon: "plus"
+                    text: "Add"
+                    on_release: root.on_add()
+
+                MDFillRoundFlatIconButton:
+                    icon: "delete"
+                    text: "Clear"
+            MDCard:
                 style: 'outlined'
                 line_color: (0.2, 0.2, 0.2, 0.8)
-
                 ScrollView:
                     MDList:
                         id: network_list
+            BoxLayout:
+                size_hint_y: .1
+                spacing: 20
+                MDRectangleFlatButton:
+                    text: "Reset"
+                    theme_text_color: "Custom"
+                    text_color: 0, 0, 1, 1
+                    line_color: 1, .2, .7, 1
+                    theme_icon_color: "Custom"
+                MDRectangleFlatButton:
+                    text: "Save"
+                    theme_text_color: "Custom"
+                    text_color: 0, 0, 1, 1
+                    line_color: .2, 1, .7, 1
+                    theme_icon_color: "Custom"
+    AnchorLayout:
+        MDCard:
+            id: network_card
+            opening_transition: 'out_cubic'
+            closing_transition: 'out_sine'
+
+            size_hint: (.5, .5)
+            style: 'outlined'
+            line_color: (0.2, 0.5, 0.2, 0.8)
+            BoxLayout:
+                padding: 30
+                spacing: 30
+                orientation: 'vertical'
+                MDLabel:
+                    adaptive_height: True
+                    halign: 'center'
+                    text: 'Add new network'
+                BoxLayout:
+                    orientation: 'vertical'
+                    MDTextField:
+                        id: network_name
+                        hint_text: "Name"
+                    MDTextField:
+                        id: network_pass
+                        hint_text: 'Password'
+                AnchorLayout:
+                    size_hint_y: .5
+                    MDRectangleFlatButton:
+                        text: "Save"
+                        theme_text_color: "Custom"
+                        text_color: 0, 0, 1, 1
+                        line_color: .2, 1, .7, 1
+                        theme_icon_color: "Custom"
+                        on_release: root.save_network()

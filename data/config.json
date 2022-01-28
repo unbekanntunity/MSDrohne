@@ -1,7 +1,13 @@
 {
     "app": {
-        "current_language": "ge",
+        "current_language": "en",
         "current_theme": "Dark",
+        "networks": [
+            {
+                "name": "test",
+                "password": "test"
+            }
+        ],
         "swipe_distance": 5.0,
         "testcase": true,
         "themes": {
@@ -101,13 +107,7 @@
                 "latitude": "0",
                 "longitude": "0"
             }
-        },
-        "networks" : [
-            {
-                "name" : "test",
-                "password" : "test"
-            }
-        ]
+        }
     },
     "machine": {
         "tick": {
