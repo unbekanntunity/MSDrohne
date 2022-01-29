@@ -1,25 +1,117 @@
 #:kivy 2.0.0
 #:import get_color_from_hex kivy.utils.get_color_from_hex
 
+<NetworkArea>
+    network_card: network_card
+    name_field: name_field
+    pass_field: pass_field
+
+    canvas.before:
+        Color:
+            rgba: .5, .5, .5, .6
+        Rectangle:
+            pos: (self.x, self.y)
+            size: (self.width, self.height)
+    MDCard:
+        id: network_card
+        size_hint: (.5, .5)
+        style: 'outlined'
+        line_color: (0.2, 0.5, 0.2, 0.8)
+        BoxLayout:
+            padding: 30
+            spacing: 30
+            orientation: 'vertical'
+            MDLabel:
+                adaptive_height: True
+                halign: 'center'
+                text: root.title
+            BoxLayout:
+                orientation: 'vertical'
+                spacing: 10
+                MDTextField:
+                    id: name_field
+                    mode: "rectangle"
+                    required: True
+                    hint_text: 'Name'
+                    helper_text_mode: 'on_error'
+                MDTextField:
+                    id: pass_field
+                    mode: "rectangle"
+                    required: True
+                    hint_text: 'Password'
+                    helper_text_mode: 'on_error'
+            AnchorLayout:
+                size_hint_y: .5
+                BoxLayout:
+                    spacing: 10
+                    MDRectangleFlatButton:
+                        text: 'Discard'
+                        theme_text_color: "Custom"
+                        text_color: 0, 0, 1, 1
+                        line_color: 1, .2, .7, 1
+                        theme_icon_color: "Custom"
+                        on_release: root.on_discard(root)
+                    MDRectangleFlatButton:
+                        text: 'Save'
+                        theme_text_color: "Custom"
+                        text_color: 0, 0, 1, 1
+                        line_color: .2, 1, .7, 1
+                        theme_icon_color: "Custom"
+                        on_release: root.on_save(root)
+                        MDRectangleFlatButton:
+
+<CustomSnackbar>
+    MDIconButton:
+        pos_hint: {'center_y': .5}
+        icon: root.icon
+
+    MDLabel:
+        id: text_bar
+        size_hint_y: None
+        height: self.texture_size[1]
+        text: root.text
+        font_size: root.font_size
+        theme_text_color: 'Custom'
+        text_color: get_color_from_hex('ffffff')
+        shorten: True
+        shorten_from: 'right'
+        pos_hint: {'center_y': .5}
+
 <ListItem>:
     text: self.network_name
     secondary_text: self.network_password
+    adaptive_width: True
 
     on_size:
-        self.ids._right_container.width = container.width
-        self.ids._right_container.x = container.width
+        self.ids._right_container.width = right_container.width
+        self.ids._right_container.x = right_container.width
 
-    IconLeftWidget:
-        icon: "arrow-up-down"
+        self.ids._left_container.height = left_container.height
+
+    LeftContainer:
+        spacing: -20
+        id: left_container
+        orientation: 'vertical'
+        adaptive_height: True
+
+        MDIconButton:
+            icon: 'arrow-up'
+            on_release: root.on_arrow_up(root)
+        MDIconButton:
+            icon: 'arrow-down'
+            on_release: root.on_arrow_down(root)
 
     RightContainer:
-        id: container
+        id: right_container
+        adaptive_width: True
 
         MDIconButton:
-            icon: "pencil-outline"
+            icon: 'pencil-outline'
+            on_release: root.on_edit(root)
 
         MDIconButton:
-            icon: "delete-outline"
+            icon: 'delete-outline'
+            on_release: root.on_delete(root)
 
 <NetworkRoot>:
     AnchorLayout:
@@ -38,11 +130,12 @@
                 MDFillRoundFlatIconButton:
                     icon: "plus"
                     text: "Add"
-                    on_release: root.on_add()
+                    on_release: root.add_network()
 
                 MDFillRoundFlatIconButton:
                     icon: "delete"
                     text: "Clear"
+                    on_release: root.clear_networks()
             MDCard:
                 style: 'outlined'
                 line_color: (0.2, 0.2, 0.2, 0.8)
@@ -53,48 +146,22 @@
                 size_hint_y: .1
                 spacing: 20
                 MDRectangleFlatButton:
-                    text: "Reset"
+                    text: "Restore"
                     theme_text_color: "Custom"
                     text_color: 0, 0, 1, 1
                     line_color: 1, .2, .7, 1
                     theme_icon_color: "Custom"
+                    on_release: root.restore_networks()
                 MDRectangleFlatButton:
                     text: "Save"
                     theme_text_color: "Custom"
                     text_color: 0, 0, 1, 1
                     line_color: .2, 1, .7, 1
                     theme_icon_color: "Custom"
-    AnchorLayout:
-        MDCard:
-            id: network_card
-            opening_transition: 'out_cubic'
-            closing_transition: 'out_sine'
-
-            size_hint: (.5, .5)
-            style: 'outlined'
-            line_color: (0.2, 0.5, 0.2, 0.8)
-            BoxLayout:
-                padding: 30
-                spacing: 30
-                orientation: 'vertical'
-                MDLabel:
-                    adaptive_height: True
-                    halign: 'center'
-                    text: 'Add new network'
-                BoxLayout:
-                    orientation: 'vertical'
-                    MDTextField:
-                        id: network_name
-                        hint_text: "Name"
-                    MDTextField:
-                        id: network_pass
-                        hint_text: 'Password'
-                AnchorLayout:
-                    size_hint_y: .5
-                    MDRectangleFlatButton:
-                        text: "Save"
-                        theme_text_color: "Custom"
-                        text_color: 0, 0, 1, 1
-                        line_color: .2, 1, .7, 1
-                        theme_icon_color: "Custom"
-                        on_release: root.save_network()
+                    on_release: root.save_networks()
+        NetworkArea:
+            id: add_network_area
+            title: 'Add new network'
+        NetworkArea:
+            id: edit_network_area
+            title: 'Edit network'

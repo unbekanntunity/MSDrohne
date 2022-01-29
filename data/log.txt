@@ -1,2 +1,7 @@
-C:\Users\nguye\AppData\Local\Programs\Python\Python38\Tools\i18n\msgfmt.py -o
-base.mo base
+canvas.before:
+            Color:
+                rgba: .5,.5,.5,1
+            Line:
+                width: 2
+                rectangle: self.x,self.y,self.width,self.height
+        
