@@ -4,26 +4,35 @@
 
 # **************************** Imports ****************a**************
 import os
+import random
+
 os.environ['KIVY_GL_BACKEND'] = 'angle_sdl2'
 
 import kivy
 kivy.require('2.0.0')
 
-from kivy.app import App
+from kivymd.app import MDApp
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 
-from kivy.graphics import Color
+from kivymd.uix.screen import MDScreen
+from kivymd.uix.list import OneLineIconListItem
+from kivymd.uix.navigationdrawer import MDNavigationDrawerItem
+
+from kivy.graphics import Color, Ellipse
 from kivy.graphics import Line
+from kivy.animation import Animation
 
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.gridlayout import GridLayout
+from kivy.uix.relativelayout import RelativeLayout
 
-from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.uix.screenmanager import ScreenManager
 
+from kivy.utils import get_color_from_hex, get_random_color
 from kivy.clock import Clock
 from kivy.lang import Builder
 from kivy.core.text.markup import MarkupLabel
@@ -51,12 +60,6 @@ DEFAULT_WP_PREFIX = 'new waypoint'
 
 KV_DIRECTORY = './kv_files'
 FONTS_DIRECTORY = './data/fonts'
-
-LANGUAGE_DICTIONARY = {
-    'en': 'English',
-    'ge': 'German'
-}
-
 
 CON_INTERVAL = .5
 CON_STATUS = {
@@ -208,7 +211,7 @@ class AppSettings(BoxLayout):
         am Anfang angezeigt werden.
         """
 
-        app = App.get_running_app()
+        app = MDApp.get_running_app()
         app_config = app.configuration.config_dict['app']
         self.current_test_mode = app_config['testcase']
 
@@ -223,34 +226,8 @@ class AppSettings(BoxLayout):
         self.translated_theme_names.clear()
         self.translated_languages.clear()
 
-        app = App.get_running_app()
+        app = MDApp.get_running_app()
         app_config = app.configuration.config_dict['app']
-
-        # Stellt sicher, dass die derzeitige Sprache verwendet wird
-        app.translation = gettext.translation('base', localedir='locales', languages=[app_config['current_language']])
-        app.translation.install()
-
-        # Lies die vordefinierten Farbthemen von der Konfiguration
-        theme_names = list(app_config['themes'].keys())
-
-        # Übersetzte die Namen und speichert diese ab
-        for theme_name in theme_names:
-            self.translated_theme_names[app.translation.gettext(theme_name)] = theme_name
-
-        # Verwende nun die übersetzten Farbschemen für den Spinner
-        self.ids.color_spinner.text = app.translation.gettext(app_config['current_theme'])
-        self.ids.color_spinner.values = self.translated_theme_names.keys()
-
-        # Übersetzte die Namen der Sprachen im Dict, damit wir später die Werte vergleichen
-        # können und den Kürzel erhalten.
-        # In der Konfiguration wird nämlich nur der Kürzel gespeichert.
-        # Am Anfang sind sie auf Englisch und werden dann in die derzeitig verwendete Sprache übersetzt
-        for (short, language) in LANGUAGE_DICTIONARY.items():
-            self.translated_languages[short] = app.translation.gettext(language)
-
-        # Verwende nun die übersetzten Farbschemen für den Spinner
-        self.ids.language_spinner.text = self.translated_languages[app_config['current_language']]
-        self.ids.language_spinner.values = self.translated_languages.values()
 
         self.ids.swipe_distance_text_input.text = str(app_config['swipe_distance'])
 
@@ -268,7 +245,7 @@ class AppSettings(BoxLayout):
         """
 
         # Speicher die Farbthema ab
-        config = App.get_running_app().configuration
+        config = MDApp.get_running_app().configuration
         app_config = config.config_dict['app']
         app_config['current_theme'] = self.translated_theme_names[self.ids.color_spinner.text]
 
@@ -285,15 +262,95 @@ class AppSettings(BoxLayout):
         self.add_settings()
 
         # Aktualisiere alle Texte in der App
-        App.get_running_app().update_text()
+        MDApp.get_running_app().update_text()
 
+
+class BouncingPoints(Widget):
+    def __init__(self, **kwargs):
+        self.points_size = [20, 20]
+
+        self.spacing_x = 30
+        self.spacing_y = 0
+
+        self.points = []
+        self.anim = None
+
+        self.number = 4
+
+        self._index = 0
+        self.proceed = False
+        super(BouncingPoints, self).__init__(**kwargs)
+
+    def draw(self):
+        with self.canvas:
+            for i in range(self.number):
+                adjusted_y = self.center_y + i * self.spacing_y
+                adjusted_x = self.center_x + i * self.spacing_x
+                c = Color(rgba=get_random_color())
+                e = Ellipse(pos=(adjusted_x + 10, adjusted_y), size=(self.points_size[0], self.points_size[1]))
+                self.points.append(e)
+
+    def start_animation(self):
+        self.draw()
+        self.proceed = True
+        self.run_animation()
+
+    def on_animation_finished(self, *args):
+        if self._index < len(self.points) - 1:
+            self._index += 1
+        else:
+            self._index = 0
+
+        self.run_animation()
+
+    def run_animation(self):
+        if self.proceed:
+            current_pos = self.points[self._index].pos
+            self.anim = Animation(pos=(current_pos[0], current_pos[1] + 30), duration=1)
+            self.anim += Animation(pos=(current_pos[0], current_pos[1]), duration=1)
+            self.anim.bind(on_complete=self.on_animation_finished)
+            self.anim.start(self.points[self._index])
+
+    def stop_animation(self):
+        self.proceed = False
+
+
+class LoadingAnimation(RelativeLayout):
+    def __init__(self, **kwargs):
+        self.points_size = [20, 20]
+
+        self.glass_anim = None
+        self.proceed = False
+        super(LoadingAnimation, self).__init__(**kwargs)
+
+    def on_kv_post(self, base_widget):
+        self.ids.bouncing_p.points_size = self.points_size
+
+    def start_animation(self):
+        self.proceed = True
+        self.run_glass_animation()
+        self.ids.bouncing_p.start_animation()
+
+    def stop_animation(self):
+        self.proceed = False
+        self.ids.bouncing_p.stop_animation()
+        self.glass_anim.stop(self.ids.glass_img)
+
+    def run_glass_animation(self, *args):
+        if self.proceed:
+            server_img = self.ids.server_img
+            random_x = random.uniform(server_img.pos_hint['center_x'] - .05, server_img.pos_hint['center_x'] + .05)
+            random_y = random.uniform(server_img.pos_hint['center_y'] - .1, server_img.pos_hint['center_y'] + .1)
+            self.glass_anim = Animation(pos_hint={'center_x': random_x, 'center_y': random_y}, duration=1)
+            self.glass_anim.bind(on_complete=self.run_glass_animation)
+            self.glass_anim.start(self.ids.glass_img)
 
 # *******************************************************************
 
 # ******************************* Base ******************************
 
 
-class CustomScreen(Screen):
+class CustomScreen(MDScreen):
     """
     Eigene Implementierung der Screen Klasse und die Basisklasse für die Bildschirme
 
@@ -320,14 +377,18 @@ class CustomScreen(Screen):
             übergeben werden. kw kann also beliebig viele Parameter mit variablen Namen darstellen.
         """
 
-        super(CustomScreen, self).__init__(**kw)
-        App.get_running_app().configuration.on_config_changed.add_function(self.on_config_changed)
+        MDApp.get_running_app().configuration.on_config_changed.add_function(self.on_config_changed)
 
         # Abschnitte der Konfiguration werde in Variablen gespeichert, damit man nicht immer
         # App.get_running_app().configuration.config_dict aufrufen muss
-        self.configuration = App.get_running_app().configuration
+        self.configuration = MDApp.get_running_app().configuration
         self.machine_config = self.configuration.config_dict['machine']
         self.app_config = self.configuration.config_dict['app']
+
+        self.icon_text = {}
+
+        self.drawer_items = {}
+        super(CustomScreen, self).__init__(**kw)
 
     def go_back(self, screen_name) -> None:
         """
@@ -348,6 +409,10 @@ class CustomScreen(Screen):
         """
 
         self.manager.transition.direction = 'left'
+        Clock.schedule_once(self.load_drawer, .2)
+
+    def on_leave(self, *args):
+        self.destroy_drawer()
 
     def on_config_changed(self):
         """
@@ -356,10 +421,39 @@ class CustomScreen(Screen):
         """
 
         # Überschreibe die Konfiguration in dieser Klasse mit der in der DroneApp-Klasse
-        self.configuration = App.get_running_app().configuration
+        self.configuration = MDApp.get_running_app().configuration
 
         self.machine_config = self.configuration.config_dict['machine']
         self.app_config = self.configuration.config_dict['app']
+
+    def load_drawer(self, *args):
+        for screen_name, value in self.icon_text.items():
+            item = MDNavigationDrawerItem(icon=value['icon'],
+                                          text=value['text'],
+                                          bg_color=get_color_from_hex("#f7f4e7"),
+                                          on_release=self.switch_screen)
+            MDApp.get_running_app().root_widget.nav_drawer_list.add_widget(item)
+            self.drawer_items[screen_name] = item
+
+    def destroy_drawer(self, *args):
+        drawer_list = MDApp.get_running_app().root_widget.nav_drawer_list.children[0]
+
+        items = [item for item in drawer_list.children
+                 if isinstance(item, MDNavigationDrawerItem)]
+
+        for item in items:
+            drawer_list.remove_widget(item)
+
+    def switch_screen(self, *args):
+        keys = list(self.drawer_items.keys())
+        values = list(self.drawer_items.values())
+
+        drawer_item = args[0]
+        if drawer_item in values:
+            index = values.index(args[0])
+            MDApp.get_running_app().root_widget.hide_nav_drawer()
+
+            self.manager.current = keys[index]
 
 
 class MyScreenManager(ScreenManager):
@@ -516,8 +610,8 @@ class MenuScreen(CustomScreen):
             übergeben werden. kw kann also beliebig viele Parameter mit variablen Namen darstellen.
         """
 
-        super(MenuScreen, self).__init__(**kwargs)
         self.nav_bar = None
+        super(MenuScreen, self).__init__(**kwargs)
 
     def on_pre_enter(self, *args) -> None:
         """
@@ -539,7 +633,7 @@ class MenuScreen(CustomScreen):
             angenommen werden.
         """
 
-        self.nav_bar = App.get_running_app().root.ids.nav_bar
+        self.nav_bar = MDApp.get_running_app().root.ids.nav_bar
         # Wurde die Navigationsleiste schon erstellt?
         # Wenn nein dann erstelle sie
         if self.nav_bar.size_hint_y is None:
@@ -627,7 +721,6 @@ class MenuScreen(CustomScreen):
 
 # *************************** Bildschirme ***************************
 
-
 class StartScreen(CustomScreen):
     """
     Der Startbildschirm
@@ -653,14 +746,15 @@ class StartScreen(CustomScreen):
             übergeben werden. kw kann also beliebig viele Parameter mit variablen Namen darstellen.
         """
         print(os_on_device)
-
-        super(StartScreen, self).__init__(**kw)
         # map lässt alle Element in der Liste durch eine Funktion laufen.
         # os.listdir gibt uns nur die Dateinamen aus
         # Damit wird die Schriftarten mit den HTML Tags verwenden können, brauchen wir die relativen Pfade zum
         # Projektverzeichnis. Aus diesen Grund werden alle Dateinamen mit den Verzeichnis Namen kombiniert.
         self.fonts = list(map(lambda x: f'{FONTS_DIRECTORY}/{x}', os.listdir(FONTS_DIRECTORY)))
         self.texts = ['Welcome', 'Willkommen']
+
+        self.drawer_items = []
+        super(StartScreen, self).__init__(**kw)
 
     def on_enter(self, *args) -> None:
         """
@@ -697,6 +791,23 @@ class StartScreen(CustomScreen):
         """
         Clock.unschedule(self.change_font)
         super(StartScreen, self).on_leave(*args)
+
+    def load_drawer(self, *args):
+        self.icon_text = {
+            'start': {
+                'text': 'Start',
+                'icon': 'home-outline'
+            },
+            'appSettings': {
+                'text': 'Settings',
+                'icon': 'cog-outline'
+            },
+            'support': {
+                'text': 'Support',
+                'icon': 'help-circle-outline'
+            }
+        }
+        super(StartScreen, self).load_drawer(*args)
 
     def change_font(self, *args) -> None:
         """
@@ -921,13 +1032,37 @@ class ConnectionScreen(CustomScreen):
         self.status.text = self.waiting_text
 
     def on_enter(self, *args) -> None:
+        self.ids.loading_anim.start_animation()
+
         self.waiting_anim_thread.save_start()
         self.register_thread.save_start()
+        super(ConnectionScreen, self).on_enter(*args)
 
     def on_leave(self, *args) -> None:
         self.waiting_anim_thread.stop()
         self.register_thread.stop()
         self.receive_thread.stop()
+
+    def load_drawer(self, *args):
+        self.icon_text = {
+            'start': {
+                'text': 'Start',
+                'icon': 'home-outline'
+            },
+            'connection': {
+                'text': 'database-search-outline',
+                'icon': 'home-outline'
+            },
+            'appSettings': {
+                'text': 'Settings',
+                'icon': 'cog-outline'
+            },
+            'support': {
+                'text': 'Support',
+                'icon': 'help-circle-outline'
+            }
+        }
+        super(ConnectionScreen, self).load_drawer(*args)
 
     def wait_anim(self):
         self.current_step += 1
@@ -938,6 +1073,11 @@ class ConnectionScreen(CustomScreen):
             self.status.text += '.'
 
     def register_ip(self):
+        if self.app_config['testcase']:
+            sleep(3)
+            self.manager.current = 'control'
+            return
+
         sent_request = False
         try:
             wlan_client.connect(self.ip, int(self.port))
@@ -966,10 +1106,6 @@ class ConnectionScreen(CustomScreen):
                 self.status.text = translate('Connection to esp32 failed. Please try again')
         except Exception as e:
             pass
-
-    def show_saved_networks(self):
-        networks = self.app_config['networks']
-        print(networks)
 
 
 class ControlScreen(CustomScreen):
@@ -1647,14 +1783,23 @@ class WaypointsScreen(MenuScreen):
 # *************************** Einstiegspunkt ************************
 
 
-class DroneRoot(BoxLayout):
-    """
-    Das Root Widget.
-    """
-    pass
+class DroneRoot(MDScreen):
+    nav_drawer = ObjectProperty()
+    nav_drawer_list = ObjectProperty()
+
+    def on_kv_post(self, base_widget):
+        self.ids.toolbar.left_action_items.append(
+            ['menu', self.show_nav_drawer, '']
+        )
+
+    def show_nav_drawer(self, *args):
+        self.nav_drawer.set_state('open')
+
+    def hide_nav_drawer(self, *args):
+        self.nav_drawer.set_state('close')
 
 
-class DroneApp(App):
+class DroneApp(MDApp):
     """
     Klasse für die App
     Parent: Kivy.App
@@ -1663,10 +1808,9 @@ class DroneApp(App):
     # Gibt die version an. Diese Zeichenkette, ist auch für Buildozer nötig.
     __version__ = "0.1"
 
-    current_theme = StringProperty()
+    root_widget = ObjectProperty()
 
     def __init__(self, **kwargs):
-        super(DroneApp, self).__init__(**kwargs)
         self.configuration = Configuration('./data/config.json', True)
 
         self.translated_labels = []
@@ -1674,12 +1818,11 @@ class DroneApp(App):
 
         self.translation = None
 
-        self.current_theme = self.configuration.config_dict['app']['current_theme']
         self.configuration.on_config_changed.add_function(self.on_config_changed)
+        super(DroneApp, self).__init__(**kwargs)
 
     def on_config_changed(self):
         self.configuration.load_config()
-        self.current_theme = self.configuration.config_dict['app']['current_theme']
 
     def bind_text(self, label, text, entire_text) -> str:
         """
@@ -1724,7 +1867,9 @@ class DroneApp(App):
                                                languages=[self.configuration.config_dict['app']['current_language']])
         self.translation.install()
         self.load_kv_files()
-        return DroneRoot()
+
+        self.root_widget = DroneRoot()
+        return self.root_widget
 
     @staticmethod
     def load_kv_files():
@@ -1735,7 +1880,7 @@ class DroneApp(App):
 
 
 def translate(message) -> str:
-    return App.get_running_app().translation.gettext(message)
+    return MDApp.get_running_app().translation.gettext(message)
 
 
 # *******************************************************************

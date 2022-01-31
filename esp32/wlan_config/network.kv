@@ -45,20 +45,17 @@
                 BoxLayout:
                     spacing: 10
                     MDRectangleFlatButton:
-                        text: 'Discard'
-                        theme_text_color: "Custom"
+                        text: app.bind_text(self, 'Discard')
                         text_color: 0, 0, 1, 1
                         line_color: 1, .2, .7, 1
                         theme_icon_color: "Custom"
                         on_release: root.on_discard(root)
                     MDRectangleFlatButton:
-                        text: 'Save'
-                        theme_text_color: "Custom"
+                        text: app.bind_text(self, 'Save')
                         text_color: 0, 0, 1, 1
                         line_color: .2, 1, .7, 1
                         theme_icon_color: "Custom"
                         on_release: root.on_save(root)
-                        MDRectangleFlatButton:
 
 <CustomSnackbar>
     MDIconButton:
@@ -69,7 +66,7 @@
         id: text_bar
         size_hint_y: None
         height: self.texture_size[1]
-        text: root.text
+        text: app.bind_text(self, root.text)
         font_size: root.font_size
         theme_text_color: 'Custom'
         text_color: get_color_from_hex('ffffff')
@@ -77,10 +74,9 @@
         shorten_from: 'right'
         pos_hint: {'center_y': .5}
 
-<ListItem>:
+<NetworkListItem>:
     text: self.network_name
     secondary_text: self.network_password
-    adaptive_width: True
 
     on_size:
         self.ids._right_container.width = right_container.width
@@ -89,8 +85,8 @@
         self.ids._left_container.height = left_container.height
 
     LeftContainer:
-        spacing: -20
         id: left_container
+        spacing: -20
         orientation: 'vertical'
         adaptive_height: True
 
@@ -113,7 +109,33 @@
             icon: 'delete-outline'
             on_release: root.on_delete(root)
 
+<LanguageListItem>
+    IconLeftWidget:
+        icon: root.left_icon
+
 <NetworkRoot>:
+    AnchorLayout:
+        padding: 10
+        anchor_x: 'left'
+        anchor_y: 'top'
+        LanguageDropDown:
+            id: language_drop_down
+            size_hint: None, None
+            size: caller_btn.width + 40, caller_btn.height
+            canvas.before:
+                Color:
+                    rgba: .2, .1, 1, 1
+                Line:
+                    width: .5
+                    rectangle: self.x,self.y,self.width,self.height
+            Image:
+                id: caller_btn
+                source: f'./data/res/{app.configuration.config_dict["current_language"]}_flag.png'
+                size: 20, 20
+            MDLabel:
+                id: caller_label
+                text: app.configuration.config_dict['current_language']
+
     AnchorLayout:
         BoxLayout:
             orientation: 'vertical'
@@ -126,15 +148,14 @@
                 MDLabel:
                     halign: "left"
                     font_size: 20
-                    text: 'Network configuration'
+                    text: app.bind_text(self, 'Network configuration')
                 MDFillRoundFlatIconButton:
                     icon: "plus"
-                    text: "Add"
+                    text: app.bind_text(self, 'Add')
                     on_release: root.add_network()
-
                 MDFillRoundFlatIconButton:
                     icon: "delete"
-                    text: "Clear"
+                    text: app.bind_text(self, 'Clear')
                     on_release: root.clear_networks()
             MDCard:
                 style: 'outlined'
@@ -146,14 +167,14 @@
                 size_hint_y: .1
                 spacing: 20
                 MDRectangleFlatButton:
-                    text: "Restore"
+                    text: app.bind_text(self, 'Restore')
                     theme_text_color: "Custom"
                     text_color: 0, 0, 1, 1
                     line_color: 1, .2, .7, 1
                     theme_icon_color: "Custom"
                     on_release: root.restore_networks()
                 MDRectangleFlatButton:
-                    text: "Save"
+                    text: app.bind_text(self, 'Save')
                     theme_text_color: "Custom"
                     text_color: 0, 0, 1, 1
                     line_color: .2, 1, .7, 1

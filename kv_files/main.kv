@@ -1,55 +1,58 @@
 #:kivy 2.0.0
+#:import get_color_from_hex kivy.utils.get_color_from_hex
 
 <RoundedButton@Button>:
-    background_color: (0,0,0,0)
-	background_normal: ''
-	canvas.before:
-		Color:
-            rgba: app.configuration.config_dict['app']['themes'][app.current_theme]['btn_color_not_pressed']['value'] if self.state=='normal' else app.configuration.config_dict['app']['themes'][app.current_theme]['btn_color_pressed']['value']
-        RoundedRectangle:
-            size: self.size
-            pos: self.pos
-            radius: [20]
+
+<BouncingPoints>:
+
+
+<LoadingAnimation>:
+    Image:
+        id: server_img
+        source:'./data/res/server.png'
+        pos_hint: {'center_x':.5, 'center_y': .4}
+        size_hint: .4, .4
+
+    Image:
+        id: glass_img
+        source:'./data/res/glass.png'
+        pos_hint: {'center_x': .55, 'center_y': .5}
+        size_hint: .1, .1
+    BouncingPoints:
+        id: bouncing_p
+        size: 10, 10
+        spacing_x: 50
+        pos_hint: {'center_x': .38, 'center_y': .0}
+
 
 <StartScreen>:
     name: 'start'
-    AnchorLayout:
-        padding: 20
-        anchor_x: 'left'
-        anchor_y: 'top'
-        RoundedButton:
-            size_hint_x: None
-            size_hint_y: None
-            text: app.bind_text(self, 'Settings', 'Settings')
-            on_release: root.manager.current = 'appSettings'
+    canvas:
+        Color:
+            rgba: .5, .5, .5, 1
+        Rectangle:
+            pos: self.center_x - .5, 0
+            size: 1, self.height
     BoxLayout:
-        orientation: 'vertical'
-        padding: 50
-        Label:
-            id: title
-            markup: True
-            text: "[font=./data/fonts/Roboto-Thin]Welcome[/font]"
-            font_family: './data/fonts/Roboto-Thin.ttf'
-            font_size: '80'
-            color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
-        BoxLayout:
-            orientation: 'vertical'
-            spacing: 40
-            padding: root.width / 4, 20, root.width / 4, 20
-            RoundedButton:
-                text: app.bind_text(self, 'Find device', 'Find device')
-                on_release: root.manager.current = 'connection'
-            RoundedButton:
-                text: app.bind_text(self, 'Support', 'Support')
-                on_release: root.manager.current = 'support'
-    AnchorLayout:
-        anchor_x: 'left'
-        anchor_y: 'bottom'
-        Label:
-            size_hint_x: None
-            size_hint_y: None
-            text: 'version: ' + app.__version__
-            color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
+        AnchorLayout:
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint: .8, .4
+                MDLabel:
+                    id: title
+                    markup: True
+                    text: "[font=./data/fonts/Roboto-Thin]Welcome[/font]"
+                    font_family: './data/fonts/Roboto-Thin.ttf'
+                    font_size: '50'
+                    color: 0, 0, 0, 1
+                MDRectangleFlatButton:
+                    text: "Start"
+                    theme_text_color: "Custom"
+                    text_color: 1, 0, 0, 1
+                    line_color: 0, 0, 1, 1
+                    on_release: root.manager.current = 'connection'
+        FitImage:
+            source: './data/res/main.jpg'
 
 <AppSettings>
     orientation: 'vertical'
@@ -57,13 +60,11 @@
     BoxLayout:
         Label:
             text: app.bind_text(self, 'Color theme', 'Color theme:')
-            color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
         Spinner:
             id: color_spinner
     BoxLayout:
         Label:
             text: app.bind_text(self, 'Language', 'Language:')
-            color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
         Spinner:
             id: language_spinner
     BoxLayout:
@@ -108,7 +109,7 @@
             size_hint_y: 0.7
             canvas.before:
                 Color:
-                    rgba: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
+                    rgba: 1, 1, 1, 1
                 Line:
                     width: 1
                     rectangle: self.x, self.y, self.width, self.height
@@ -122,7 +123,6 @@
                     text: app.bind_text(self, 'Settings', 'Settings')
                     font_size: 40
                     size_hint_y: None
-                    color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
                 AppSettings:
                     id: app_settings
                 AnchorLayout:
@@ -152,7 +152,7 @@
             padding: 20
             canvas.before:
                 Color:
-                    rgba: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
+                    rgba: 1, 1, 1, 1
                 Line:
                     width: 1
                     rectangle: self.x, self.y, self.width, self.height
@@ -165,27 +165,19 @@
 <ConnectionScreen>:
     name: 'connection'
     status: status_label
-    AnchorLayout:
-        size_hint_x: None
-        anchor_x: 'left'
-        anchor_y: 'top'
-        padding: 20
-        RoundedButton:
-            size_hint_x: None
-            size_hint_y: None
-            text: app.bind_text(self, 'Return', 'Return')
-            on_press: root.go_back('start')
-    AnchorLayout:
-        AnchorLayout:
-            size_hint: (.6, .3)
-            canvas.before:
-                Color:
-                    rgba: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
-                Line:
-                    width: 0.5
-                    rectangle: self.x, self.y, self.width, self.height
-            Label:
-                id: status_label
+
+    BoxLayout:
+        orientation: 'vertical'
+        LoadingAnimation:
+            id: loading_anim
+            points_size: 20, 20
+        MDLabel:
+            size_hint_y: .4
+            id: status_label
+            halign: 'center'
+            font_size: 20
+            color: .5, .5, .8, 1
+
 
 <ControlScreen>:
     name: 'control'
@@ -202,7 +194,6 @@
                 on_press: root.go_back('start')
             Label:
                 text: root.status
-                color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
             RoundedButton:
                 text: app.bind_text(self, 'Menu', 'Menu')
                 on_press: root.manager.current = 'settings'
@@ -228,16 +219,12 @@
             height: root.height / 6
             Label:
                 text: f'H: {root.altitude} \nS: {root.speed}'
-                color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
             Label:
                 text: f'Lo: {root.latitude} \nLa: {root.longitude}'
-                color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
             Label:
                 text: f'{root.battery}%'
-                color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
             Label:
                 text: f'{root.esp_connection}'
-                color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
 
 <SettingsScreen>:
     app_settings: app_settings
@@ -257,7 +244,7 @@
             size_hint_y: 0.6
             canvas.before:
                 Color:
-                    rgba: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
+                    rgba: 1, 1, 1, 1
                 Line:
                     width: 1
                     rectangle: self.x, self.y, self.width, self.height
@@ -269,11 +256,9 @@
                 spacing: 20
                 Label:
                     text: app.bind_text(self, 'Settings', 'Settings')
-                    color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
                 BoxLayout:
                     Label:
                         text: app.bind_text(self, 'Ticks', 'Ticks:')
-                        color: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
                     NumericTextInput:
                         id: tick_field
                         filter_type: 'int'
@@ -319,7 +304,7 @@
         size_hint_y: 0.8
         canvas.before:
             Color:
-                rgba: app.configuration.config_dict['app']['themes'][app.current_theme]['font_color']['value']
+                rgba: 1, 1, 1, 1
             Line:
                 width: 1
                 rectangle: self.x, self.y, self.width, self.height
@@ -332,16 +317,18 @@
 
 
 <DroneRoot>:
+    nav_drawer: nav_drawer
+    nav_drawer_list: nav_drawer_content
+
     canvas.before:
 		Color:
-			rgba: app.configuration.config_dict['app']['themes'][app.current_theme]['bg_color']['value']
+			rgba: 1, 1, 1, 1
 		Rectangle:
 			pos: self.pos
 			size: self.size
     BoxLayout:
         orientation: 'vertical'
         MyScreenManager:
-            id: sm
             StartScreen
             AppSettingsScreen
             ConnectionScreen
@@ -353,3 +340,20 @@
             id: nav_bar
             size_hint_y: None
             height: 0
+    MDToolbar:
+        id: toolbar
+        title: "Example Banners"
+        elevation: 10
+        pos_hint: {'top': 1}
+    MDNavigationDrawer:
+        id: nav_drawer
+        md_bg_color: get_color_from_hex("#f7f4e7")
+
+        MDNavigationDrawerMenu:
+            id: nav_drawer_content
+            MDNavigationDrawerHeader:
+                title: "Header title"
+                text: "Header text"
+                spacing: "4dp"
+                padding: "12dp", 0, 0, "56dp"
+            MDNavigationDrawerDivider:

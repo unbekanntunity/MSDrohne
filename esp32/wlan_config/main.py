@@ -1,6 +1,4 @@
 import os
-from misc.event_handling import EventHandler
-
 os.environ['KIVY_GL_BACKEND'] = 'angle_sdl2'
 
 from kivymd.app import MDApp
@@ -10,16 +8,19 @@ from kivy.properties import StringProperty, NumericProperty, ObjectProperty
 
 from kivy.uix.anchorlayout import AnchorLayout
 
-from kivymd.uix.list import IRightBodyTouch, TwoLineAvatarIconListItem, ILeftBodyTouch
+from kivy.metrics import dp
+from kivymd.uix.list import IRightBodyTouch, TwoLineAvatarIconListItem, ILeftBodyTouch, OneLineAvatarIconListItem
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.snackbar import BaseSnackbar
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDFlatButton
+from kivymd.uix.menu import MDDropdownMenu
 
 from misc.configuration import Configuration
 
 import collections
+import gettext
 
 
 class CustomSnackbar(BaseSnackbar):
@@ -28,12 +29,12 @@ class CustomSnackbar(BaseSnackbar):
     font_size = NumericProperty("15sp")
 
 
-class ListItem(TwoLineAvatarIconListItem):
+class NetworkListItem(TwoLineAvatarIconListItem):
     network_name = StringProperty()
     network_password = StringProperty()
 
     def __init__(self, name, password, **kw):
-        super(ListItem, self).__init__(**kw)
+        super(NetworkListItem, self).__init__(**kw)
         self.on_arrow_up = None
         self.on_arrow_down = None
 
@@ -50,6 +51,20 @@ class RightContainer(IRightBodyTouch, MDBoxLayout):
 
 class LeftContainer(ILeftBodyTouch, MDBoxLayout):
     pass
+
+
+class LanguageListItem(OneLineAvatarIconListItem):
+    left_icon = StringProperty()
+
+
+class LanguageDropDown(MDBoxLayout):
+    def __init__(self, **kwargs):
+        self.menu = None
+        super(LanguageDropDown, self).__init__(**kwargs)
+
+    def on_touch_down(self, touch):
+        if self.collide_point(*touch.pos):
+            self.menu.open()
 
 
 class NetworkArea(AnchorLayout):
@@ -92,7 +107,11 @@ class NetworkRoot(MDScreen):
         self.old_networks = []
         self.current_edited_idx = -1
 
-        self.add_network_dialog = None
+        self.language_full = [entry for entry in os.listdir('./locales') if os.path.isdir('./locales/' + entry)]
+
+        self.clear_networks_dialog = None
+
+        self.menu = MDDropdownMenu()
         super(NetworkRoot, self).__init__(**kw)
 
     def on_kv_post(self, base_widget):
@@ -112,9 +131,42 @@ class NetworkRoot(MDScreen):
 
         self.old_networks = networks.copy()
 
+        menu_items = [
+            {
+                "text": language.split('_')[0],
+                "left_icon": f'./data/res/{language.split("_")[0]}_flag.png',
+                "viewclass": "LanguageListItem",
+                "height": dp(54),
+                "on_release": lambda x=i: self.menu_item_selected(x),
+
+            } for i, language in enumerate(self.language_full)
+        ]
+
+        self.ids.language_drop_down.menu = MDDropdownMenu(
+            caller=self.ids.caller_btn,
+            items=menu_items,
+            width_mult=3
+        )
+
+    def menu_item_selected(self, index):
+        app = MDApp.get_running_app()
+
+        language = self.language_full[index].split('_')[0]
+        app.configuration.config_dict['current_language'] = language
+
+        self.ids.language_drop_down.children[0].text = language
+        self.ids.language_drop_down.children[1].source = f'./data/res/{language.split("_")[0]}_flag.png'
+
+        app.configuration.save_config()
+
+        app.set_translation()
+        app.update_text()
+
+        self.ids.language_drop_down.menu.dismiss()
+
     def add_to_network_list(self, updated_part):
         for network in updated_part:
-            entry = ListItem(name=network['name'], password=network['password'])
+            entry = NetworkListItem(name=network['name'], password=network['password'])
             entry.on_edit = self.edit_network
             entry.on_delete = self.delete_network
             entry.on_arrow_up = lambda x: self.move_network('up', x)
@@ -125,33 +177,31 @@ class NetworkRoot(MDScreen):
         self.ids.add_network_area.set_visibility(True)
 
     def clear_networks(self, *args):
-        if self.add_network_dialog is None:
-            self.add_network_dialog = MDDialog(
-
-                text="Do u really want to delete all entries?",
-                buttons=[
-                    MDFlatButton(
-                        text="No",
-                        theme_text_color="Custom",
-                        text_color=MDApp.get_running_app().theme_cls.primary_color,
-                        on_release=self.cancel_clear
-                    ),
-                    MDFlatButton(
-                        text="Yes",
-                        theme_text_color="Custom",
-                        text_color=MDApp.get_running_app().theme_cls.primary_color,
-                        on_release=self.accept_clear
-                    )
-                ]
-            )
-            self.add_network_dialog.open()
+        self.clear_networks_dialog = MDDialog(
+            text=MDApp.get_running_app().bind_text(self, 'Do u really want to delete all entries?'),
+            buttons=[
+                MDFlatButton(
+                    text=MDApp.get_running_app().bind_text(self, 'Yes'),
+                    theme_text_color="Custom",
+                    text_color=MDApp.get_running_app().theme_cls.primary_color,
+                    on_release=self.accept_clear
+                ),
+                MDFlatButton(
+                    text=MDApp.get_running_app().bind_text(self, 'No'),
+                    theme_text_color="Custom",
+                    text_color=MDApp.get_running_app().theme_cls.primary_color,
+                    on_release=self.cancel_clear
+                )
+            ]
+        )
+        self.clear_networks_dialog.open()
 
     def accept_clear(self, *args):
         self.ids.network_list.clear_widgets()
-        self.add_network_dialog.dismiss(force=True)
+        self.clear_networks_dialog.dismiss(force=True)
 
     def cancel_clear(self, *args):
-        self.add_network_dialog.dismiss(force=True)
+        self.clear_networks_dialog.dismiss(force=True)
 
     def restore_networks(self, *args):
         names = [child.network_name for child in self.ids.network_list.children]
@@ -166,19 +216,27 @@ class NetworkRoot(MDScreen):
 
             self.add_to_network_list(self.old_networks)
             CustomSnackbar(
-                text='List refreshed!',
+                text=MDApp.get_running_app().bind_text(self, 'List refreshed!'),
+                icon='information',
+                snackbar_x='10dp',
+                snackbar_y='10dp',
+                size_hint_x=.5
+            ).open()
+        else:
+            self.add_to_network_list(self.old_networks)
+            CustomSnackbar(
+                text=MDApp.get_running_app().bind_text(self, 'List is already up to date!'),
                 icon='information',
                 snackbar_x='10dp',
                 snackbar_y='10dp',
                 size_hint_x=.5
             ).open()
 
-    @staticmethod
-    def save_networks(*args):
+    def save_networks(self, *args):
         try:
             MDApp.get_running_app().configuration.save_config()
             CustomSnackbar(
-                text='List saved!',
+                text=MDApp.get_running_app().bind_text(self, 'List saved!'),
                 icon='information',
                 snackbar_x='10dp',
                 snackbar_y='10dp',
@@ -187,7 +245,7 @@ class NetworkRoot(MDScreen):
             Clock.schedule_once(lambda *arguments: exit(0), 1)
         except Exception as e:
             CustomSnackbar(
-                text='Something went wrong!',
+                text='Ohh, something went wrong!',
                 icon='alert-circle-outline',
                 snackbar_x='10dp',
                 snackbar_y='10dp',
@@ -351,12 +409,69 @@ class NetworkRoot(MDScreen):
 
 
 class NetworkApp(MDApp):
-    configuration = Configuration('../data/network.json', load_at_init=True)
+    configuration = Configuration('./data/network.json', load_at_init=True)
+
+    def __init__(self, **kwargs):
+        super(NetworkApp, self).__init__(**kwargs)
+
+        self.translated_labels = []
+        self.translated_parts = []
+
+        self.translation = None
 
     def build(self):
-        self.theme_cls.material_style = "M3"
-
+        self.set_translation()
         return NetworkRoot()
+
+    def set_translation(self):
+        language = self.configuration.config_dict['current_language'] + '_' + self.configuration.config_dict[
+            'current_language'].capitalize()
+
+        self.theme_cls.material_style = "M3"
+        self.translation = gettext.translation('base', localedir='locales',
+                                               languages=[language])
+        self.translation.install()
+
+    def bind_text(self, label, text, entire_text=None) -> str:
+        """
+        Registriert den Label. Durch die update_text Funktion kann dann der Text aktualisiert werden.
+        Das wird vor allem wichtig, wenn die Sprache geändert wurde una alle Texte in der App
+        geändert werden müssen.
+
+        Parameters
+        ----------
+        label: Label
+            Das Label.
+        text: str
+            Der Teil des Textes, der übersetzt werden soll.
+        entire_text: str
+            Der ganze Text.
+
+        Returns
+        -------
+        <nameless>: str
+            Die übersetzte Zeichenkette.
+            Findet sich keine Übersetzung wird die Zeichenkette unverändert zurückgegeben.
+        """
+
+        self.translated_labels.append(label)
+        translated_text = self.translation.gettext(text)
+
+        if entire_text is None:
+            entire_text = text
+
+        self.translated_parts.append(translated_text)
+        return entire_text.replace(text, translated_text)
+
+    def update_text(self) -> None:
+        """
+        Aktualisiert die registrierten Labels.
+        """
+
+        for index, label in enumerate(self.translated_labels):
+            translated_text = self.translation.gettext(self.translated_parts[index])
+            label.text = label.text.replace(self.translated_parts[index], translated_text)
+            self.translated_parts[index] = translated_text
 
 
 if __name__ == '__main__':

@@ -1,0 +1,68 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2022-01-08 13:30+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=cp1252\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+
+
+msgid "Netzwerkkonfiguration"
+msgstr "Network configuration"
+
+msgid "hinzufügen"
+msgstr "Add"
+
+msgid "Alles löschen"
+msgstr "Clear"
+
+msgid "Verwerfen"
+msgstr "Discard"
+
+msgid "Wiederherstellen"
+msgstr "Restore"
+
+msgid "Speichern"
+msgstr "Save"
+
+msgid "Neues Netzwerk hinzufügen"
+msgstr "Add new network"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Passwort"
+msgstr "Password"
+
+msgid "Willst du wirklich alle Einträge löschen?"
+msgstr "Do you really want to delete all entries?"
+
+msgid "Nein"
+msgstr "No"
+
+msgid "Ja"
+msgstr "Yes"
+
+msgid "Netzwerk überarbeiten"
+msgstr "Edit network"
+
+msgid "Liste aktualisiert!"
+msgstr "List refreshed!"
+
+msgid "Liste gespeichert!"
+msgstr "List saved!"
+
+msgid "Ohh, irgendetwas stimmt nicht!"
+msgstr "Ohh, something went wrong!"
+
+msgid "Die Liste ist bereits auf den neusten Stand!"
+msgstr "List is already up to date!"
+

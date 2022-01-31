@@ -1,7 +1,6 @@
 {
     "app": {
         "current_language": "en",
-        "current_theme": "Dark",
         "networks": [
             {
                 "name": "test",
@@ -10,84 +9,6 @@
         ],
         "swipe_distance": 5.0,
         "testcase": true,
-        "themes": {
-            "Dark": {
-                "bg_color": {
-                    "type": "list",
-                    "value": [
-                        0,
-                        0,
-                        0,
-                        1
-                    ]
-                },
-                "btn_color_not_pressed": {
-                    "type": "list",
-                    "value": [
-                        0.5,
-                        0.5,
-                        0.5,
-                        1
-                    ]
-                },
-                "btn_color_pressed": {
-                    "type": "list",
-                    "value": [
-                        0.25,
-                        0.25,
-                        0.25,
-                        1
-                    ]
-                },
-                "font_color": {
-                    "type": "list",
-                    "value": [
-                        1,
-                        1,
-                        1,
-                        1
-                    ]
-                }
-            },
-            "Light": {
-                "bg_color": {
-                    "type": "list",
-                    "value": [
-                        1,
-                        1,
-                        1,
-                        1
-                    ]
-                },
-                "btn_color_not_pressed": {
-                    "type": "list",
-                    "value": [
-                        0.5,
-                        0.5,
-                        0.5,
-                        1
-                    ]
-                },
-                "btn_color_pressed": {
-                    "type": "list",
-                    "value": [
-                        0.25,
-                        0.25,
-                        0.25,
-                        1
-                    ]
-                },
-                "font_color": {
-                    "type": "list",
-                    "value": [
-                        0,
-                        0,
-                        0,
-                        1
-                    ]
-                }
-            }
-        },
         "waypoints": {
             "new waypoint": {
                 "altitude": "0",
@@ -104,6 +25,12 @@
             "new waypoint(2)": {
                 "altitude": "0",
                 "date": "01/19/2022, 10:19:14",
+                "latitude": "0",
+                "longitude": "0"
+            },
+            "new waypoint(3)": {
+                "altitude": "0",
+                "date": "01/31/2022, 18:28:31",
                 "latitude": "0",
                 "longitude": "0"
             }

@@ -3,6 +3,7 @@ Design überarbeiten -> KIVYMD
 
 Farbtheme rausnehmen
 
+Sprachteil verbessern App wlan und Main
 
 notes:
  canvas.before:
