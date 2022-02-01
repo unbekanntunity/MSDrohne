@@ -1,8 +1,34 @@
 canvas.before:
-            Color:
-                rgba: .5,.5,.5,1
-            Line:
-                width: 2
-                rectangle: self.x,self.y,self.width,self.height
+    Color:
+        rgba: .5,.5,.5,1
+    Line:
+        width: 2
+        rectangle: self.x,self.y,self.width,self.height
 
 C:\Users\nguye\AppData\Local\Programs\Python\Python38\Tools\i18n\msgfmt.py base
+
+
+
+  BoxLayout:
+        Label:
+            text: app.bind_text(self, 'Test', 'Test:')
+            state: 'down' if app.configuration.config_dict['app']['testcase'] else 'normal'
+        ToggleButton:
+            size_hint_x: 0.5
+            text: app.bind_text(self, 'Off', 'Off')
+            state: 'down' if root.current_test_mode is False else 'normal'
+            group: 'testmode'
+            on_release: root.current_test_mode = False
+        ToggleButton:
+            size_hint_x: 0.5
+            text: app.bind_text(self, 'On', 'On')
+            state: 'down' if root.current_test_mode else 'normal'
+            group: 'testmode'
+            on_release: root.current_test_mode = True
+    BoxLayout:
+        Label:
+            text: app.bind_text(self, 'Swipe distance', 'Swipe distance:')
+        NumericTextInput:
+            number_range: (0, 1000)
+            id: swipe_distance_text_input
+            text: str(app.configuration.config_dict['app']['swipe_distance'])

@@ -5,14 +5,12 @@
 
 <BouncingPoints>:
 
-
 <LoadingAnimation>:
     Image:
         id: server_img
         source:'./data/res/server.png'
         pos_hint: {'center_x':.5, 'center_y': .4}
         size_hint: .4, .4
-
     Image:
         id: glass_img
         source:'./data/res/glass.png'
@@ -24,6 +22,9 @@
         spacing_x: 50
         pos_hint: {'center_x': .38, 'center_y': .0}
 
+<LanguageListItem>
+    IconLeftWidget:
+        icon: root.left_icon
 
 <StartScreen>:
     name: 'start'
@@ -56,82 +57,76 @@
 
 <AppSettings>
     orientation: 'vertical'
-    spacing: 10
     BoxLayout:
-        Label:
-            text: app.bind_text(self, 'Color theme', 'Color theme:')
-        Spinner:
-            id: color_spinner
+        orientation: 'vertical'
+        size_hint_y: None
+        MDLabel:
+            text: app.bind_text(self, 'TOUCH SETTINGS', 'TOUCH SETTINGS:')
+        BoxLayout:
+            MDLabel:
+                text: 'Swipe-Sensitivity:'
+            NumericTextInput:
+                id: swipe_distance_text_input
+                size_hint_x: .5
+                pos_hint: {'y':.25}
     BoxLayout:
-        Label:
-            text: app.bind_text(self, 'Language', 'Language:')
-        Spinner:
-            id: language_spinner
+        size_hint_y: None
+        canvas:
+            Color:
+                rgba: .5, .5, .5, .5
+            Line:
+                width: .5
+                rectangle: self.x, self.y * 1.2, self.width, .5
     BoxLayout:
-        Label:
-            text: app.bind_text(self, 'Test', 'Test:')
-            state: 'down' if app.configuration.config_dict['app']['testcase'] else 'normal'
-        ToggleButton:
-            size_hint_x: 0.5
-            text: app.bind_text(self, 'Off', 'Off')
-            state: 'down' if root.current_test_mode is False else 'normal'
-            group: 'testmode'
-            on_release: root.current_test_mode = False
-        ToggleButton:
-            size_hint_x: 0.5
-            text: app.bind_text(self, 'On', 'On')
-            state: 'down' if root.current_test_mode else 'normal'
-            group: 'testmode'
-            on_release: root.current_test_mode = True
-    BoxLayout:
-        Label:
-            text: app.bind_text(self, 'Swipe distance', 'Swipe distance:')
-        NumericTextInput:
-            number_range: (0, 1000)
-            id: swipe_distance_text_input
-            text: str(app.configuration.config_dict['app']['swipe_distance'])
+        orientation: 'vertical'
+        size_hint_y: None
+        MDLabel:
+            text: app.bind_text(self, 'APPEARANCE SETTINGS', 'APPEARANCE SETTINGS:')
+        BoxLayout:
+            MDLabel:
+                text: 'Language:'
+            LanguageDropDown:
+                id: language_drop_down
+                size_hint: .5, .5
+                pos_hint: {'y':.25}
+                size: caller_btn.width + 40, caller_btn.height
+                canvas.before:
+                    Color:
+                        rgba: .2, .1, 1, 1
+                    Line:
+                        width: .5
+                        rectangle: self.x,self.y,self.width,self.height
+                Image:
+                    id: caller_btn
+                    size: 20, 20
+                MDLabel:
+                    id: caller_label
+                    text: app.configuration.config_dict['app']['current_language']
 
 <AppSettingsScreen>
     name: 'appSettings'
     app_settings: app_settings
-    AnchorLayout:
-        padding: 20
-        anchor_x: 'left'
-        anchor_y: 'top'
-        RoundedButton:
-            size_hint_x: None
-            size_hint_y: None
-            text: app.bind_text(self, 'Return', 'Return')
-            on_release: root.go_back('start')
-    AnchorLayout:
-        ScrollView:
-            size_hint_x: 0.75
-            size_hint_y: 0.7
-            canvas.before:
-                Color:
-                    rgba: 1, 1, 1, 1
-                Line:
-                    width: 1
-                    rectangle: self.x, self.y, self.width, self.height
-            BoxLayout:
-                orientation: 'vertical'
-                size_hint_y: None
-                height: 700
-                padding: 20
-                spacing: 20
-                Label:
-                    text: app.bind_text(self, 'Settings', 'Settings')
-                    font_size: 40
-                    size_hint_y: None
-                AppSettings:
-                    id: app_settings
-                AnchorLayout:
-                    anchor_x: 'center'
-                    anchor_y: 'center'
-                    Button:
-                        size_hint: (.5, .3)
-                        text: app.bind_text(self, 'Save', 'Save')
-                        on_release: root.save_config()
+    MDBoxLayout:
+        padding: 30
+        spacing: 30
+        orientation: 'vertical'
+        pos_hint: {'center_y': .7}
+        AppSettings:
+            id: app_settings
+        MDBoxLayout:
+            spacing: 10
+            adaptive_height: True
+            MDRectangleFlatButton:
+                text: app.bind_text(self, 'Discard', 'Discard')
+                text_color: 0, 0, 1, 1
+                line_color: 1, .2, .7, 1
+                theme_icon_color: "Custom"
+            MDRectangleFlatButton:
+                text: app.bind_text(self, 'Save', 'Save')
+                text_color: 0, 0, 1, 1
+                line_color: .2, 1, .7, 1
+                theme_icon_color: "Custom"
+                on_release: root.save_config()
 
 <SupportScreen>:
     name: 'support'

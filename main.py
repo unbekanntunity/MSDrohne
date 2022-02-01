@@ -4,8 +4,6 @@
 
 # **************************** Imports ****************a**************
 import os
-import random
-
 os.environ['KIVY_GL_BACKEND'] = 'angle_sdl2'
 
 import kivy
@@ -14,12 +12,17 @@ kivy.require('2.0.0')
 from kivymd.app import MDApp
 from kivy.uix.label import Label
 from kivy.uix.button import Button
-from kivy.uix.textinput import TextInput
+from kivymd.uix.textfield import MDTextField
 
 from kivymd.uix.screen import MDScreen
-from kivymd.uix.list import OneLineIconListItem
 from kivymd.uix.navigationdrawer import MDNavigationDrawerItem
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.menu import MDDropdownMenu
+from kivymd.uix.list import OneLineAvatarIconListItem
+from kivymd.uix.button import MDFlatButton
+from kivymd.uix.dialog import MDDialog
 
+from kivy.metrics import dp
 from kivy.graphics import Color, Ellipse
 from kivy.graphics import Line
 from kivy.animation import Animation
@@ -44,7 +47,7 @@ from misc.configuration import Configuration
 from customwidgets.joystick import *
 
 from time import sleep
-from random import randrange
+from random import randrange, uniform
 from datetime import datetime
 
 import platform
@@ -93,7 +96,21 @@ class RoundedButton(Button):
     pass
 
 
-class NumericTextInput(TextInput):
+class LanguageListItem(OneLineAvatarIconListItem):
+    left_icon = StringProperty()
+
+
+class LanguageDropDown(MDBoxLayout):
+    def __init__(self, **kwargs):
+        self.menu = None
+        super(LanguageDropDown, self).__init__(**kwargs)
+
+    def on_touch_down(self, touch):
+        if self.collide_point(*touch.pos):
+            self.menu.open()
+
+
+class NumericTextInput(MDTextField):
     """
     Klasse für die Implementierung eines Textfeldes, was nur numerische Eingaben akzeptiert.
 
@@ -196,11 +213,13 @@ class AppSettings(BoxLayout):
         Am Anfang wird auch so ermittelt welcher der beiden Knöpfe schon gedrückt sein sollen.
 
     """
-
-    translated_languages = {}
-    translated_theme_names = {}
-
     current_test_mode = BooleanProperty()
+
+    def __init__(self, **kwargs):
+        self.languages_full = [entry for entry in os.listdir('./locales') if os.path.isdir('./locales/' + entry)]
+        self._last_index = 0
+
+        super(AppSettings, self).__init__(**kwargs)
 
     def on_kv_post(self, base_widget) -> None:
         """
@@ -223,45 +242,82 @@ class AppSettings(BoxLayout):
         Fügt die Optionen für die Einstellungen hinzu und übersetzt diese direkt.
         """
 
-        self.translated_theme_names.clear()
-        self.translated_languages.clear()
-
         app = MDApp.get_running_app()
         app_config = app.configuration.config_dict['app']
 
+        menu_items = [
+            {
+                "text": language.split('_')[0],
+                "left_icon": f'./data/res/{language.split("_")[0]}_flag.png',
+                "viewclass": "LanguageListItem",
+                "height": dp(54),
+                "on_release": lambda x=i: self.menu_item_selected(x),
+
+            } for i, language in enumerate(self.languages_full)
+        ]
+
+        self.ids.language_drop_down.menu = MDDropdownMenu(
+            caller=self.ids.caller_btn,
+            items=menu_items,
+            width_mult=3
+        )
+
+        self.ids.caller_btn.source = f'./data/res/{app_config["current_language"]}_flag.png'
+        self.ids.caller_label.text = app_config["current_language"]
+
         self.ids.swipe_distance_text_input.text = str(app_config['swipe_distance'])
 
-    def validate_config(self) -> bool:
-        """
-        Überprüft, ob die Werte gültig sind.
-        """
+    def has_changed(self) -> bool:
+        app = MDApp.get_running_app()
+        app_config = app.configuration.config_dict['app']
 
-        return True
+        current_distance_in_field = self.ids.swipe_distance_text_input.text
+        current_distance_in_con = str(app_config['swipe_distance'])
 
-    def save_config(self) -> None:
+        if current_distance_in_field != current_distance_in_con:
+            return False
+
+        current_lang_in_field = self.ids.caller_label.text
+        current_lang_in_con = app_config['current_language']
+
+        if current_lang_in_field != current_lang_in_con:
+            return False
+        return  True
+
+    def menu_item_selected(self, index):
+        app = MDApp.get_running_app()
+
+        language = self.languages_full[index].split('_')[0]
+        app.configuration.config_dict['app']['current_language'] = language
+
+        self.ids.language_drop_down.children[0].text = language
+        self.ids.language_drop_down.children[1].source = f'./data/res/{language.split("_")[0]}_flag.png'
+
+        self._last_index = index
+        self.ids.language_drop_down.menu.dismiss()
+
+    def save_config(self, *args) -> None:
         """
         Speicher die Einstellungen und aktualisiere die Daten beispielsweise,
         die Hintergrundfarbe oder die Sprache.
         """
 
-        # Speicher die Farbthema ab
         config = MDApp.get_running_app().configuration
         app_config = config.config_dict['app']
-        app_config['current_theme'] = self.translated_theme_names[self.ids.color_spinner.text]
 
-        # Finde den Kürzel und speicher diesen ab
-        for (short, language) in self.translated_languages.items():
-            if self.ids.language_spinner.text == language:
-                app_config['current_language'] = short
+        language = self.languages_full[self._last_index].split('_')[0]
+        app_config['current_language'] = language
 
-        app_config['testcase'] = self.current_test_mode
+        #app_config['testcase'] = self.current_test_mode
         app_config['swipe_distance'] = float(self.ids.swipe_distance_text_input.text)
 
         config.save_config()
+
         # Aktualisiere die Texte in den Spinner Widgets
         self.add_settings()
 
         # Aktualisiere alle Texte in der App
+        MDApp.get_running_app().set_translation()
         MDApp.get_running_app().update_text()
 
 
@@ -339,8 +395,8 @@ class LoadingAnimation(RelativeLayout):
     def run_glass_animation(self, *args):
         if self.proceed:
             server_img = self.ids.server_img
-            random_x = random.uniform(server_img.pos_hint['center_x'] - .05, server_img.pos_hint['center_x'] + .05)
-            random_y = random.uniform(server_img.pos_hint['center_y'] - .1, server_img.pos_hint['center_y'] + .1)
+            random_x = uniform(server_img.pos_hint['center_x'] - .05, server_img.pos_hint['center_x'] + .05)
+            random_y = uniform(server_img.pos_hint['center_y'] - .1, server_img.pos_hint['center_y'] + .1)
             self.glass_anim = Animation(pos_hint={'center_x': random_x, 'center_y': random_y}, duration=1)
             self.glass_anim.bind(on_complete=self.run_glass_animation)
             self.glass_anim.start(self.ids.glass_img)
@@ -841,11 +897,56 @@ class StartScreen(CustomScreen):
 class AppSettingsScreen(CustomScreen):
     app_settings = ObjectProperty(None)
 
-    def save_config(self):
-        validation = self.app_settings.validate_config()
-        if validation:
-            self.app_settings.save_config()
+    def __init__(self, **kwargs):
+        self.dialog = None
+        super(AppSettingsScreen, self).__init__(**kwargs)
 
+    def load_drawer(self, *args):
+        self.icon_text = {
+            'start': {
+                'text': 'Start',
+                'icon': 'home-outline'
+            },
+            'appSettings': {
+                'text': 'Settings',
+                'icon': 'cog-outline'
+            },
+            'support': {
+                'text': 'Support',
+                'icon': 'help-circle-outline'
+            }
+        }
+        super(AppSettingsScreen, self).load_drawer(*args)
+
+    def on_pre_leave(self, *args):
+        changed = self.app_settings.has_changed()
+        if changed:
+            self.dialog = MDDialog(
+                text="Discard draft?",
+                buttons=[
+                    MDFlatButton(
+                        text="CANCEL",
+                        theme_text_color="Custom",
+                        on_release=self.cancel_leave
+                    ),
+                    MDFlatButton(
+                        text="DISCARD",
+                        theme_text_color="Custom",
+                        on_release=self.confirm_leave
+                    ),
+                ]
+            )
+            self.dialog.open()
+
+    def cancel_leave(self, *args):
+        self.dialog.dismiss()
+        self.manager.current = 'appSettings'
+
+    def confirm_leave(self, *args):
+        self.manager.current = 'appSettings'
+
+    def save_config(self):
+        self.app_settings.save_config()
         self.configuration.save_config()
 
 
@@ -1042,6 +1143,7 @@ class ConnectionScreen(CustomScreen):
         self.waiting_anim_thread.stop()
         self.register_thread.stop()
         self.receive_thread.stop()
+        super(ConnectionScreen, self).on_leave(*args)
 
     def load_drawer(self, *args):
         self.icon_text = {
@@ -1422,12 +1524,9 @@ class SettingsScreen(MenuScreen):
         tick = self.ids.tick_field.text
         self.machine_config['tick']['value'] = int(tick)
 
-        # Sind die Werte korrekt?
-        app_settings_validation = self.app_settings.validate_config()
-        if app_settings_validation:
-            self.app_settings.save_config()
-            self.configuration.save_config()
-            self.notify()
+        self.app_settings.save_config()
+        self.configuration.save_config()
+        self.notify()
 
         self.manager.get_screen('control').status = translate('Settings saved')
         self.close_menu(None)
@@ -1862,10 +1961,16 @@ class DroneApp(MDApp):
             label.text = label.text.replace(self.translated_parts[index], translated_text)
             self.translated_parts[index] = translated_text
 
-    def build(self):
+    def set_translation(self):
+        language = self.configuration.config_dict['app']['current_language'] + '_' + \
+                   self.configuration.config_dict['app']['current_language'].capitalize()
+
         self.translation = gettext.translation('base', localedir='locales',
-                                               languages=[self.configuration.config_dict['app']['current_language']])
+                                               languages=[language])
         self.translation.install()
+
+    def build(self):
+        self.set_translation()
         self.load_kv_files()
 
         self.root_widget = DroneRoot()
