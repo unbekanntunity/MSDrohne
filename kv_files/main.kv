@@ -5,6 +5,12 @@
 
 <BouncingPoints>:
 
+<SupportExpansionContent>:
+    adaptive_height: True
+
+    OneLineIconListItem:
+        text: root.answer
+
 <LoadingAnimation>:
     Image:
         id: server_img
@@ -121,6 +127,7 @@
                 text_color: 0, 0, 1, 1
                 line_color: 1, .2, .7, 1
                 theme_icon_color: "Custom"
+                on_release: root.discard_config()
             MDRectangleFlatButton:
                 text: app.bind_text(self, 'Save', 'Save')
                 text_color: 0, 0, 1, 1
@@ -130,32 +137,15 @@
 
 <SupportScreen>:
     name: 'support'
-    AnchorLayout:
-        padding: 20
-        anchor_x: 'left'
-        anchor_y: 'top'
-        RoundedButton:
-            size_hint_x: None
-            size_hint_y: None
-            text: app.bind_text(self, 'Return', 'Return')
-            on_release: root.go_back('start')
-    AnchorLayout:
+    RelativeLayout:
         ScrollView:
-            size_hint_x: 0.75
-            size_hint_y: 0.8
-            orientation: 'vertical'
-            padding: 20
-            canvas.before:
-                Color:
-                    rgba: 1, 1, 1, 1
-                Line:
-                    width: 1
-                    rectangle: self.x, self.y, self.width, self.height
-            BoxLayout:
-                id: question_box
+            pos_hint: {'y': -.1}
+            MDBoxLayout:
                 padding: 20
-                size_hint_y: None
                 orientation: 'vertical'
+                id: box
+                cols: 1
+                adaptive_height: True
 
 <ConnectionScreen>:
     name: 'connection'
@@ -173,100 +163,77 @@
             font_size: 20
             color: .5, .5, .8, 1
 
-
 <ControlScreen>:
     name: 'control'
-    AnchorLayout:
-        anchor_y: 'top'
-        BoxLayout:
-            id: top_a
-            spacing: 30
-            size_hint_y: None
-            height: root.height / 6
-            RoundedButton:
-                id: back_btn
-                text: app.bind_text(self, 'Return', 'Return')
-                on_press: root.go_back('start')
-            Label:
-                text: root.status
-            RoundedButton:
-                text: app.bind_text(self, 'Menu', 'Menu')
-                on_press: root.manager.current = 'settings'
-    AnchorLayout:
-        pos: 0, -100
-        padding: 20
-        anchor_x: 'right'
-        anchor_y: 'top'
-        orientation: 'horizontal'
-        RoundedButton:
-            size_hint_x: None
-            size_hint_y: None
-            text: 'set'
+    RelativeLayout:
+        MDFloatingActionButton:
+            pos_hint: {'center_x': .9, 'center_y': .9}
+            icon: 'map-marker-plus-outline'
             on_release: root.set_waypoint()
-    BoxLayout:
-        pos: 0, -100
-        id: joystick_a
-        orientation: 'horizontal'
-    AnchorLayout:
-        anchor_y: 'bottom'
+        MDFloatingActionButton:
+            pos_hint: {'center_x': .1, 'center_y': .9}
+            icon: 'menu'
+            on_release: app.root_widget.show_nav_drawer()
+        MDBoxLayout:
+            size_hint: .6, .15
+            pos_hint: {'center_x': .5 , 'center_y': .9}
+            MDBoxLayout:
+                orientation: 'vertical'
+                adaptive_width: True
+                Image:
+                    source: root.esp_connection_icon
+                MDLabel:
+                    halign: 'center'
+                    text: f'H: {root.altitude}\nS: {root.speed}'
+            MDCard:
+                style: 'outlined'
+                line_color: (0.2, 0.2, 0.2, 0.8)
+                ScrollView:
+                    MDBoxLayout:
+                        padding: 10
+                        id: terminal
+                        adaptive_height: True
+                        orientation: 'vertical'
+            MDBoxLayout:
+                adaptive_width: True
+                orientation: 'vertical'
+                MDLabel:
+                    halign: 'center'
+                    text: f'{root.battery}%'
+                MDLabel:
+                    halign: 'center'
+                    text: f'Lo: {root.latitude}\nLa: {root.longitude}'
         BoxLayout:
-            size_hint_y: None
-            height: root.height / 6
-            Label:
-                text: f'H: {root.altitude} \nS: {root.speed}'
-            Label:
-                text: f'Lo: {root.latitude} \nLa: {root.longitude}'
-            Label:
-                text: f'{root.battery}%'
-            Label:
-                text: f'{root.esp_connection}'
+            id: joystick_a
+            pos_hint: {'center_y': .3}
+            orientation: 'horizontal'
+
 
 <SettingsScreen>:
     app_settings: app_settings
     name: 'settings'
-    AnchorLayout:
-        padding: 20
-        anchor_x: 'left'
-        anchor_y: 'top'
-        RoundedButton:
-            size_hint_x: None
-            size_hint_y: None
-            text: 'back'
-            on_release: root.close_menu()
-    AnchorLayout:
-        ScrollView:
-            size_hint_x: 0.75
-            size_hint_y: 0.6
-            canvas.before:
-                Color:
-                    rgba: 1, 1, 1, 1
-                Line:
-                    width: 1
-                    rectangle: self.x, self.y, self.width, self.height
-            BoxLayout:
-                orientation: 'vertical'
-                size_hint_y: None
-                height: 800
-                padding: 20
-                spacing: 20
-                Label:
-                    text: app.bind_text(self, 'Settings', 'Settings')
-                BoxLayout:
-                    Label:
-                        text: app.bind_text(self, 'Ticks', 'Ticks:')
-                    NumericTextInput:
-                        id: tick_field
-                        filter_type: 'int'
-                        multiline: False
-                AppSettings:
-                    id: app_settings
-                AnchorLayout:
-                    anchor_x: 'center'
-                    anchor_y: 'center'
-                    Button:
-                        size_hint: (.5, .3)
-                        text: app.bind_text(self, 'Save', 'Save')
-                        on_release: root.save_config()
+    MDBoxLayout:
+        padding: 30
+        spacing: 30
+        orientation: 'vertical'
+        pos_hint: {'center_y': .7}
+        AppSettings:
+            id: app_settings
+        MDBoxLayout:
+            spacing: 10
+            adaptive_height: True
+            MDRectangleFlatButton:
+                text: app.bind_text(self, 'Discard', 'Discard')
+                text_color: 0, 0, 1, 1
+                line_color: 1, .2, .7, 1
+                theme_icon_color: "Custom"
+                on_release: root.discard_config()
+            MDRectangleFlatButton:
+                text: app.bind_text(self, 'Save', 'Save')
+                text_color: 0, 0, 1, 1
+                line_color: .2, 1, .7, 1
+                theme_icon_color: "Custom"
+                on_release: root.save_config()
 
 <WaypointsScreen>:
     name: 'waypoints'
@@ -331,10 +298,6 @@
             SettingsScreen
             WaypointsScreen
             SupportScreen
-        BoxLayout:
-            id: nav_bar
-            size_hint_y: None
-            height: 0
     MDToolbar:
         id: toolbar
         title: "Example Banners"

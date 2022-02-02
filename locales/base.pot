@@ -1,0 +1,129 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2022-01-08 13:30+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=cp1252\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+
+
+#: test.py:6
+msgid "Find device"
+msgstr ""
+
+#: test.py:7
+msgid "Support"
+msgstr ""
+
+#: test.py:8 test.py:27
+msgid "Settings"
+msgstr ""
+
+#: test.py:10
+msgid "Return"
+msgstr ""
+
+#: test.py:11
+msgid "Color theme"
+msgstr ""
+
+#: test.py:12
+msgid "Save"
+msgstr ""
+
+#: test.py:13
+msgid "Dark"
+msgstr ""
+
+#: test.py:14
+msgid "Light"
+msgstr ""
+
+#: test.py:16
+msgid "Turn on your bluetooth function and connect to the device"
+msgstr ""
+
+#: test.py:17
+msgid "Name"
+msgstr ""
+
+#: test.py:18
+msgid "Password"
+msgstr ""
+
+#: test.py:19
+msgid "Send"
+msgstr ""
+
+#: test.py:21
+msgid "Ready to take off"
+msgstr ""
+
+#: test.py:22
+msgid "Waypoint"
+msgstr ""
+
+#: test.py:23
+msgid "set"
+msgstr ""
+
+#: test.py:24
+msgid "Menu"
+msgstr ""
+
+#: test.py:26
+msgid "Ticks"
+msgstr ""
+
+#: test.py:28
+msgid "Waypoints"
+msgstr ""
+
+#: test.py:29
+msgid "Configuration saved"
+msgstr ""
+
+#: test.py:31
+msgid "Clear"
+msgstr ""
+
+#: test.py:32
+msgid "Altitude"
+msgstr ""
+
+#: test.py:33
+msgid "Latitude"
+msgstr ""
+
+#: test.py:34
+msgid "Longitude"
+msgstr ""
+
+#: test.py:35
+msgid "Last update"
+msgstr ""
+
+#: test.py:36
+msgid "Edit"
+msgstr ""
+
+#: test.py:37
+msgid "Remove"
+msgstr ""
+
+msgid "Language"
+msgstr ""
+
+msgid "English"
+msgstr ""
+
+msgid "German"
+msgstr ""

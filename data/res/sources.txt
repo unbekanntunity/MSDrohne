@@ -6,3 +6,6 @@ glass.png
 https://www.flaticon.com/premium-icon/search_861627?term=magnifying%20glass&page=1&position=10&page=1&position=10&related_id=861627&origin=search
 by Maxim Basinski Premium
 
+wifi.png
+https://www.flaticon.com/de/premium-icon/gratis-wifi_5046483?related_id=5046483&origin=tag
+by cah nggunung

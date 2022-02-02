@@ -4,16 +4,18 @@
 
 # **************************** Imports ****************a**************
 import os
+
+
 os.environ['KIVY_GL_BACKEND'] = 'angle_sdl2'
 
 import kivy
 kivy.require('2.0.0')
 
 from kivymd.app import MDApp
+
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivymd.uix.textfield import MDTextField
-
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.navigationdrawer import MDNavigationDrawerItem
 from kivymd.uix.boxlayout import MDBoxLayout
@@ -21,6 +23,8 @@ from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.list import OneLineAvatarIconListItem
 from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
+from kivymd.uix.expansionpanel import MDExpansionPanel, MDExpansionPanelOneLine
+from kivymd.uix.label import MDLabel
 
 from kivy.metrics import dp
 from kivy.graphics import Color, Ellipse
@@ -72,6 +76,13 @@ CON_STATUS = {
     10: 'too weak',
 }
 
+CON_ICON = {
+    100: './data/res/strong_wifi.png',
+    50: './data/res/medium_wifi.png',
+    20: './data/res/weak_wifi.png',
+    10: './data/res/very_weal_wifi.png'
+}
+
 # ******************************************************************
 
 # ********************* Plattformspezifisch ************************
@@ -108,6 +119,20 @@ class LanguageDropDown(MDBoxLayout):
     def on_touch_down(self, touch):
         if self.collide_point(*touch.pos):
             self.menu.open()
+
+
+class RecSwipeArea(FloatLayout):
+    def __init__(self, **kwargs):
+        self.distance = 5
+        super(RecSwipeArea, self).__init__(**kwargs)
+
+    def on_touch_up(self, touch):
+        if self.collide_point(*touch.pos):
+            toolbar = MDApp.get_running_app().root_widget.ids.toolbar
+            if touch.y < touch.oy - self.distance:
+                set_visible(toolbar, True)
+            if touch.y > touch.oy - self.distance:
+                set_visible(toolbar, False)
 
 
 class NumericTextInput(MDTextField):
@@ -273,23 +298,19 @@ class AppSettings(BoxLayout):
 
         current_distance_in_field = self.ids.swipe_distance_text_input.text
         current_distance_in_con = str(app_config['swipe_distance'])
-
         if current_distance_in_field != current_distance_in_con:
-            return False
+            return True
 
         current_lang_in_field = self.ids.caller_label.text
         current_lang_in_con = app_config['current_language']
-
         if current_lang_in_field != current_lang_in_con:
-            return False
-        return  True
+            return True
+        return False
 
     def menu_item_selected(self, index):
         app = MDApp.get_running_app()
 
         language = self.languages_full[index].split('_')[0]
-        app.configuration.config_dict['app']['current_language'] = language
-
         self.ids.language_drop_down.children[0].text = language
         self.ids.language_drop_down.children[1].source = f'./data/res/{language.split("_")[0]}_flag.png'
 
@@ -854,6 +875,10 @@ class StartScreen(CustomScreen):
                 'text': 'Start',
                 'icon': 'home-outline'
             },
+            'connection': {
+                'text': 'Connect',
+                'icon': 'database-search-outline'
+            },
             'appSettings': {
                 'text': 'Settings',
                 'icon': 'cog-outline'
@@ -907,6 +932,10 @@ class AppSettingsScreen(CustomScreen):
                 'text': 'Start',
                 'icon': 'home-outline'
             },
+            'connection': {
+                'text': 'Connect',
+                'icon': 'database-search-outline'
+            },
             'appSettings': {
                 'text': 'Settings',
                 'icon': 'cog-outline'
@@ -937,154 +966,76 @@ class AppSettingsScreen(CustomScreen):
                 ]
             )
             self.dialog.open()
+        super(AppSettingsScreen, self).on_pre_enter(*args)
 
     def cancel_leave(self, *args):
         self.dialog.dismiss()
         self.manager.current = 'appSettings'
 
     def confirm_leave(self, *args):
-        self.manager.current = 'appSettings'
+        self.dialog.dismiss()
 
-    def save_config(self):
+    def save_config(self, *args):
         self.app_settings.save_config()
         self.configuration.save_config()
+
+    def discard_config(self, *args):
+        self.app_settings.add_settings()
+
+
+class SupportExpansionContent(MDBoxLayout):
+    answer = StringProperty()
+
+    def __init__(self, text, **kwargs):
+        self.answer = text
+        super(SupportExpansionContent, self).__init__(**kwargs)
 
 
 class SupportScreen(CustomScreen):
     """
     Support Bildschirm.
     Der Bildschirm soll die FAQs anzeigen.
-
-    Attributes
-    ----------
-    questions: list
-        Liste mit dem Fragen.
-    answers: list
-        Liste mit dem Antworten.
-    entry: list
-        Beinhaltet die einzelnen Fragen.
-    question_boxes: list
-        Beinhaltet die Boxlayouts, in den die Frage angezeigt wird.
-    text_boxes: list
-        Beinhaltet die Layouts, in den die Antworten angezeigt werden.
     """
 
     def __init__(self, **kwargs):
-        """
-        Erstellt alle nötigen Variablen für die Klasse.
-        Diese Signatur wird von Kivy vorgegeben.
-
-        Parameters
-        ----------
-        kwargs: any
-            Durch die Zwei sterne vor dem Namen kann man eine undefinierte Anzahl von Parameter
-            übergeben werden. kwargs kann also beliebig viele Parameter mit variablen Namen darstellen.
-        """
+        self.questions = ['Connection lost?', 'Cant find your problem here?']
+        self.answers = ['Restart the app.', 'Send an e-mail to fake_email@gmail.com']
 
         super(SupportScreen, self).__init__(**kwargs)
 
-        self.questions = ['Question not found?']
-        self.answers = ['Write a email to msdrone@exmaple.com']
+    def load_drawer(self, *args):
+        self.icon_text = {
+            'start': {
+                'text': 'Start',
+                'icon': 'home-outline'
+            },
+            'connection': {
+                'text': 'Connect',
+                'icon': 'database-search-outline'
+            },
+            'appSettings': {
+                'text': 'Settings',
+                'icon': 'cog-outline'
+            },
+            'support': {
+                'text': 'Support',
+                'icon': 'help-circle-outline'
+            }
+        }
+        super(SupportScreen, self).load_drawer(*args)
 
-        self.entry = []
-        self.question_boxes = []
-        self.text_boxes = []
-
-    def on_kv_post(self, base_widget) -> None:
-        """
-        Wird aufgerufen, sobald die kv-Datei geladen wird. In dieser Phase sollen die Fragen dynamisch
-        durch diese Funktion generiert werden.
-
-        Diese Signatur wird von Kivy vorgegeben.
-        """
-
-        for index in range(len(self.questions)):
-            b1 = BoxLayout()
-            b1.orientation = 'vertical'
-            b1.size_hint_y = None
-
-            btn = Button(text=self.questions[index])
-            btn.bind(on_release=self.trigger_box)
-
-            a1 = AnchorLayout()
-
-            b1.add_widget(btn)
-            b1.add_widget(a1)
-
-            self.entry.append(b1)
-            self.question_boxes.append(btn)
-            self.text_boxes.append(a1)
-
-            self.ids.question_box.add_widget(b1)
-        self.ids.question_box.height = self.get_height()
-        super(SupportScreen, self).on_kv_post(base_widget)
-
-    def get_height(self) -> int:
-        """
-        Berechnet die Gesamthöhe des Layouts
-
-        Returns
-        -------
-        height: int
-            Gesamthöhe
-        """
-
-        height = 0
-        for box in self.question_boxes:
-            height += box.height
-        return height + 50
-
-    def trigger_box(self, *args) -> None:
-        """
-        Wird durch ein Knopf ausgelöst und öffnet bzw. schließt die Box, je nach den momentanen Zustand der Box.
-        Diese Signatur wird von Kivy vorgegeben.
-
-        Parameters
-        ----------
-        args: any
-            Der eine Stern symbolisiert, dass eine beliebige Anzahl von positionellen Argumenten übergeben kann.
-            In unseren Fall wird dass immer der Knopf sein, der diese Funktion auslöst.
-        """
-
-        index = self.question_boxes.index(args[0])
-        selected_text_box = self.text_boxes[index]
-        # Ist die Box zu?
-        if len(selected_text_box.children) == 0:
-            self.open_box(selected_text_box, index)
-        else:
-            self.close_box(selected_text_box)
-
-    def open_box(self, answer_box: BoxLayout, index: int) -> None:
-        """
-        Öffnet die Antwortbox einer beliebigen Fragebox.
-
-        Parameters
-        ----------
-        answer_box: BoxLayout
-            Die Antwortbox.
-        index: int
-            Die Position der Antwort in der Liste(self.answers).
-        """
-
-        answer_box.add_widget(Button(text=self.answers[index]))
-
-    @staticmethod
-    def close_box(answer_box: BoxLayout) -> None:
-        """
-        Schließt die Antwortbox wieder, indem alle Elemente in der Antwortbox
-        gelöscht werden.
-
-        Statische Funktion sind Funktionen, die auch ohne Klasseninstanz aufgerufen werden können
-        und daher keine Variablen der Instanz benötigen. Aus diesen Grund fällt auch das 'self' weg.
-
-        Parameters
-        ----------
-        answer_box: BoxLayout
-            Die Antwortbox.
-        """
-
-        for widget in answer_box.children:
-            answer_box.remove_widget(widget)
+    def on_kv_post(self, base_widget):
+        for i in range(len(self.questions)):
+            self.ids.box.add_widget(
+                MDExpansionPanel(
+                    content=SupportExpansionContent(
+                        text=self.answers[i]
+                    ),
+                    panel_cls=MDExpansionPanelOneLine(
+                        text=self.answers[i]
+                    )
+                )
+            )
 
 
 class ConnectionScreen(CustomScreen):
@@ -1176,7 +1127,6 @@ class ConnectionScreen(CustomScreen):
 
     def register_ip(self):
         if self.app_config['testcase']:
-            sleep(3)
             self.manager.current = 'control'
             return
 
@@ -1190,8 +1140,7 @@ class ConnectionScreen(CustomScreen):
             pass
 
         if sent_request:
-            self.register_thread.stop()
-            self.receive_thread.save_start()
+            self.manager.current = 'control'
 
     @staticmethod
     def unregister_ip():
@@ -1254,13 +1203,11 @@ class ControlScreen(CustomScreen):
     latitude = StringProperty('0')
     longitude = StringProperty('0')
     esp_connection = StringProperty('strong')
+    esp_connection_icon = StringProperty('')
 
     battery = StringProperty('100')
 
-    status = StringProperty()
-
     def __init__(self, **kwargs):
-        super(ControlScreen, self).__init__(**kwargs)
         """
         Erstellt alle nötigen Variablen für die Klasse und startet die Threads
         Diese Signatur wird von Kivy vorgegeben.
@@ -1280,18 +1227,21 @@ class ControlScreen(CustomScreen):
         self.connection_thread.interval_sec = CON_INTERVAL
 
         self.receive_thread.add_function(self.receive_data)
-        self.receive_thread.interval_sec = self.machine_config['tick']['value']
+        self.receive_thread.interval_sec = CON_INTERVAL
 
         self.send_thread.add_function(self.send_data)
-        self.send_thread.interval_sec = self.machine_config['tick']['value']
+        self.send_thread.interval_sec = CON_INTERVAL
 
         self.r_joystick = JoyStick()
         self.l_joystick = JoyStick()
 
         self.esp_connection = translate('strong')
 
-        self.status = translate('Ready to take off')
         self.created = False
+
+        self.control_screens = ['control', 'settings', 'support']
+
+        super(ControlScreen, self).__init__(**kwargs)
 
     def on_enter(self, *args) -> None:
         """
@@ -1308,19 +1258,25 @@ class ControlScreen(CustomScreen):
             angenommen werden.
         """
 
-        super(ControlScreen, self).on_enter(*args)
-
         if not self.app_config['testcase']:
+            if self.manager.current in self.control_screens[2:]:
+                wlan_client.send_message(f'CMD{SEPARATOR}set_hover_mode{SEPARATOR}False')
+                wlan_client.send_message(f'CMD{SEPARATOR}set_hover_mode{SEPARATOR}False')
+
             self.receive_thread.save_start()
             self.send_thread.save_start()
             self.connection_thread.save_start()
+
+        toolbar = MDApp.get_running_app().root_widget.ids.toolbar
+        set_visible(toolbar, False)
+
+        self.log_message(translate('Ready to take off'))
+        self.esp_connection_icon = CON_ICON[100]
 
         # Wurden die Joysticks schon erstellt?
         if not self.created:
             self.ids.joystick_a.add_widget(self.r_joystick)
             self.ids.joystick_a.add_widget(self.l_joystick)
-
-            self.ids.back_btn.bind(on_release=self.back_to_main)
 
             Clock.schedule_once(self.r_joystick.set_center, 0.01)
             Clock.schedule_once(self.l_joystick.set_center, 0.01)
@@ -1329,12 +1285,43 @@ class ControlScreen(CustomScreen):
             if not self.app_config['testcase']:
                 # Damit der ESP32 eine Connection hat, um die Sensordaten zu senden
                 wlan_client.send_message('ping')
+        super(ControlScreen, self).on_enter(*args)
 
     def on_leave(self, *args) -> None:
         if not self.app_config['testcase']:
             self.receive_thread.stop()
             self.send_thread.stop()
             self.connection_thread.stop()
+            if self.manager.current in self.control_screens[2:]:
+                wlan_client.send_message(f'CMD{SEPARATOR}set_hover_mode{SEPARATOR}True')
+        if self.manager.current not in self.control_screens:
+            self.shutdown(*args)
+
+        toolbar = MDApp.get_running_app().root_widget.ids.toolbar
+        set_visible(toolbar, True)
+
+        super(ControlScreen, self).on_leave(*args)
+
+    def load_drawer(self, *args):
+        self.icon_text = {
+            'start': {
+                'text': 'Start',
+                'icon': 'home-outline'
+            },
+            'connection': {
+                'text': 'database-search-outline',
+                'icon': 'home-outline'
+            },
+            'settings': {
+                'text': 'Settings',
+                'icon': 'cog-outline'
+            },
+            'support': {
+                'text': 'Support',
+                'icon': 'help-circle-outline'
+            }
+        }
+        super(ControlScreen, self).load_drawer(*args)
 
     def set_waypoint(self, *args):
         """
@@ -1410,7 +1397,7 @@ class ControlScreen(CustomScreen):
         """
 
         # Format GEODATA|ALTITUDE|SPEED|LATITUDE|LONGITUDE
-        response = wlan_client.wait_for_response(flag='GEODATA', only_paired_device=True)
+        response = wlan_client.wait_for_response(flag='GEODATA')
         data = response.split(SEPARATOR)
 
         self.altitude = data[1]
@@ -1423,9 +1410,11 @@ class ControlScreen(CustomScreen):
         own_con = self.check_own_connection()
 
         warning = ''
-        if esp_con == CON_STATUS[:-1]:
+        self.esp_connection_icon = CON_ICON[esp_con[0]]
+
+        if esp_con[1] == CON_STATUS[:-1]:
             warning += translate('WARNING: WEAK CONNECTION(ESP32)')
-        if own_con == CON_STATUS[:-1]:
+        if own_con[1] == CON_STATUS[:-1]:
             warning += translate('WARNING: WEAK CONNECTION(DEVICE)')
 
         if warning != '':
@@ -1434,7 +1423,7 @@ class ControlScreen(CustomScreen):
         self.esp_connection = translate(esp_con)
 
     def check_esp_connection(self) -> (int, str):
-        response = wlan_client.wait_for_response(flag='CONDATA', only_paired_device=True)
+        response = wlan_client.wait_for_response(flag='CONDATA')
         data = response.split(SEPARATOR)
 
         return self.get_connectivity(data[1])
@@ -1443,7 +1432,7 @@ class ControlScreen(CustomScreen):
     def check_own_connection(self) -> (int, str):
         return self.get_connectivity(100)
 
-    def back_to_main(self, *args) -> None:
+    def shutdown(self, *args) -> None:
         """
         Wird von einem Knopf aufgerufen, wodurch der Benutzer wieder zum Startbildschirm gelangt.
         Dabei wird der ESP32 die Clients zurückgesetzt.
@@ -1466,13 +1455,25 @@ class ControlScreen(CustomScreen):
 
         self.go_back('start')
 
+    def log_message(self, message, log_level='info'):
+        timestamp = datetime.now().strftime("%H:%M:%S")
+        terminal_log = f'[{timestamp}] [{log_level}] {message}'
+
+        l = MDLabel(text=terminal_log)
+        l.font_name = './data/customfonts/Consola'
+        l.adaptive_height = True
+        l.font_size = 10
+        l.color = [.5, .5, .5, 1]
+
+        self.ids.terminal.add_widget(l)
+
     @staticmethod
-    def get_connectivity(value) -> str:
+    def get_connectivity(value) -> (int, str):
         result = CON_STATUS[0]
-        for border, status in CON_STATUS.items():
+        for i, border, status in enumerate(CON_STATUS.items()):
             if value > border:
                 result = status
-        return result
+        return i, result
 
 
 class SettingsScreen(MenuScreen):
@@ -1987,6 +1988,14 @@ class DroneApp(MDApp):
 def translate(message) -> str:
     return MDApp.get_running_app().translation.gettext(message)
 
+def set_visible(wid, visible) -> None:
+    if hasattr(wid, 'saved_attrs'):
+        if visible:
+            wid.height, wid.size_hint_y, wid.opacity, wid.disabled = wid.saved_attrs
+            del wid.saved_attrs
+    elif not visible:
+        wid.saved_attrs = wid.height, wid.size_hint_y, wid.opacity, wid.disabled
+        wid.height, wid.size_hint_y, wid.opacity, wid.disabled = 0, None, 0, True
 
 # *******************************************************************
 
