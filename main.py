@@ -4,8 +4,6 @@
 
 # **************************** Imports ****************a**************
 import os
-
-
 os.environ['KIVY_GL_BACKEND'] = 'angle_sdl2'
 
 import kivy
@@ -25,16 +23,14 @@ from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.expansionpanel import MDExpansionPanel, MDExpansionPanelOneLine
 from kivymd.uix.label import MDLabel
+from kivymd.uix.card import MDCard
 
 from kivy.metrics import dp
 from kivy.graphics import Color, Ellipse
-from kivy.graphics import Line
 from kivy.animation import Animation
 
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.gridlayout import GridLayout
 from kivy.uix.relativelayout import RelativeLayout
 
 from kivy.uix.screenmanager import ScreenManager
@@ -50,7 +46,6 @@ from misc.custom_threads import DisposableLoopThread
 from misc.configuration import Configuration
 from customwidgets.joystick import *
 
-from time import sleep
 from random import randrange, uniform
 from datetime import datetime
 
@@ -103,8 +98,23 @@ wlan_client = client.WLANClient()
 
 # Wir verwenden die von Kivy implementierte kv-Sprache
 # Alle in der .kv-file verwendeten Klassen, müssen auch einer Pythonskript deklariert werden
-class RoundedButton(Button):
-    pass
+class WaypointCard(MDCard):
+    name = StringProperty()
+    altitude = StringProperty()
+    latitude = StringProperty()
+    longitude = StringProperty()
+    last_updated = StringProperty()
+
+    image_path = StringProperty('./data/res/example_landscape.jpg')
+
+    def __init__(self, name='', altitude='', latitude='', longitude='', last_updated='', **kwargs):
+        self.name = name
+        self.altitude = altitude
+        self.latitude = latitude
+        self.longitude = longitude
+        self.last_updated = last_updated
+
+        super(WaypointCard, self).__init__(**kwargs)
 
 
 class LanguageListItem(OneLineAvatarIconListItem):
@@ -119,20 +129,6 @@ class LanguageDropDown(MDBoxLayout):
     def on_touch_down(self, touch):
         if self.collide_point(*touch.pos):
             self.menu.open()
-
-
-class RecSwipeArea(FloatLayout):
-    def __init__(self, **kwargs):
-        self.distance = 5
-        super(RecSwipeArea, self).__init__(**kwargs)
-
-    def on_touch_up(self, touch):
-        if self.collide_point(*touch.pos):
-            toolbar = MDApp.get_running_app().root_widget.ids.toolbar
-            if touch.y < touch.oy - self.distance:
-                set_visible(toolbar, True)
-            if touch.y > touch.oy - self.distance:
-                set_visible(toolbar, False)
 
 
 class NumericTextInput(MDTextField):
@@ -660,140 +656,6 @@ class MyScreenManager(ScreenManager):
             self.current = group[index]
 
 
-class MenuScreen(CustomScreen):
-    """
-    Eine zusätzliche Implementierung der Basisklassen CustomScreen für die Menübildschirme.
-    (Bildschirme, die bei den Einstellungen im Kontrollbildschirm verwendet werden).
-
-    Attributes
-    ----------
-    nav_bar_buttons: list
-        Die Knöpfe, die in der Navigationsleiste verwendet werden.
-    nav_bar: BoxLayout
-        Die Navigationsleiste.
-    """
-
-    nav_bar_buttons = []
-
-    def __init__(self, **kwargs):
-        """
-        Erstellt alle nötigen Variablen für die Klasse.
-        Diese Signatur wird von Kivy vorgegeben.
-
-        Parameters
-        ----------
-        kwargs: any
-            Durch die Zwei sterne vor dem Namen kann man eine undefinierte Anzahl von Parameter
-            übergeben werden. kw kann also beliebig viele Parameter mit variablen Namen darstellen.
-        """
-
-        self.nav_bar = None
-        super(MenuScreen, self).__init__(**kwargs)
-
-    def on_pre_enter(self, *args) -> None:
-        """
-        Wird aufgerufen, wenn dieser Bildschirm aufgerufen wird und die Animation gerade startet.
-        Der Unterschied zu on_enter:
-        on_pre_enter:
-            - Wird vor on_enter aufgerufen
-            - Die Animation startet gerade
-        on_enter:
-            - Die Animation ist beendet
-            - Der Bildschirm ist gerendert
-
-        Diese Signatur wird von Kivy vorgegeben.
-
-        Parameters
-        ----------
-        args: any
-            Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
-            angenommen werden.
-        """
-
-        self.nav_bar = MDApp.get_running_app().root.ids.nav_bar
-        # Wurde die Navigationsleiste schon erstellt?
-        # Wenn nein dann erstelle sie
-        if self.nav_bar.size_hint_y is None:
-            self.nav_bar.size_hint_y = 0.1
-
-            settings_group = self.manager.screen_groups['settings']
-            for settings in settings_group:
-                btn = Button(text=settings)
-                btn.bind(on_release=self.on_nav_bar_btn_clicked)
-                self.nav_bar_buttons.append(btn)
-                self.nav_bar.add_widget(btn)
-        super(MenuScreen, self).on_pre_enter(*args)
-
-    def on_nav_bar_btn_clicked(self, *args) -> None:
-        """
-        Wird aufgerufen, wenn ein Knopf der Navigationsleiste gedrückt wird.
-        Sobald ein Knopf gedrückt wird, soll der Bildschirm zu den gewünschten Ziel gewechselt werden.
-
-        Diese Signatur wird von Kivy vorgegeben.
-
-        Parameters
-        ----------
-        args: any
-            Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
-            angenommen werden.
-        """
-
-        index = self.nav_bar_buttons.index(args[0])
-        current_index = self.manager.screen_groups['settings'].index(self.manager.current)
-        if current_index > index:
-            transition = 'right'
-        else:
-            transition = 'left'
-        self.manager.go_to_screen_of_group('settings', index, transition)
-
-    def close_menu(self, *args) -> None:
-        """
-        Die Funktion wird aufgerufen, wenn ein bestimmter Knopf(Zurück-Knopf) gedrückt wird.
-        Dann werden alle Knöpfe und der Bereich für die Navigationsleiste minimiert.
-
-        Diese Signatur wird von Kivy vorgegeben.
-
-        Parameters
-        ----------
-        args: any
-            Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
-            angenommen werden.
-        """
-
-        # Zerstöre alle Knöpfe
-        for index in range(len(self.nav_bar.children)):
-            self.nav_bar.remove_widget(self.nav_bar.children[0])
-        self.nav_bar_buttons.clear()
-
-        # Minimiere den Navigationsbereich
-        # Size_hint_y steht für die relative Höhe zum Eltern Widget.
-        # Um die Höhe mit absoluten Zahlen zu setzen, muss es auf None gesetzt werden
-        self.nav_bar.size_hint_y = None
-        self.nav_bar.height = 0
-        self.go_back('control')
-
-    def on_touch_up(self, touch):
-        """
-        Wird aufgerufen, sobald der Benutzer sein Finger von den Bildschirm abhebt.
-        Diese Funktion ist für die Wischfunktion in den Menübildschirm verantwortlich.
-        Basierend auf die Richtung der Wisches, wird der nächste Bildschirm oder der vorherige
-        Bildschirm aufgerufen.
-
-        Diese Signatur wird von Kivy vorgegeben.
-
-        Parameters
-        ----------
-        touch: MouseMotionEvent
-            Das Objekt, das Daten über die Berührung wie z.B die Position enthält.
-        """
-
-        # touch.ox beinhaltet die Startposition des Touches
-        if touch.x < touch.ox - self.app_config['swipe_distance']:
-            self.manager.go_next_screen_of_group('settings')
-        elif touch.x > touch.ox + self.app_config['swipe_distance']:
-            self.manager.go_previous_screen_of_group('settings')
-
-
 # *******************************************************************
 
 # *************************** Bildschirme ***************************
@@ -883,6 +745,10 @@ class StartScreen(CustomScreen):
                 'text': 'Settings',
                 'icon': 'cog-outline'
             },
+            'waypoints': {
+                'text': 'Waypoints',
+                'icon': 'map-outline'
+            },
             'support': {
                 'text': 'Support',
                 'icon': 'help-circle-outline'
@@ -936,9 +802,13 @@ class AppSettingsScreen(CustomScreen):
                 'text': 'Connect',
                 'icon': 'database-search-outline'
             },
-            'appSettings': {
+            'settings': {
                 'text': 'Settings',
                 'icon': 'cog-outline'
+            },
+            'waypoints': {
+                'text': 'map-outline',
+                'icon': 'map-outline'
             },
             'support': {
                 'text': 'Support',
@@ -1004,6 +874,7 @@ class SupportScreen(CustomScreen):
         super(SupportScreen, self).__init__(**kwargs)
 
     def load_drawer(self, *args):
+        super(SupportScreen, self).load_drawer(*args)
         self.icon_text = {
             'start': {
                 'text': 'Start',
@@ -1013,16 +884,19 @@ class SupportScreen(CustomScreen):
                 'text': 'Connect',
                 'icon': 'database-search-outline'
             },
-            'appSettings': {
+            'settings': {
                 'text': 'Settings',
                 'icon': 'cog-outline'
+            },
+            'waypoints': {
+                'text': 'Waypoints',
+                'icon': 'map-outline'
             },
             'support': {
                 'text': 'Support',
                 'icon': 'help-circle-outline'
             }
         }
-        super(SupportScreen, self).load_drawer(*args)
 
     def on_kv_post(self, base_widget):
         for i in range(len(self.questions)):
@@ -1103,12 +977,16 @@ class ConnectionScreen(CustomScreen):
                 'icon': 'home-outline'
             },
             'connection': {
-                'text': 'database-search-outline',
-                'icon': 'home-outline'
+                'text': 'Connect',
+                'icon': 'database-search-outline'
             },
-            'appSettings': {
+            'settings': {
                 'text': 'Settings',
                 'icon': 'cog-outline'
+            },
+            'waypoints': {
+                'text': 'Waypoints',
+                'icon': 'map-outline'
             },
             'support': {
                 'text': 'Support',
@@ -1239,7 +1117,7 @@ class ControlScreen(CustomScreen):
 
         self.created = False
 
-        self.control_screens = ['control', 'settings', 'support']
+        self.control_screens = ['control', 'settings', 'support', 'waypoints']
 
         super(ControlScreen, self).__init__(**kwargs)
 
@@ -1267,7 +1145,7 @@ class ControlScreen(CustomScreen):
             self.send_thread.save_start()
             self.connection_thread.save_start()
 
-        toolbar = MDApp.get_running_app().root_widget.ids.toolbar
+        toolbar = MDApp.get_running_app().root_widget.toolbar
         set_visible(toolbar, False)
 
         self.log_message(translate('Ready to take off'))
@@ -1297,7 +1175,7 @@ class ControlScreen(CustomScreen):
         if self.manager.current not in self.control_screens:
             self.shutdown(*args)
 
-        toolbar = MDApp.get_running_app().root_widget.ids.toolbar
+        toolbar = MDApp.get_running_app().root_widget.toolbar
         set_visible(toolbar, True)
 
         super(ControlScreen, self).on_leave(*args)
@@ -1309,12 +1187,16 @@ class ControlScreen(CustomScreen):
                 'icon': 'home-outline'
             },
             'connection': {
-                'text': 'database-search-outline',
-                'icon': 'home-outline'
+                'text': 'Connect',
+                'icon': 'database-search-outline'
             },
             'settings': {
                 'text': 'Settings',
                 'icon': 'cog-outline'
+            },
+            'waypoints': {
+                'text': 'Waypoints',
+                'icon': 'map-outline'
             },
             'support': {
                 'text': 'Support',
@@ -1476,7 +1358,7 @@ class ControlScreen(CustomScreen):
         return i, result
 
 
-class SettingsScreen(MenuScreen):
+class SettingsScreen(CustomScreen):
     """
     Einstellungsbildschirm im Bedingungsbildschirm.
     Die Einstellungen umfassen neben den Appeinstellungen vom Appeinstellungenbildschirm
@@ -1490,23 +1372,30 @@ class SettingsScreen(MenuScreen):
 
     app_settings = ObjectProperty(None)
 
-    def on_enter(self, *args) -> None:
-        """
-        Wird aufgerufen, sobald dieser Bildschirm aufgerufen wird.
-        In dieser Funktion werden lediglich die Daten von der Konfigurationsdatei gelesen
-        und in die Felder in den Einstellungen eingesetzt.
-
-        Diese Signatur wird von Kivy vorgegeben.
-
-        Parameters
-        ----------
-        args: any
-            Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
-            angenommen werden.
-        """
-
-        super(SettingsScreen, self).on_enter(*args)
-        self.ids.tick_field.text = str(self.machine_config['tick']['value'])
+    def load_drawer(self, *args):
+        self.icon_text = {
+            'start': {
+                'text': 'Start',
+                'icon': 'home-outline'
+            },
+            'connection': {
+                'text': 'Connect',
+                'icon': 'database-search-outline'
+            },
+            'settings': {
+                'text': 'Settings',
+                'icon': 'cog-outline'
+            },
+            'waypoints': {
+                'text': 'Waypoints',
+                'icon': 'map-outline'
+            },
+            'support': {
+                'text': 'Support',
+                'icon': 'help-circle-outline'
+            }
+        }
+        super(SettingsScreen, self).load_drawer(*args)
 
     def save_config(self, *args) -> None:
         """
@@ -1521,9 +1410,6 @@ class SettingsScreen(MenuScreen):
             Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
             angenommen werden.
         """
-
-        tick = self.ids.tick_field.text
-        self.machine_config['tick']['value'] = int(tick)
 
         self.app_settings.save_config()
         self.configuration.save_config()
@@ -1543,339 +1429,56 @@ class SettingsScreen(MenuScreen):
             wlan_client.send_message(f'CMD{SEPARATOR}set_config{SEPARATOR}{json_string}')
 
 
-class WaypointsScreen(MenuScreen):
+class WaypointsScreen(CustomScreen):
     """
     Wegpunktbildschirm.
     In diesen Bildschirm werden alle Wegpunkte angezeigt,
     die dann bearbeitet, gelöscht werden können.
-
-    Attributes
-    ----------
-    waypoints: dict
-        Enthält alle Wegpunkte.
-    columns: list
-        Enthält alle Zeilen, sprich die UI-Komponente der einzelnen Wegpunkte.
-    edit_buttons: list
-        Enthält alle Knöpfe für das Bearbeiten eines Wegpunktes.
-    remove_buttons: list
-        Enthält alle Knöpfe für das Löschen eines Wegpunktes.
-    grids: list
-        Enthält das Gitter der einzelnen Wegpunkte.
-        In diesen Gitter sind unteranderen die Sensordaten, im Form von Labels gespeichert.
-
-    title_labels: list
-        Enthält die Labels für die Namen der Wegpunkte
-    altitude_labels: list
-        Enthält die Labels für die Höhen der Wegpunkte
-    latitude_labels: list
-        Enthält die Labels für die Breitengrade der Wegpunkte
-    longitude_labels: list
-        Enthält die Labels für die Längengrade der Wegpunkte
-    date_labels: list
-        Enthält die Labels, die das Datum angeben, zu wann der Wegpunkt zuletzt
-        bearbeitet wurde.
-
-    fields: list
-        Wenn der Benutzer ein Wegpunkt berbeitet, verwenden wir Textfelder,
-        die die Labels temporär ersetzten. Diese Textfelder werden hier gespeichert.
-    current_edit: Button
-        Beinhaltet den Bearbeitungsknopf des Wegpunktes, der gerade bearbeitet wird.
     """
 
     def __init__(self, **kwargs):
+        self.waypoints = []
         super(WaypointsScreen, self).__init__(**kwargs)
-        self.waypoints = self.app_config['waypoints']
-
-        self.columns = []
-        self.edit_buttons = []
-        self.remove_buttons = []
-        self.grids = []
-
-        self.title_labels = []
-        self.altitude_labels = []
-        self.latitude_labels = []
-        self.longitude_labels = []
-        self.date_labels = []
-
-        # Temporäre Objekte für das bearbeitende Wegpunkt
-        self.fields = []
-        self.current_edit = None
 
     def on_enter(self, *args) -> None:
-        """
-        Wird aufgerufen, sobald dieser Bildschirm aufgerufen wird.
-        In dieser Funktion wird die Liste(UI) dynamisch generiert.
-
-        Diese Signatur wird von Kivy vorgegeben.
-
-        Parameters
-        ----------
-        args: any
-            Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
-            angenommen werden.
-        """
-
         self.waypoints = self.app_config['waypoints']
+        for name, data in self.waypoints.items():
+            card = WaypointCard(name, data['altitude'], data['latitude'],
+                                data['longitude'], data['date'])
+            self.ids.grid.add_widget(card)
 
-        list_area = self.ids.list_area
-        list_area.height = self.get_height()
+        self.ids.grid.height = 70 * len(self.waypoints)
+        super(WaypointsScreen, self).on_enter(*args)
 
-        if len(self.waypoints) != 0:
-            frame_height = list_area.height / len(self.waypoints)
-
-        for (index, key, value) in zip(range(len(self.waypoints)), self.waypoints.keys(), self.waypoints.values()):
-
-            main = FloatLayout(size=list_area.size)
-
-            anchor = AnchorLayout(anchor_y='top', pos_hint={'x': .0, 'y': .0})
-            title_label = Label(text=key, size_hint=(.1, .3), font_size=20)
-            anchor.add_widget(title_label)
-            self.title_labels.append(title_label)
-
-            grid = GridLayout(cols=2, size_hint=(.8, .7), pos_hint={'x': 0, 'y': 0})
-
-            names = ['altitude', 'latitude', 'longitude', 'last update']
-            values_names = ['altitude', 'latitude', 'longitude', 'date']
-            lists = [self.altitude_labels, self.latitude_labels, self.longitude_labels, self.date_labels]
-
-            for i in range(4):
-                t_b = BoxLayout()
-                label_name = Label(text=names[i])
-                label_value = Label(text=str(value[values_names[i]]))
-                t_b.add_widget(label_name)
-                t_b.add_widget(label_value)
-                lists[i].append(label_value)
-                grid.add_widget(t_b)
-            self.grids.append(grid)
-
-            box_anchor = AnchorLayout(anchor_x='right', pos_hint={'x': 0, 'y': 0})
-            box = BoxLayout(orientation='vertical', size_hint=(0.2, 1), padding=20, spacing=10)
-
-            edit_button = RoundedButton(text='edit', size_hint_y=.4)
-            edit_button.bind(on_release=self.edit_waypoint)
-            remove_button = RoundedButton(text='remove', size_hint_y=.4)
-            remove_button.bind(on_release=self.remove_waypoint)
-            box.add_widget(edit_button)
-            box.add_widget(remove_button)
-            box_anchor.add_widget(box)
-
-            self.edit_buttons.append(edit_button)
-            self.remove_buttons.append(remove_button)
-
-            main.add_widget(anchor)
-            main.add_widget(box_anchor)
-            main.add_widget(grid)
-
-            with main.canvas.before:
-                Color(rgba=[.5, .5, .5, 1])
-                Line(width=1, rectangle=(0, index * frame_height, list_area.width, frame_height))
-
-            self.columns.append(main)
-
-            list_area.add_widget(main)
-
-        super(WaypointsScreen, self).on_enter(args)
-
-    def on_leave(self, *args) -> None:
-        """
-        Wird aufgerufen, sobald Benutzer die Bildschirm verlassen wird.
-        In dieser Funktion werden die davor erzeugten Elementen wieder zerstört.
-
-        Diese Signatur wird von Kivy vorgegeben.
-
-        Parameters
-        ----------
-        args: any
-            Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
-            angenommen werden.
-        """
-
-        self.remove_waypoint_widgets()
+    def on_leave(self, *args):
+        self.ids.grid.clear_widgets()
+        self.waypoints.clear()
         super(WaypointsScreen, self).on_leave(*args)
 
-    def remove_waypoint_widgets(self) -> None:
-        """
-        In dieser Funktion findet eigentlich erst die Zerstörung der Elemente statt.
-        Zudem wird die Liste geleert.
-        """
-
-        children = self.ids.list_area.children
-        for index in range(len(children)):
-            self.ids.list_area.remove_widget(self.ids.list_area.children[0])
-        self.waypoints.clear()
-
-    def go_back_to_menu(self, *args) -> None:
-        """
-        Wird aufgerufen, wenn der Benutzer auf den Zurück-Knopf drückt.
-        Dann werden alle Wegpunkte gelöscht(UI, Liste in der Klasseninstanz).
-        Damit ist nicht die Liste in der Konfigurationsdatei gemeint.
-
-        Diese Signatur wird von Kivy vorgegeben.
-
-        Parameters
-        ----------
-        args: any
-            Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
-            angenommen werden.
-        """
-
-        self.remove_waypoint_widgets()
-        self.manager.get_screen('control').status = ''
-
-    def edit_waypoint(self, *args):
-        """
-        Wird aufgerufen, wenn der Benutzer auf den Berabeitung-Knopf drückt.
-        Dann werden alle Labels im Gitter gelöscht (Layout in den sich die Labels
-        mit den Sensordaten befinden) und durch 'numerische Textfelder' ersetzt.
-        Zudem wird aus den Bearbeitung-Knopf ein Speichern-Knopf, der die Veränderungen speichert.
-
-        Diese Signatur wird von Kivy vorgegeben.
-
-        Parameters
-        ----------
-        args: any
-            Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
-            angenommen werden.
-        """
-
-        # Wenn gerade ein Knopf bearbeitet wird, wird der gespeichert und
-        # der gewünschte Wegpunkt bearbeitet.
-        if len(self.fields) != 0:
-            self.save_edited_waypoint(self.current_edit)
-
-        # Speicher den zuletzt gesetzten Knopf temporär ab
-        edit_btn = args[0]
-        self.current_edit = edit_btn
-        index = self.edit_buttons.index(edit_btn)
-        labels = [self.altitude_labels[index], self.latitude_labels[index], self.longitude_labels[index]]
-
-        # Ersetzte jedes Label mit Eingabefelder
-        children = self.grids[index].children
-        for i, label in enumerate(labels):
-            box = children[(len(children) - 1) - i]
-            box.remove_widget(label)
-
-            ti = NumericTextInput(multiline=False)
-
-            ti.text = label.text
-            ti.font_size = label.font_size
-
-            self.fields.append(ti)
-            box.add_widget(ti)
-
-        # Mach aus den Bearbeitung-Knopf ein Speichern-Knopf, der die Veränderungen speichert.
-        edit_btn.text = 'save'
-        edit_btn.unbind(on_release=self.edit_waypoint)
-        edit_btn.bind(on_release=self.save_edited_waypoint)
-
-    def save_edited_waypoint(self, *args):
-        """
-        Funktion die vom Speichern-Knopf aufgerufen wird.
-        Dort werden dann die Textfelder wieder durch die Labels ersetzt, wobei die
-        der Inhalt der Textfelder genommen werden
-
-        Diese Signatur wird von Kivy vorgegeben.
-
-        Parameters
-        ----------
-        args: any
-            Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
-            angenommen werden.
-        """
-
-        edit_btn = args[0]
-
-        index = self.edit_buttons.index(edit_btn)
-        title = self.title_labels[index].text
-
-        last_update_date = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-
-        lists = [self.altitude_labels, self.latitude_labels, self.longitude_labels, self.date_labels]
-        numbers = []
-
-        # Ersetzte jedes Eingabefelder mit Labels
-        children = self.grids[index].children
-        for i, field in enumerate(self.fields):
-            number = float(self.fields[i].text)
-            if number.is_integer():
-                number = int(number)
-
-            widget = children[(len(children) - 1) - i]
-            widget.remove_widget(field)
-
-            temp_l = Label(text=str(number))
-            widget.add_widget(temp_l)
-            lists[i][index] = temp_l
-            numbers.append(number)
-
-        # Erstelle den neuen Wegpunkt
-        self.app_config['waypoints'][title] = {
-            "altitude": str(numbers[0]),
-            "latitude": str(numbers[1]),
-            "longitude": str(numbers[2]),
-            "date": last_update_date
+    def load_drawer(self, *args):
+        self.icon_text = {
+            'start': {
+                'text': 'Start',
+                'icon': 'home-outline'
+            },
+            'connection': {
+                'text': 'Connect',
+                'icon': 'database-search-outline'
+            },
+            'settings': {
+                'text': 'Settings',
+                'icon': 'cog-outline'
+            },
+            'waypoints': {
+                'text': 'Waypoints',
+                'icon': 'map-outline'
+            },
+            'support': {
+                'text': 'Support',
+                'icon': 'help-circle-outline'
+            }
         }
-
-        # Speichern den neuen Wegpunkt in die Konfigurationsdatei ab
-        self.configuration.save_config()
-        self.fields.clear()
-
-        edit_btn.text = 'edit'
-        edit_btn.unbind(on_release=self.save_edited_waypoint)
-        edit_btn.bind(on_release=self.edit_waypoint)
-
-    def remove_waypoint(self, *args) -> None:
-        """
-        Funktion die vom Löschen-Knopf aufgerufen wird.
-
-        Diese Signatur wird von Kivy vorgegeben.
-
-        Parameters
-        ----------
-        args: any
-            Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
-            angenommen werden.
-         """
-
-        # Lösche den Knopf aus temporären Variablen
-        # Denn es kann auch sein, dass man den Wegpunkt bearbeitet und während man
-        # den Wegpunkt bearbeitet löscht.
-        index = self.remove_buttons.index(args[0])
-        if self.current_edit == self.edit_buttons[index]:
-            self.fields.clear()
-            self.current_edit = None
-
-        # Lösche den Wegpunkt aus der Konfigurationsdatei
-        self.app_config['waypoints'].pop(self.title_labels[index].text)
-        self.configuration.save_config()
-        self.waypoints = self.app_config['waypoints']
-
-        # Lösche das Widget aus der Liste in der UI
-        self.ids.list_area.remove_widget(self.columns[index])
-        self.ids.list_area.height = self.get_height()
-
-        # Lösche die UI-Komponenten aus den Listen
-        self.edit_buttons.pop(index)
-        self.columns.pop(index)
-        self.grids.pop(index)
-        self.title_labels.pop(index)
-        self.altitude_labels.pop(index)
-        self.longitude_labels.pop(index)
-        self.latitude_labels.pop(index)
-        self.date_labels.pop(index)
-        self.remove_buttons.pop(index)
-
-    def get_height(self) -> int:
-        """
-        Berechnet die Höhe anhand der Anzahl der Wegpunkte.
-
-        Returns
-        -------
-        <nameless>: int
-            Die Gesamthöhe.
-        """
-
-        return len(self.waypoints) * (self.width / 5.5)
+        super(WaypointsScreen, self).load_drawer(*args)
 
 
 # *******************************************************************
@@ -1887,10 +1490,13 @@ class DroneRoot(MDScreen):
     nav_drawer = ObjectProperty()
     nav_drawer_list = ObjectProperty()
 
+    toolbar = ObjectProperty()
+
     def on_kv_post(self, base_widget):
-        self.ids.toolbar.left_action_items.append(
+        self.toolbar.left_action_items.append(
             ['menu', self.show_nav_drawer, '']
         )
+        super(DroneRoot, self).on_kv_post(base_widget)
 
     def show_nav_drawer(self, *args):
         self.nav_drawer.set_state('open')
@@ -1910,7 +1516,7 @@ class DroneApp(MDApp):
 
     root_widget = ObjectProperty()
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         self.configuration = Configuration('./data/config.json', True)
 
         self.translated_labels = []
@@ -1921,7 +1527,7 @@ class DroneApp(MDApp):
         self.configuration.on_config_changed.add_function(self.on_config_changed)
         super(DroneApp, self).__init__(**kwargs)
 
-    def on_config_changed(self):
+    def on_config_changed(self) -> None:
         self.configuration.load_config()
 
     def bind_text(self, label, text, entire_text) -> str:
@@ -1962,7 +1568,7 @@ class DroneApp(MDApp):
             label.text = label.text.replace(self.translated_parts[index], translated_text)
             self.translated_parts[index] = translated_text
 
-    def set_translation(self):
+    def set_translation(self) -> None:
         language = self.configuration.config_dict['app']['current_language'] + '_' + \
                    self.configuration.config_dict['app']['current_language'].capitalize()
 
@@ -1970,7 +1576,7 @@ class DroneApp(MDApp):
                                                languages=[language])
         self.translation.install()
 
-    def build(self):
+    def build(self) -> None:
         self.set_translation()
         self.load_kv_files()
 
@@ -1978,7 +1584,7 @@ class DroneApp(MDApp):
         return self.root_widget
 
     @staticmethod
-    def load_kv_files():
+    def load_kv_files() -> None:
         files = os.listdir(KV_DIRECTORY)
         for file in files:
             path = KV_DIRECTORY + '/' + file
@@ -1987,6 +1593,7 @@ class DroneApp(MDApp):
 
 def translate(message) -> str:
     return MDApp.get_running_app().translation.gettext(message)
+
 
 def set_visible(wid, visible) -> None:
     if hasattr(wid, 'saved_attrs'):
@@ -1998,6 +1605,7 @@ def set_visible(wid, visible) -> None:
         wid.height, wid.size_hint_y, wid.opacity, wid.disabled = 0, None, 0, True
 
 # *******************************************************************
+
 
 if __name__ == '__main__':
     DroneApp().run()

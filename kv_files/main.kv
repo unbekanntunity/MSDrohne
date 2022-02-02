@@ -1,8 +1,6 @@
 #:kivy 2.0.0
 #:import get_color_from_hex kivy.utils.get_color_from_hex
 
-<RoundedButton@Button>:
-
 <BouncingPoints>:
 
 <SupportExpansionContent>:
@@ -144,7 +142,6 @@
                 padding: 20
                 orientation: 'vertical'
                 id: box
-                cols: 1
                 adaptive_height: True
 
 <ConnectionScreen>:
@@ -238,56 +235,52 @@
 <WaypointsScreen>:
     name: 'waypoints'
     AnchorLayout:
-        padding: 20
-        anchor_x: 'left'
-        anchor_y: 'top'
-        RoundedButton:
-            size_hint_x: None
-            size_hint_y: None
-            text: 'back'
-            on_release: root.close_menu()
-    AnchorLayout:
-        anchor_x: 'center'
-        anchor_y: 'top'
-        FloatLayout:
-            size_hint_y: .2
-            Label:
-                pos_hint: {'x':  .45, 'y': 0}
-                size_hint: (None, None)
-                text: app.bind_text(self, 'Waypoints', 'Waypoints')
-                font_size: 50
-            RoundedButton:
-                pos_hint: {'x':  .8, 'y': .25}
-                size_hint: (None, .5)
-                text: 'clear'
-                on_release: root.go_back_to_menu()
-    AnchorLayout:
-        anchor_y: 'bottom'
-        size_hint_y: 0.8
-        canvas.before:
-            Color:
-                rgba: 1, 1, 1, 1
-            Line:
-                width: 1
-                rectangle: self.x, self.y, self.width, self.height
+        pos_hint: {'y' : -.1}
         ScrollView:
-            BoxLayout:
-                id: list_area
-                orientation: 'vertical'
+            size_hint: .9, .9
+            MDGridLayout:
                 size_hint_y: None
-                height: root.get_height()
+                height: 900
+                id: grid
+                cols: 4
+                spacing: 30, 30
+
+
+<WaypointCard>:
+    style: 'elevated'
+    line_color: (0.2, 0.2, 0.2, 0.8)
+    MDBoxLayout:
+        orientation: 'vertical'
+        FitImage:
+            radius: 6, 6, 0, 0
+            source: root.image_path
+        MDBoxLayout:
+            orientation: 'vertical'
+            padding: 10
+            spacing: 20
+            MDLabel:
+                halign: 'center'
+                font_size: 14
+                text: root.name
+            MDLabel:
+                font_size: 10
+                text: root.altitude
+            MDLabel:
+                font_size: 10
+                text: root.latitude
+            MDLabel:
+                font_size: 10
+                text: root.longitude
+            MDLabel:
+                font_size: 8
+                text: root.last_updated
 
 
 <DroneRoot>:
     nav_drawer: nav_drawer
     nav_drawer_list: nav_drawer_content
+    toolbar: toolbar
 
-    canvas.before:
-		Color:
-			rgba: 1, 1, 1, 1
-		Rectangle:
-			pos: self.pos
-			size: self.size
     BoxLayout:
         orientation: 'vertical'
         MyScreenManager:
