@@ -1106,7 +1106,7 @@ class SupportScreen(CustomScreen):
 
     def on_enter(self, *args) -> None:
         toolbar = MDApp.get_running_app().root_widget.toolbar
-        toolbar.title = translate('Support')
+        toolbar.title = DroneApp.translate('Support')
         super(SupportScreen, self).on_enter(*args)
 
     def on_kv_post(self, base_widget):
@@ -1123,6 +1123,8 @@ class SupportScreen(CustomScreen):
             )
 
     def load_drawer(self, *args):
+        # Einige Bereiche sind erst betrettbar, sobald man sich einmal verbunden hat
+        # Aus diesen Grund müssen zwei Versionen von Navigationsleisten erstellt werden
         if MDApp.get_running_app().connected:
             self.icon_text = {
                 'home': {
@@ -1204,7 +1206,7 @@ class ConnectionScreen(CustomScreen):
         self.ip = '192.168.178.30'
         self.port = '9192'
 
-        self.waiting_text = translate('Waiting for response')
+        self.waiting_text = DroneApp.translate('Waiting for response')
 
         self.max_steps = 4
         self.current_step = 0
@@ -1223,7 +1225,7 @@ class ConnectionScreen(CustomScreen):
 
     def on_enter(self, *args) -> None:
         toolbar = MDApp.get_running_app().root_widget.toolbar
-        toolbar.title = translate('Connection')
+        toolbar.title = DroneApp.translate('Connection')
 
         self.ids.loading_anim.start_animation()
 
@@ -1299,7 +1301,7 @@ class ConnectionScreen(CustomScreen):
             if response_split[1] == '1':
                 self.manager.current = 'control'
             elif response_split[1] == '0':
-                self.status.text = translate('Connection to esp32 failed. Please try again')
+                self.status.text = DroneApp.translate('Connection to esp32 failed. Please try again')
         except Exception as e:
             pass
 
@@ -1380,7 +1382,7 @@ class ControlScreen(CustomScreen):
         self.r_joystick = JoyStick()
         self.l_joystick = JoyStick()
 
-        self.esp_connection = translate('strong')
+        self.esp_connection = DroneApp.translate('strong')
 
         self.created = False
 
@@ -1419,7 +1421,7 @@ class ControlScreen(CustomScreen):
         set_visible(toolbar, False)
 
         # Erstelle die erste Nachricht in der Konsole
-        self.log_message(translate('Ready to take off'))
+        self.log_message(DroneApp.translate('Ready to take off'))
 
         self.esp_connection_icon = CON_ICON[100]
 
@@ -1448,7 +1450,7 @@ class ControlScreen(CustomScreen):
                 wlan_client.send_message(f'CMD{SEPARATOR}set_hover_mode{SEPARATOR}True')
 
         if self.manager.current not in self.control_screens:
-            self.shutdown(*args)
+            self.shutdown()
 
         # Lass die Anzeige oben wieder erscheinen
         toolbar = MDApp.get_running_app().root_widget.toolbar
@@ -1518,7 +1520,7 @@ class ControlScreen(CustomScreen):
         self.app_config['waypoints'].append(new_waypoint)
         self.configuration.save_config()
 
-        self.log_message(translate('Waypoint') + ': ' + name + ' ' + translate('set'))
+        self.log_message(DroneApp.translate('Waypoint') + ': ' + name + ' ' + DroneApp.translate('set'))
 
     def on_config_changed(self) -> None:
         """
@@ -1572,11 +1574,11 @@ class ControlScreen(CustomScreen):
         self.esp_connection_icon = CON_ICON[esp_con[0]]
 
         if esp_con[1] == CON_STATUS[:-1]:
-            self.log_message(translate('WARNING: WEAK CONNECTION(ESP32)'), 'warning')
+            self.log_message(DroneApp.translate('WARNING: WEAK CONNECTION(ESP32)'), 'warning')
         if own_con[1] == CON_STATUS[:-1]:
-            self.log_message(translate('WARNING: WEAK CONNECTION'), 'warning')
+            self.log_message(DroneApp.translate('WARNING: WEAK CONNECTION'), 'warning')
 
-        self.esp_connection = translate(esp_con[1])
+        self.esp_connection = DroneApp.translate(esp_con[1])
 
     def check_esp_connection(self) -> (int, str):
         wlan_client.send_message(f'CMD{SEPARATOR}get_connect_strength')
@@ -1644,7 +1646,7 @@ class SettingsScreen(CustomScreen):
 
     def on_enter(self, *args) -> None:
         toolbar = MDApp.get_running_app().root_widget.toolbar
-        toolbar.title = translate('Settings')
+        toolbar.title = DroneApp.translate('Settings')
 
         super(SettingsScreen, self).on_enter(*args)
 
@@ -1695,7 +1697,7 @@ class SettingsScreen(CustomScreen):
         self.configuration.save_config()
         self.notify()
 
-        self.manager.get_screen('control').status = translate('Settings saved')
+        self.manager.get_screen('control').status = DroneApp.translate('Settings saved')
         self.close_menu(None)
 
     def notify(self) -> None:
@@ -1726,11 +1728,11 @@ class WaypointsScreen(CustomScreen):
         super(WaypointsScreen, self).__init__(**kwargs)
 
     def on_kv_post(self, base_widget):
-        self.ids.edit_waypoint_area.title = translate('Edit waypoint')
+        self.ids.edit_waypoint_area.title = DroneApp.translate('Edit waypoint')
         self.ids.edit_waypoint_area.on_save_btn_clicked.add_function(lambda area: self.save_waypoint(area, 'edit'))
         self.ids.edit_waypoint_area.on_discard_btn_clicked.add_function(self.discard_waypoint)
 
-        self.ids.add_waypoint_area.title = translate('Add new waypoint')
+        self.ids.add_waypoint_area.title = DroneApp.translate('Add new waypoint')
         self.ids.add_waypoint_area.on_save_btn_clicked.add_function(lambda area: self.save_waypoint(area, 'add'))
         self.ids.add_waypoint_area.on_discard_btn_clicked.add_function(self.discard_waypoint)
 
@@ -1743,7 +1745,7 @@ class WaypointsScreen(CustomScreen):
             ['plus', self.add_waypoint],
             ['delete-alert-outline', self.delete_waypoints]
         ]
-        toolbar.title = translate('Waypoints')
+        toolbar.title = DroneApp.translate('Waypoints')
 
         self.load_grid(True)
         super(WaypointsScreen, self).on_enter(*args)
@@ -1753,6 +1755,8 @@ class WaypointsScreen(CustomScreen):
         super(WaypointsScreen, self).on_leave(*args)
 
     def load_drawer(self, *args):
+        # Einige Bereiche sind erst betrettbar, sobald man sich einmal verbunden hat
+        # Aus diesen Grund müssen zwei Versionen von Navigationsleisten erstellt werden
         if MDApp.get_running_app().connected:
             self.icon_text = {
                 'home': {
@@ -2006,7 +2010,7 @@ class DroneRoot(MDScreen):
         self.toolbar.left_action_items = [
             ['menu', self.show_nav_drawer, '']
         ]
-        self.toolbar.title = translate('Home')
+        self.toolbar.title = DroneApp.translate('Home')
 
         super(DroneRoot, self).on_kv_post(base_widget)
 
@@ -2093,6 +2097,20 @@ class DroneApp(MDApp):
                                                languages=[language])
         self.translation.install()
 
+    def translate(self, message: str) -> str:
+        """
+        Übersetzte eine Zeichenkette mit der Sprache, die gerade in der App
+        eingestellt ist und gibt sie wieder zurück.
+        Falls keine Übersetzung vorhanden wird, wird die Zeichenkette unübersetzt zurückgegeben.
+
+        Parameters
+        ----------
+        message: str
+            Die zuübersetztende Zeichenkette.
+        """
+
+        return self.translation.gettext(message.lower())
+
     def build(self) -> None:
         self.set_translation()
         self.load_kv_files()
@@ -2108,11 +2126,21 @@ class DroneApp(MDApp):
             Builder.load_file(path)
 
 
-def translate(message) -> str:
-    return MDApp.get_running_app().translation.gettext(message.lower())
-
-
 def set_visible(wid, visible) -> None:
+    """
+    Lässt ein Widget unsichtbar werden, indem Höhe, Durchsichtigkeit u.s.w
+    verändert werden. Diese werten werden dann temporär gespeichert und anschließend
+    sobald man dieses Objekt wieder sichtbar machen möchte gelöscht.
+
+    Parameters
+    ----------
+    wid: Widget
+        Das Objekt. Das Objekt muss dabei von der Widget-Klase erben.
+    visible: bool
+        True: Sichtbar
+        False: Unsichtbar
+    """
+
     if hasattr(wid, 'saved_attrs'):
         if visible:
             wid.height, wid.size_hint_y, wid.opacity, wid.disabled = wid.saved_attrs
@@ -2123,6 +2151,19 @@ def set_visible(wid, visible) -> None:
 
 
 def get_waypoint_name(existing_names) -> str:
+    """
+    Generiert eine einzigartigen Zeichenkette und gibt diesen zurück.
+    Parameters
+    ----------
+    existing_names: list
+     Eine Liste mit verwendeten Zeichenketten
+
+    Returns
+    -------
+    name: str
+        Die generierte Zeichenketten.
+
+    """
     name = DEFAULT_WP_PREFIX
     i = 0
     while name in existing_names:
