@@ -1,57 +1,42 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "POT-Creation-Date: 2022-01-08 13:30+0100\n"
-"PO-Revision-Date: 2022-01-08 13:31+0100\n"
-"Last-Translator: BLIVE <byeblive@gmail.com>\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=cp1252\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: pygettext.py 1.5\n"
 
+msgid "Home"
+msgstr "Eingangsbereich"
 
-msgid "Find device"
-msgstr "Finde Gerät"
+msgid "Connect to device"
+msgstr "Zum Gerät verbinden"
 
-msgid "Support"
-msgstr "Hilfe"
+msgid "Connect"
+msgstr "Verbinden"
 
 msgid "Settings"
 msgstr "Einstellungen"
 
-msgid "Return"
-msgstr "Zurück"
+msgid "Waypoints"
+msgstr "Wegpunkte"
 
-msgid "Color theme"
-msgstr "Farbthema"
+msgid "Support"
+msgstr "Unterstützung"
 
-msgid "Save"
-msgstr "Speichern"
-
-msgid "Dark"
-msgstr "Dunkel"
-
-msgid "Light"
-msgstr "Licht"
-
-msgid "Turn on your bluetooth function and connect to the device"
-msgstr "Schalte dein Bluetooth-Funktion ein und verbinde dich mit dem Gerät"
-
-msgid "Name"
-msgstr "Name"
-
-msgid "Password"
-msgstr "Passwort"
-
-msgid "Send"
-msgstr "Senden"
+msgid "Waiting for response"
+msgstr "Auf Antwort warten"
 
 msgid "Ready to take off"
-msgstr "Bereit"
+msgstr "Einsatzbereit"
 
 msgid "Waypoint"
 msgstr "Wegpunkt"
@@ -59,20 +44,35 @@ msgstr "Wegpunkt"
 msgid "set"
 msgstr "gesetzt"
 
-msgid "Menu"
-msgstr "Menü"
+msgid "Control"
+msgstr "Kontrolle"
 
-msgid "Ticks"
-msgstr "Ticks"
+msgid "TOUCH SETTINGS"
+msgstr "Bedienungseinstellungen"
 
-msgid "Waypoints"
-msgstr "Wegpunkte"
+msgid "Swipe-Sensitivity"
+msgstr "WISCHEMPFINDLICHKEIT"
 
-msgid "Settings saved"
-msgstr "Einstellungen gespeichert"
+msgid "APPEARANCE SETTINGS"
+msgstr "EINSTELLUNGEN ZUM ERSCHEINUNGSBILD"
 
-msgid "Clear"
-msgstr "Alles löschen"
+msgid "Language"
+msgstr "Sprache"
+
+msgid "Discard"
+msgstr "Verwerfen"
+
+msgid "Save"
+msgstr "Speichern"
+
+msgid "Add new waypoint"
+msgstr "Neuen Wegpunkt hinzufügen"
+
+msgid "Edit waypoint"
+msgstr "Wegpunkt bearbeiten"
+
+msgid "Name"
+msgstr "Name"
 
 msgid "Altitude"
 msgstr "Höhe"
@@ -83,38 +83,29 @@ msgstr "Breitengrad"
 msgid "Longitude"
 msgstr "Längengrad"
 
-msgid "Last update"
-msgstr "Zuletzt bearbeitet"
+msgid "Do you really want to delete all entries?"
+msgstr "Wollen Sie wirklich alle Einträge löschen?"
 
-msgid "Edit"
-msgstr "Bearbeiten"
+msgid "Yes"
+msgstr "Ja"
 
-msgid "Remove"
-msgstr "Löschen"
+msgid "No"
+msgstr "Nein"
 
-msgid "Language"
-msgstr "Sprache"
+msgid "Name can´t be empty!"
+msgstr "Name kann nicht leer sein!"
 
-msgid "Server successfully created"
-msgstr "Server erfolgreich erstellt"
+msgid "Name already exists!"
+msgstr "Name existiert bereits!"
 
-msgid "Connection failed"
-msgstr "Verbindung fehlgeschlagen"
+msgid "Changes applied!"
+msgstr "Änderungen übernommen!"
 
-msgid "English"
-msgstr "Englisch"
+msgid "Waypoint deleted!"
+msgstr "Wegpunkt gelöscht!"
 
-msgid "German"
-msgstr "Deutsch"
+msgid "Waypoints deleted!"
+msgstr "Wegpunkte gelöscht!"
 
-msgid "On"
-msgstr "An"
-
-msgid "Off"
-msgstr "Aus"
-
-msgid "Swipe distance"
-msgstr "Wischdistanz"
-
-msgid "Saved networks"
-msgstr "Gespeicherte Netzwerke"
+msgid "Ohh, something went wrong!"
+msgstr "Ohh, irgendetwas ist schief gelaufen!"

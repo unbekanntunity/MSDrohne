@@ -3,6 +3,7 @@
 # *******************************************************************
 
 # **************************** Imports ****************a**************
+import math
 import os
 os.environ['KIVY_GL_BACKEND'] = 'angle_sdl2'
 
@@ -100,12 +101,34 @@ wlan_client = client.WLANClient()
 # Wir verwenden die von Kivy implementierte kv-Sprache
 # Alle in der .kv-file verwendeten Klassen, müssen auch einer Pythonskript deklariert werden
 class CustomSnackbar(BaseSnackbar):
+    """
+    Eigene Snackbar-Implementierung
+
+    Attributes
+    ---------
+    text: str
+        Text, der angezeigt wird.
+    icon: str
+        Pfad des Icons das rechts vom Text angezeigt wird.
+    font_size: int
+        Die Größe des Textes in sp.
+    """
+
     text = StringProperty(None)
     icon = StringProperty(None)
     font_size = NumericProperty("15sp")
 
 
 class SupportExpansionContent(MDBoxLayout):
+    """
+    Bereich, der beim Aufklappen der Textfelder erscheint.
+
+    Attributes
+    ----------
+    answer: str
+        Text, der in Box angezeigt wird.
+    """
+
     answer = StringProperty()
 
     def __init__(self, text, **kwargs):
@@ -114,6 +137,26 @@ class SupportExpansionContent(MDBoxLayout):
 
 
 class WaypointCard(MDCard):
+    """
+    Eine Karte, die alle Informationen über ein Wegpunkt kompakt darstellt.
+
+    Attributes
+    ----------
+    name: str
+        Name des Wegpunktes.
+    altitude: str
+        Höhe des Wegpunktes.
+    latitude: str
+        Breitengrad des Wegpunktes.
+    longitude: str
+        Längengrad des Wegpunktes.
+    last_updated: str
+        Zuletzt bearbeitet.
+    img_path: str
+        default: ./data/res/example_landscape.jpg
+        Der Pfad des Bildes, das oben auf der Karte angezeigt wird.
+    """
+
     name = StringProperty()
     altitude = StringProperty()
     latitude = StringProperty()
@@ -135,6 +178,9 @@ class WaypointCard(MDCard):
             ('Delete', 'delete-outline', self.delete_waypoint),
         ]
 
+        # Event, die aufgerufen werden, sobald auf den zugehörigen Knopf gedrückt wurde.
+        # Durch Events können auch Funktionen außerhalb dieser Klasse aufgerufen werden.
+        # Besonders da diese Klasse jedes mal als Parameter übergeben wird
         self.on_edit_btn_clicked = EventHandler()
         self.on_delete_btn_clicked = EventHandler()
 
@@ -162,6 +208,15 @@ class WaypointCard(MDCard):
         self.ids.drop_down.menu.open()
 
     def menu_item_selected(self, index):
+        """
+        Wird aufgerufen, sobald eine Option angeclickt wird.
+
+        Parameters
+        ---------
+        index: int
+            Der Index des Items, das angeclickt wurde.
+        """
+
         self.buttons[index][2]()
         self.ids.drop_down.menu.dismiss()
 
@@ -173,6 +228,20 @@ class WaypointCard(MDCard):
 
 
 class WaypointArea(MDAnchorLayout):
+    """
+    Diese Klasse unterscheidet sich von den WaypointCard und ist auch KEINE Subklasse von
+    WaypointCard.
+
+    WaypointCard: Die Karten aufgelistet werden.
+    WaypointArea: Der Bereich, der angezeigt wird, sobald ein Wegpunkt bearbeitet oder ein neuer
+                    erschaffen wird.
+
+    Attributes
+    ----------
+    title: str
+        Titel, der ganz oben angezeigt wird.
+    """
+
     title = StringProperty()
 
     def __init__(self, **kwargs):
@@ -183,10 +252,23 @@ class WaypointArea(MDAnchorLayout):
 
 
 class LanguageListItem(OneLineAvatarIconListItem):
+    """
+    Diese Klasse stellt die Vorlage für die einzelnen Optionen des Menüs da.
+
+    Attributes
+    ----------
+    left_icon: str
+        Icon, der links vom Text angezeigt wird.
+    """
+
     left_icon = StringProperty()
 
 
 class LanguageDropDown(MDBoxLayout):
+    """
+    Das Menü.
+    """
+
     def __init__(self, **kwargs):
         self.menu = None
         super(LanguageDropDown, self).__init__(**kwargs)
@@ -286,20 +368,7 @@ class AppSettings(BoxLayout):
     Klasse für die Implementierung der App-Einstellungen.
     Das Grundlayout wird dabei als BoxLayout angesehen. Sprich wenn man AppSettings als
     Widget hinzufügt, wird es als BoxLayout behandelt.
-
-    Attributes
-    ----------
-    translated_languages: dict
-        Die übersetzten Namen der Sprachen
-    translated_theme_names: dict
-        Die übersetzten Namen der Farbthemen
-    current_test_mode: bool
-        Dieser Wert ist wichtig für die Knöpfe in der Einstellung.
-        Je nach Wert, wird der Status einer der beiden Knöpfe verändert.
-        Am Anfang wird auch so ermittelt welcher der beiden Knöpfe schon gedrückt sein sollen.
-
     """
-    current_test_mode = BooleanProperty()
 
     def __init__(self, **kwargs):
         self.languages_full = [entry for entry in os.listdir('./locales') if os.path.isdir('./locales/' + entry)]
@@ -312,13 +381,7 @@ class AppSettings(BoxLayout):
         Wird aufgerufen, sobald die kv-Datei geladen wird und soll sicherstellen, dass
         am Anfang die aktuellsten Werte aus der Konfiguration-Datei abgelesen werden und die
         Textfelder und Knöpfe dementsprechende Texte bzw Werte annehmen.
-        z.B Wenn die Sprache Deutsch ist, soll beim Textfeld für die Sprachen Deutsch
-        am Anfang angezeigt werden.
         """
-
-        app = MDApp.get_running_app()
-        app_config = app.configuration.config_dict['app']
-        self.current_test_mode = app_config['testcase']
 
         self.add_settings()
         super(AppSettings, self).on_kv_post(base_widget)
@@ -354,6 +417,17 @@ class AppSettings(BoxLayout):
         self.ids.swipe_distance_text_input.text = str(app_config['swipe_distance'])
 
     def has_changed(self) -> bool:
+        """
+        Vergleicht die Werte nach den Betreten und vor dem Verlassen der Einstellungen und
+        gibt das Ergebnis im Form eines Boolean zurück.
+
+        Returns
+        -------
+        <nameless>: bool
+            True, hat sich verändert.
+            False, hat sich nicht verändert.
+        """
+
         app = MDApp.get_running_app()
         app_config = app.configuration.config_dict['app']
 
@@ -369,7 +443,14 @@ class AppSettings(BoxLayout):
         return False
 
     def menu_item_selected(self, index):
-        app = MDApp.get_running_app()
+        """
+        Wird aufgerufen, sobald eine Option angeclickt wird.
+
+        Parameters
+        ---------
+        index: int
+            Der Index des Items, das angeclickt wurde.
+        """
 
         language = self.languages_full[index].split('_')[0]
         self.ids.language_drop_down.children[0].text = language
@@ -390,7 +471,6 @@ class AppSettings(BoxLayout):
         language = self.languages_full[self._last_index].split('_')[0]
         app_config['current_language'] = language
 
-        #app_config['testcase'] = self.current_test_mode
         app_config['swipe_distance'] = float(self.ids.swipe_distance_text_input.text)
 
         config.save_config()
@@ -404,6 +484,27 @@ class AppSettings(BoxLayout):
 
 
 class BouncingPoints(Widget):
+    """
+    Eine Klasse für die Animation der springenden Punkte.
+
+    Attributes
+    ----------
+    points_size: [int, int]
+        Die Grö0e der Punkte.
+    spacing_x: int
+        Der Abstand der Punkte auf der X-Achse zueinander
+    spacing_y: int
+        Der Abstand der Punkte auf der Y-Achse zueinander
+    points: []
+        Die Punkte.
+    anim: Animation
+        Die Animation.
+    number: int
+        Anzahl der Punkte.
+    proceed: bool
+        Soll die Animation fortgesetzt werden?
+    """
+
     def __init__(self, **kwargs):
         self.points_size = [20, 20]
 
@@ -415,11 +516,15 @@ class BouncingPoints(Widget):
 
         self.number = 4
 
-        self._index = 0
         self.proceed = False
+        self._index = 0
         super(BouncingPoints, self).__init__(**kwargs)
 
-    def draw(self):
+    def draw(self) -> None:
+        """
+        Zeichne die Punkte auf einem Canvas.
+        """
+
         with self.canvas:
             for i in range(self.number):
                 adjusted_y = self.center_y + i * self.spacing_y
@@ -428,12 +533,21 @@ class BouncingPoints(Widget):
                 e = Ellipse(pos=(adjusted_x + 10, adjusted_y), size=(self.points_size[0], self.points_size[1]))
                 self.points.append(e)
 
-    def start_animation(self):
+    def start_animation(self) -> None:
+        """
+        Zeichne die Punkte und starte die Animation.
+        """
+
         self.draw()
         self.proceed = True
         self.run_animation()
 
     def on_animation_finished(self, *args):
+        """
+        Wird aufgerufen sobald die Animation abgeschlossen ist und startet direkt eine
+        nächsten Durchlauf, sodass ein Schleife entsteht.
+        """
+
         if self._index < len(self.points) - 1:
             self._index += 1
         else:
@@ -441,7 +555,11 @@ class BouncingPoints(Widget):
 
         self.run_animation()
 
-    def run_animation(self):
+    def run_animation(self) -> None:
+        """
+        Hier werden die Animationen erstellt und in die Dauerschleife eingebaut.
+        """
+
         if self.proceed:
             current_pos = self.points[self._index].pos
             self.anim = Animation(pos=(current_pos[0], current_pos[1] + 30), duration=1)
@@ -449,11 +567,30 @@ class BouncingPoints(Widget):
             self.anim.bind(on_complete=self.on_animation_finished)
             self.anim.start(self.points[self._index])
 
-    def stop_animation(self):
+    def stop_animation(self) -> None:
+        """
+        Stoppt die Schleife, aber nicht abrupt, sodass der momentane Durchlauf zu Ende geführt wird.
+        """
+
         self.proceed = False
 
 
 class LoadingAnimation(RelativeLayout):
+    """
+    Die Ladeanimation.
+    Beinhaltet die Animationen der springenden Punkte(BouncingPoint)
+    und die Animation mit der Lupe.
+
+    Attributes
+    ----------
+    points_size: [int, int]
+        Die Größe der Punkte.
+    glass_anim: Animation
+        Die Animation für die Lupe.
+    proceed: bool
+        Soll die Animation fortgesetzt werden?.
+    """
+
     def __init__(self, **kwargs):
         self.points_size = [20, 20]
 
@@ -461,20 +598,32 @@ class LoadingAnimation(RelativeLayout):
         self.proceed = False
         super(LoadingAnimation, self).__init__(**kwargs)
 
-    def on_kv_post(self, base_widget):
+    def on_kv_post(self, base_widget) -> None:
         self.ids.bouncing_p.points_size = self.points_size
 
-    def start_animation(self):
+    def start_animation(self) -> None:
+        """
+        Starte die Lupen und Punkt-Animation
+        """
+
         self.proceed = True
         self.run_glass_animation()
         self.ids.bouncing_p.start_animation()
 
     def stop_animation(self):
+        """
+        Stoppt die Schleife, aber nicht abrupt, sodass der momentane Durchlauf zu Ende geführt wird.
+        """
+
         self.proceed = False
         self.ids.bouncing_p.stop_animation()
         self.glass_anim.stop(self.ids.glass_img)
 
     def run_glass_animation(self, *args):
+        """
+        Hier werden die Animationen erstellt und in die Dauerschleife eingebaut.
+        """
+
         if self.proceed:
             server_img = self.ids.server_img
             random_x = uniform(server_img.pos_hint['center_x'] - .05, server_img.pos_hint['center_x'] + .05)
@@ -549,10 +698,18 @@ class CustomScreen(MDScreen):
         self.manager.transition.direction = 'left'
         Clock.schedule_once(self.load_drawer, .2)
 
-    def on_leave(self, *args):
+    def on_leave(self, *args) -> None:
+        """
+        Wird aufgerufen, sobald dieser Bildschirm verlassen wird. Da es sich jedoch um eine
+        Basisklasse handelt, wird diese Funktion auch aufgerufen wenn einer der Erbbildschirmen
+        aufgerufen wird.
+        Diese Signatur wird von Kivy vorgegeben.
+        """
+
+        # Zerstört die Navigationsleiste
         self.destroy_drawer()
 
-    def on_config_changed(self):
+    def on_config_changed(self) -> None:
         """
         Wird aufgerufen, sobald die Konfiguration durch die configuration_save_config Funktion gespeichert
         wird. Das gilt jedoch nur für die das Konfigurationsobjekt, in der DroneApp-Klasse.
@@ -564,7 +721,18 @@ class CustomScreen(MDScreen):
         self.machine_config = self.configuration.config_dict['machine']
         self.app_config = self.configuration.config_dict['app']
 
-    def load_drawer(self, *args):
+    def load_drawer(self, *args) -> None:
+        """
+        Erstellt die Navigationsleiste vor dem Betreten des Bildschirmes.
+        Dabei verwenden wir das Dictionary 'text_icon'.
+        Diese Dictionary beinhaltet:
+            - Den Text der angezeigt wird.
+            - Das Icon was rechts davon agezeigt wird.
+            - Der Name des Bildschirmes zu dem gewechselt wird.
+
+        Die Struktur muss dabei gleich bleiben.
+        """
+
         for screen_name, value in self.icon_text.items():
             item = MDNavigationDrawerItem(icon=value['icon'],
                                           text=value['text'],
@@ -573,7 +741,8 @@ class CustomScreen(MDScreen):
             MDApp.get_running_app().root_widget.nav_drawer_list.add_widget(item)
             self.drawer_items[screen_name] = item
 
-    def destroy_drawer(self, *args):
+    @staticmethod
+    def destroy_drawer(*args):
         drawer_list = MDApp.get_running_app().root_widget.nav_drawer_list.children[0]
 
         items = [item for item in drawer_list.children
@@ -582,7 +751,12 @@ class CustomScreen(MDScreen):
         for item in items:
             drawer_list.remove_widget(item)
 
-    def switch_screen(self, *args):
+    def switch_screen(self, *args) -> None:
+        """
+        Sobald ein Knopf der Navigationsleiste gedrückt wird, wechselt man durch diese
+        Methode zu diesen Bildschirm.
+        """
+
         keys = list(self.drawer_items.keys())
         values = list(self.drawer_items.values())
 
@@ -775,7 +949,6 @@ class StartScreen(CustomScreen):
             Diese Signatur wird von Kivy vorgegeben.
         """
 
-
         print(f'{self.width} x {self.height}')
         Clock.schedule_interval(self.change_font, 2)
         super(StartScreen, self).on_enter(*args)
@@ -797,10 +970,10 @@ class StartScreen(CustomScreen):
         Clock.unschedule(self.change_font)
         super(StartScreen, self).on_leave(*args)
 
-    def load_drawer(self, *args):
+    def load_drawer(self, *args) -> None:
         self.icon_text = {
-            'start': {
-                'text': 'Start',
+            'home': {
+                'text': 'Home',
                 'icon': 'home-outline'
             },
             'connection': {
@@ -860,8 +1033,8 @@ class AppSettingsScreen(CustomScreen):
 
     def load_drawer(self, *args):
         self.icon_text = {
-            'start': {
-                'text': 'Start',
+            'home': {
+                'text': 'Home',
                 'icon': 'home-outline'
             },
             'connection': {
@@ -933,7 +1106,7 @@ class SupportScreen(CustomScreen):
 
     def on_enter(self, *args) -> None:
         toolbar = MDApp.get_running_app().root_widget.toolbar
-        toolbar.title = translate('Connection')
+        toolbar.title = translate('Support')
         super(SupportScreen, self).on_enter(*args)
 
     def on_kv_post(self, base_widget):
@@ -952,8 +1125,8 @@ class SupportScreen(CustomScreen):
     def load_drawer(self, *args):
         if MDApp.get_running_app().connected:
             self.icon_text = {
-                'start': {
-                    'text': 'Start',
+                'home': {
+                    'text': 'Home',
                     'icon': 'home-outline'
                 },
                 'connection': {
@@ -979,8 +1152,8 @@ class SupportScreen(CustomScreen):
             }
         else:
             self.icon_text = {
-                'start': {
-                    'text': 'Start',
+                'home': {
+                    'text': 'Home',
                     'icon': 'home-outline'
                 },
                 'connection': {
@@ -1066,8 +1239,8 @@ class ConnectionScreen(CustomScreen):
 
     def load_drawer(self, *args):
         self.icon_text = {
-            'start': {
-                'text': 'Start',
+            'home': {
+                'text': 'Home',
                 'icon': 'home-outline'
             },
             'connection': {
@@ -1229,6 +1402,7 @@ class ControlScreen(CustomScreen):
             Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
             angenommen werden.
         """
+        # Starte die Threads
         if not self.app_config['testcase']:
             if self.manager.current in self.control_screens[2:]:
                 wlan_client.send_message(f'CMD{SEPARATOR}set_hover_mode{SEPARATOR}False')
@@ -1240,10 +1414,13 @@ class ControlScreen(CustomScreen):
 
         MDApp.get_running_app().connected = True
 
+        # Lass die Anzeige oben verschwinden
         toolbar = MDApp.get_running_app().root_widget.toolbar
         set_visible(toolbar, False)
 
+        # Erstelle die erste Nachricht in der Konsole
         self.log_message(translate('Ready to take off'))
+
         self.esp_connection_icon = CON_ICON[100]
 
         # Wurden die Joysticks schon erstellt?
@@ -1261,15 +1438,19 @@ class ControlScreen(CustomScreen):
         super(ControlScreen, self).on_enter(*args)
 
     def on_leave(self, *args) -> None:
+        # Beende die Threads
         if not self.app_config['testcase']:
             self.receive_thread.stop()
             self.send_thread.stop()
             self.connection_thread.stop()
+            # Isst der Benutzer z.B in den Einstellungen, soll die Drohne auf gleicher Höhe bleiben
             if self.manager.current in self.control_screens[2:]:
                 wlan_client.send_message(f'CMD{SEPARATOR}set_hover_mode{SEPARATOR}True')
+
         if self.manager.current not in self.control_screens:
             self.shutdown(*args)
 
+        # Lass die Anzeige oben wieder erscheinen
         toolbar = MDApp.get_running_app().root_widget.toolbar
         set_visible(toolbar, True)
 
@@ -1277,8 +1458,8 @@ class ControlScreen(CustomScreen):
 
     def load_drawer(self, *args):
         self.icon_text = {
-            'start': {
-                'text': 'Start',
+            'home': {
+                'text': 'Home',
                 'icon': 'home-outline'
             },
             'connection': {
@@ -1388,18 +1569,14 @@ class ControlScreen(CustomScreen):
         esp_con = self.check_esp_connection()
         own_con = self.check_own_connection()
 
-        warning = ''
         self.esp_connection_icon = CON_ICON[esp_con[0]]
 
         if esp_con[1] == CON_STATUS[:-1]:
-            warning += translate('WARNING: WEAK CONNECTION(ESP32)')
+            self.log_message(translate('WARNING: WEAK CONNECTION(ESP32)'), 'warning')
         if own_con[1] == CON_STATUS[:-1]:
-            warning += translate('WARNING: WEAK CONNECTION(DEVICE)')
+            self.log_message(translate('WARNING: WEAK CONNECTION'), 'warning')
 
-        if warning != '':
-            self.status = warning
-
-        self.esp_connection = translate(esp_con)
+        self.esp_connection = translate(esp_con[1])
 
     def check_esp_connection(self) -> (int, str):
         wlan_client.send_message(f'CMD{SEPARATOR}get_connect_strength')
@@ -1412,17 +1589,10 @@ class ControlScreen(CustomScreen):
     def check_own_connection(self) -> (int, str):
         return self.get_connectivity(100)
 
-    def shutdown(self, *args) -> None:
+    def shutdown(self) -> None:
         """
-        Wird von einem Knopf aufgerufen, wodurch der Benutzer wieder zum Startbildschirm gelangt.
-        Dabei wird der ESP32 die Clients zurückgesetzt.
-        Diese Signatur wird von Kivy vorgegeben.
-
-        Parameters
-        ----------
-        args: any
-            Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
-            angenommen werden.
+        Der Benutzer gelangt zum Startverbindung.
+        Dabei wird der ESP32 und die Clients zurückgesetzt (Verbindung wird gekappt).
         """
 
         if not self.app_config['testcase']:
@@ -1434,7 +1604,7 @@ class ControlScreen(CustomScreen):
         self.receive_thread.stop()
 
         MDApp.get_running_app().connected = False
-        self.go_back('start')
+        self.go_back('home')
 
     def log_message(self, message, log_level='info'):
         timestamp = datetime.now().strftime("%H:%M:%S")
@@ -1451,6 +1621,7 @@ class ControlScreen(CustomScreen):
     @staticmethod
     def get_connectivity(value) -> (int, str):
         result = CON_STATUS[0]
+        i = 0
         for i, border, status in enumerate(CON_STATUS.items()):
             if value > border:
                 result = status
@@ -1479,8 +1650,8 @@ class SettingsScreen(CustomScreen):
 
     def load_drawer(self, *args):
         self.icon_text = {
-            'start': {
-                'text': 'Start',
+            'home': {
+                'text': 'Home',
                 'icon': 'home-outline'
             },
             'connection': {
@@ -1555,9 +1726,11 @@ class WaypointsScreen(CustomScreen):
         super(WaypointsScreen, self).__init__(**kwargs)
 
     def on_kv_post(self, base_widget):
+        self.ids.edit_waypoint_area.title = translate('Edit waypoint')
         self.ids.edit_waypoint_area.on_save_btn_clicked.add_function(lambda area: self.save_waypoint(area, 'edit'))
         self.ids.edit_waypoint_area.on_discard_btn_clicked.add_function(self.discard_waypoint)
 
+        self.ids.add_waypoint_area.title = translate('Add new waypoint')
         self.ids.add_waypoint_area.on_save_btn_clicked.add_function(lambda area: self.save_waypoint(area, 'add'))
         self.ids.add_waypoint_area.on_discard_btn_clicked.add_function(self.discard_waypoint)
 
@@ -1572,7 +1745,7 @@ class WaypointsScreen(CustomScreen):
         ]
         toolbar.title = translate('Waypoints')
 
-        self.load_grid()
+        self.load_grid(True)
         super(WaypointsScreen, self).on_enter(*args)
 
     def on_leave(self, *args):
@@ -1582,8 +1755,8 @@ class WaypointsScreen(CustomScreen):
     def load_drawer(self, *args):
         if MDApp.get_running_app().connected:
             self.icon_text = {
-                'start': {
-                    'text': 'Start',
+                'home': {
+                    'text': 'Home',
                     'icon': 'home-outline'
                 },
                 'connection': {
@@ -1609,8 +1782,8 @@ class WaypointsScreen(CustomScreen):
             }
         else:
             self.icon_text = {
-                'start': {
-                    'text': 'Start',
+                'home': {
+                    'text': 'Home',
                     'icon': 'home-outline'
                 },
                 'connection': {
@@ -1632,18 +1805,21 @@ class WaypointsScreen(CustomScreen):
             }
         super(WaypointsScreen, self).load_drawer(*args)
 
-    def load_grid(self):
+    def load_grid(self, load_all):
         self.waypoints = self.app_config['waypoints'].copy()
+        if load_all:
+            for waypoint in self.waypoints:
+                card = WaypointCard(waypoint['name'], waypoint['altitude'], waypoint['latitude'],
+                                    waypoint['longitude'], waypoint['date'])
+                card.on_edit_btn_clicked.add_function(self.edit_waypoint)
+                card.on_delete_btn_clicked.add_function(self.delete_waypoint)
+                self.waypoint_cards.append(card)
+                self.ids.grid.add_widget(card)
 
-        for waypoint in self.waypoints:
-            card = WaypointCard(waypoint['name'], waypoint['altitude'], waypoint['latitude'],
-                                waypoint['longitude'], waypoint['date'])
-            card.on_edit_btn_clicked.add_function(self.edit_waypoint)
-            card.on_delete_btn_clicked.add_function(self.delete_waypoint)
-            self.waypoint_cards.append(card)
-            self.ids.grid.add_widget(card)
-
-        self.ids.grid.height = 70 * len(self.waypoints)
+        # Höhe des Layouts abhängig von der Anzahl der Zeilen
+        # Breite des Layouts anhängig von der Anzahl Spalten
+        self.ids.grid.height = 220 * math.ceil(len(self.waypoints) / 4)
+        self.ids.grid.width = 180 * max(1, min(len(self.waypoints), 4))
 
     def clear_grid(self):
         self.ids.grid.clear_widgets()
@@ -1665,13 +1841,19 @@ class WaypointsScreen(CustomScreen):
         set_visible(edit_area, True)
 
     def save_waypoint(self, area, mode):
+        if mode != 'edit' and mode != 'add':
+            raise ValueError('mode must be add or edit.')
+
         name = area.ids.name_field.text
         names = [waypoint['name'] for waypoint in self.waypoints]
-        old_name = self.waypoint_cards[self.current_edited_index].ids.name_label.text
-        
+        if mode == 'edit':
+            old_name = self.waypoint_cards[self.current_edited_index].ids.name_label.text
+        else:
+            old_name = ''
+
         if name == '':
             CustomSnackbar(
-                text=MDApp.get_running_app().bind_text(self, 'Name can´t be emtpy!'),
+                text=MDApp.get_running_app().bind_text(self, 'Name can´t be empty!'),
                 icon='information',
                 snackbar_x='10dp',
                 snackbar_y='10dp',
@@ -1679,7 +1861,7 @@ class WaypointsScreen(CustomScreen):
             ).open()
         elif name in names and name != old_name:
             CustomSnackbar(
-                text=MDApp.get_running_app().bind_text(self, 'Name has already been taken!'),
+                text=MDApp.get_running_app().bind_text(self, 'Name already exists'),
                 icon='information',
                 snackbar_x='10dp',
                 snackbar_y='10dp',
@@ -1696,9 +1878,15 @@ class WaypointsScreen(CustomScreen):
 
             if mode == 'edit':
                 self.apply_edit_changes(waypoint)
-            elif mode == 'add':
+            else:
                 self.apply_add_changes(waypoint)
-
+            CustomSnackbar(
+                text=MDApp.get_running_app().bind_text(self, 'Changes applied!'),
+                icon='information',
+                snackbar_x='10dp',
+                snackbar_y='10dp',
+                size_hint_x=.5
+            ).open()
             set_visible(area, False)
 
     def delete_waypoint(self, waypoint_card):
@@ -1710,6 +1898,14 @@ class WaypointsScreen(CustomScreen):
 
         self.app_config['waypoints'].pop(index)
         self.configuration.save_config()
+
+        CustomSnackbar(
+            text=MDApp.get_running_app().bind_text(self, 'Waypoint deleted!'),
+            icon='information',
+            snackbar_x='10dp',
+            snackbar_y='10dp',
+            size_hint_x=.5
+        ).open()
 
     @staticmethod
     def discard_waypoint(area):
@@ -1755,12 +1951,22 @@ class WaypointsScreen(CustomScreen):
         self.waypoint_cards.append(card)
         self.ids.grid.add_widget(card)
 
+        self.load_grid(False)
+
     def accept_clear(self, button):
         self.app_config['waypoints'].clear()
         self.configuration.save_config()
 
         self.clear_grid()
         self.clear_waypoints_dialog.dismiss()
+
+        CustomSnackbar(
+            text=MDApp.get_running_app().bind_text(self, 'Waypoints deleted!'),
+            icon='information',
+            snackbar_x='10dp',
+            snackbar_y='10dp',
+            size_hint_x=.5
+        ).open()
 
     def cancel_clear(self, button):
         self.clear_waypoints_dialog.dismiss()
@@ -1800,7 +2006,7 @@ class DroneRoot(MDScreen):
         self.toolbar.left_action_items = [
             ['menu', self.show_nav_drawer, '']
         ]
-        self.toolbar.title = translate('Start')
+        self.toolbar.title = translate('Home')
 
         super(DroneRoot, self).on_kv_post(base_widget)
 
@@ -1903,7 +2109,7 @@ class DroneApp(MDApp):
 
 
 def translate(message) -> str:
-    return MDApp.get_running_app().translation.gettext(message)
+    return MDApp.get_running_app().translation.gettext(message.lower())
 
 
 def set_visible(wid, visible) -> None:

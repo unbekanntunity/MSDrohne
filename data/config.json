@@ -9,7 +9,36 @@
         ],
         "swipe_distance": 5.0,
         "testcase": true,
-        "waypoints": []
+        "waypoints": [
+            {
+                "altitude": "0",
+                "date": "02/03/2022, 19:23:07",
+                "latitude": "0",
+                "longitude": "0",
+                "name": "new waypoint"
+            },
+            {
+                "altitude": "0",
+                "date": "02/03/2022, 19:23:11",
+                "latitude": "0",
+                "longitude": "0",
+                "name": "new waypoint(1)"
+            },
+            {
+                "altitude": "0",
+                "date": "02/03/2022, 19:24:07",
+                "latitude": "0",
+                "longitude": "0",
+                "name": "new waypoint(2)"
+            },
+            {
+                "altitude": "0",
+                "date": "02/03/2022, 19:24:51",
+                "latitude": "0",
+                "longitude": "0",
+                "name": "new waypoint(3)"
+            }
+        ]
     },
     "machine": {
         "tick": {

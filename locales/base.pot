@@ -14,116 +14,98 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: pygettext.py 1.5\n"
 
-
-#: test.py:6
-msgid "Find device"
+msgid "Home"
 msgstr ""
 
-#: test.py:7
-msgid "Support"
+msgid "Connect to device"
 msgstr ""
 
-#: test.py:8 test.py:27
+msgid "Connect"
+msgstr ""
+
 msgid "Settings"
 msgstr ""
 
-#: test.py:10
-msgid "Return"
-msgstr ""
-
-#: test.py:11
-msgid "Color theme"
-msgstr ""
-
-#: test.py:12
-msgid "Save"
-msgstr ""
-
-#: test.py:13
-msgid "Dark"
-msgstr ""
-
-#: test.py:14
-msgid "Light"
-msgstr ""
-
-#: test.py:16
-msgid "Turn on your bluetooth function and connect to the device"
-msgstr ""
-
-#: test.py:17
-msgid "Name"
-msgstr ""
-
-#: test.py:18
-msgid "Password"
-msgstr ""
-
-#: test.py:19
-msgid "Send"
-msgstr ""
-
-#: test.py:21
-msgid "Ready to take off"
-msgstr ""
-
-#: test.py:22
-msgid "Waypoint"
-msgstr ""
-
-#: test.py:23
-msgid "set"
-msgstr ""
-
-#: test.py:24
-msgid "Menu"
-msgstr ""
-
-#: test.py:26
-msgid "Ticks"
-msgstr ""
-
-#: test.py:28
 msgid "Waypoints"
 msgstr ""
 
-#: test.py:29
-msgid "Configuration saved"
+msgid "Support"
 msgstr ""
 
-#: test.py:31
-msgid "Clear"
+msgid "Waiting for response"
 msgstr ""
 
-#: test.py:32
-msgid "Altitude"
+msgid "Ready to take off"
 msgstr ""
 
-#: test.py:33
-msgid "Latitude"
+msgid "Waypoint"
 msgstr ""
 
-#: test.py:34
-msgid "Longitude"
+msgid "set"
 msgstr ""
 
-#: test.py:35
-msgid "Last update"
+msgid "Control"
 msgstr ""
 
-#: test.py:36
-msgid "Edit"
+msgid "TOUCH SETTINGS"
 msgstr ""
 
-#: test.py:37
-msgid "Remove"
+msgid "Swipe-Sensitivity"
+msgstr ""
+
+msgid "APPEARANCE SETTINGS"
 msgstr ""
 
 msgid "Language"
 msgstr ""
 
-msgid "English"
+msgid "Discard"
 msgstr ""
 
-msgid "German"
+msgid "Save"
+msgstr ""
+
+msgid "Add new waypoint"
+msgstr ""
+
+msgid "Edit waypoint"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Altitude"
+msgstr ""
+
+msgid "Latitude"
+msgstr ""
+
+msgid "Longitude"
+msgstr ""
+
+msgid "Do you really want to delete all entries?"
+msgstr ""
+
+msgid "Yes"
+msgstr ""
+
+msgid "No"
+msgstr ""
+
+msgid "Name can´t be empty!"
+msgstr ""
+
+msgid "Name already exists!"
+msgstr ""
+
+msgid "Changes applied!"
+msgstr ""
+
+msgid "Waypoint deleted!"
+msgstr ""
+
+msgid "Waypoints deleted!"
+msgstr ""
+
+msgid "Ohh, something went wrong!"
 msgstr ""
