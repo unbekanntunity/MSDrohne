@@ -70,13 +70,12 @@ class EventHandler(object):
             results.append(res)
         return results
 
-    def invoke(self):
+    def invoke(self, *args):
         """
         Führt die __call__() Funktion aus.
         Soll für eine benutzerfreundliche Bedingung sein.
         """
-
-        return self()
+        return self(*args)
 
     def add_function(self, function):
         """

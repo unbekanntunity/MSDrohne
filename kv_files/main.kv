@@ -5,7 +5,6 @@
 
 <SupportExpansionContent>:
     adaptive_height: True
-
     OneLineIconListItem:
         text: root.answer
 
@@ -26,9 +25,85 @@
         spacing_x: 50
         pos_hint: {'center_x': .38, 'center_y': .0}
 
-<LanguageListItem>
+<CustomSnackbar>
+    MDIconButton:
+        pos_hint: {'center_y': .5}
+        icon: root.icon
+
+    MDLabel:
+        id: text_bar
+        size_hint_y: None
+        height: self.texture_size[1]
+        text: app.bind_text(self, root.text)
+        font_size: root.font_size
+        theme_text_color: 'Custom'
+        text_color: get_color_from_hex('ffffff')
+        shorten: True
+        shorten_from: 'right'
+        pos_hint: {'center_y': .5}
+
+<LanguageListItem>:
     IconLeftWidget:
         icon: root.left_icon
+
+<WaypointArea>:
+    MDCard:
+        id: waypoint_card
+        size_hint: (.5, .75)
+        style: 'outlined'
+        line_color: (0.2, 0.5, 0.2, 0.8)
+        MDBoxLayout:
+            padding: 30
+            spacing: 30
+            orientation: 'vertical'
+            MDLabel:
+                adaptive_height: True
+                halign: 'center'
+                text: root.title
+            MDBoxLayout:
+                adaptive_height: True
+                orientation: 'vertical'
+                spacing: 10
+                MDTextField:
+                    id: name_field
+                    mode: "rectangle"
+                    hint_text: 'Name'
+                    required: True
+                    helper_text_mode: 'on_error'
+                NumericTextInput:
+                    id: altitude_field
+                    mode: "rectangle"
+                    required: True
+                    hint_text: 'Altitude'
+                    helper_text_mode: 'on_error'
+                MDTextField:
+                    id: latitude_field
+                    mode: "rectangle"
+                    required: True
+                    hint_text: 'Latitude'
+                    helper_text_mode: 'on_error'
+                MDTextField:
+                    id: longitude_field
+                    mode: "rectangle"
+                    required: True
+                    hint_text: 'Longitude'
+                    helper_text_mode: 'on_error'
+            AnchorLayout:
+                size_hint_y: .5
+                BoxLayout:
+                    spacing: 10
+                    MDRectangleFlatButton:
+                        text: app.bind_text(self, 'Discard')
+                        text_color: 0, 0, 1, 1
+                        line_color: 1, .2, .7, 1
+                        theme_icon_color: "Custom"
+                        on_release: root.on_discard_btn_clicked.invoke(root)
+                    MDRectangleFlatButton:
+                        text: app.bind_text(self, 'Save')
+                        text_color: 0, 0, 1, 1
+                        line_color: .2, 1, .7, 1
+                        theme_icon_color: "Custom"
+                        on_release: root.on_save_btn_clicked.invoke(root)
 
 <StartScreen>:
     name: 'start'
@@ -65,7 +140,7 @@
         orientation: 'vertical'
         size_hint_y: None
         MDLabel:
-            text: app.bind_text(self, 'TOUCH SETTINGS', 'TOUCH SETTINGS:')
+            text: app.bind_text(self, 'TOUCH SETTINGS')
         BoxLayout:
             MDLabel:
                 text: 'Swipe-Sensitivity:'
@@ -85,7 +160,7 @@
         orientation: 'vertical'
         size_hint_y: None
         MDLabel:
-            text: app.bind_text(self, 'APPEARANCE SETTINGS', 'APPEARANCE SETTINGS:')
+            text: app.bind_text(self, 'APPEARANCE SETTINGS')
         BoxLayout:
             MDLabel:
                 text: 'Language:'
@@ -121,13 +196,13 @@
             spacing: 10
             adaptive_height: True
             MDRectangleFlatButton:
-                text: app.bind_text(self, 'Discard', 'Discard')
+                text: app.bind_text(self, 'Discard')
                 text_color: 0, 0, 1, 1
                 line_color: 1, .2, .7, 1
                 theme_icon_color: "Custom"
                 on_release: root.discard_config()
             MDRectangleFlatButton:
-                text: app.bind_text(self, 'Save', 'Save')
+                text: app.bind_text(self, 'Save')
                 text_color: 0, 0, 1, 1
                 line_color: .2, 1, .7, 1
                 theme_icon_color: "Custom"
@@ -220,7 +295,7 @@
             spacing: 10
             adaptive_height: True
             MDRectangleFlatButton:
-                text: app.bind_text(self, 'Discard', 'Discard')
+                text: app.bind_text(self, 'Discard')
                 text_color: 0, 0, 1, 1
                 line_color: 1, .2, .7, 1
                 theme_icon_color: "Custom"
@@ -244,36 +319,53 @@
                 id: grid
                 cols: 4
                 spacing: 30, 30
-
+    WaypointArea:
+        id: edit_waypoint_area
+        title: 'Edit waypoint'
+    WaypointArea:
+        id: add_waypoint_area
+        title: 'Add waypoint'
 
 <WaypointCard>:
     style: 'elevated'
     line_color: (0.2, 0.2, 0.2, 0.8)
-    MDBoxLayout:
-        orientation: 'vertical'
-        FitImage:
-            radius: 6, 6, 0, 0
-            source: root.image_path
+    RelativeLayout:
         MDBoxLayout:
             orientation: 'vertical'
-            padding: 10
-            spacing: 20
-            MDLabel:
-                halign: 'center'
-                font_size: 14
-                text: root.name
-            MDLabel:
-                font_size: 10
-                text: root.altitude
-            MDLabel:
-                font_size: 10
-                text: root.latitude
-            MDLabel:
-                font_size: 10
-                text: root.longitude
-            MDLabel:
-                font_size: 8
-                text: root.last_updated
+            FitImage:
+                radius: 6, 6, 0, 0
+                source: root.image_path
+            MDBoxLayout:
+                orientation: 'vertical'
+                padding: 10
+                spacing: 20
+                MDLabel:
+                    id: name_label
+                    halign: 'center'
+                    font_size: 14
+                    text: root.name
+                MDLabel:
+                    id: altitude_label
+                    font_size: 10
+                    text: root.altitude
+                MDLabel:
+                    id: latitude_label
+                    font_size: 10
+                    text: root.latitude
+                MDLabel:
+                    id: longitude_label
+                    font_size: 10
+                    text: root.longitude
+                MDLabel:
+                    id: last_updated_label
+                    font_size: 8
+                    text: root.last_updated
+        MDIconButton:
+            id: drop_down
+            size_hint: .2, .15
+            icon: 'dots-vertical'
+            pos_hint: {'x': .8, 'y': .8}
+            on_release: root.open_menu()
 
 
 <DroneRoot>:
@@ -293,7 +385,6 @@
             SupportScreen
     MDToolbar:
         id: toolbar
-        title: "Example Banners"
         elevation: 10
         pos_hint: {'top': 1}
     MDNavigationDrawer:

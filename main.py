@@ -12,7 +12,6 @@ kivy.require('2.0.0')
 from kivymd.app import MDApp
 
 from kivy.uix.label import Label
-from kivy.uix.button import Button
 from kivymd.uix.textfield import MDTextField
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.navigationdrawer import MDNavigationDrawerItem
@@ -24,13 +23,14 @@ from kivymd.uix.dialog import MDDialog
 from kivymd.uix.expansionpanel import MDExpansionPanel, MDExpansionPanelOneLine
 from kivymd.uix.label import MDLabel
 from kivymd.uix.card import MDCard
+from kivymd.uix.anchorlayout import MDAnchorLayout
+from kivymd.uix.snackbar import BaseSnackbar
 
 from kivy.metrics import dp
 from kivy.graphics import Color, Ellipse
 from kivy.animation import Animation
 
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.relativelayout import RelativeLayout
 
 from kivy.uix.screenmanager import ScreenManager
@@ -44,6 +44,7 @@ from kivy.properties import ObjectProperty, StringProperty, BooleanProperty, Bou
 from communication import client
 from misc.custom_threads import DisposableLoopThread
 from misc.configuration import Configuration
+from misc.event_handling import EventHandler
 from customwidgets.joystick import *
 
 from random import randrange, uniform
@@ -98,6 +99,20 @@ wlan_client = client.WLANClient()
 
 # Wir verwenden die von Kivy implementierte kv-Sprache
 # Alle in der .kv-file verwendeten Klassen, müssen auch einer Pythonskript deklariert werden
+class CustomSnackbar(BaseSnackbar):
+    text = StringProperty(None)
+    icon = StringProperty(None)
+    font_size = NumericProperty("15sp")
+
+
+class SupportExpansionContent(MDBoxLayout):
+    answer = StringProperty()
+
+    def __init__(self, text, **kwargs):
+        self.answer = text
+        super(SupportExpansionContent, self).__init__(**kwargs)
+
+
 class WaypointCard(MDCard):
     name = StringProperty()
     altitude = StringProperty()
@@ -114,7 +129,57 @@ class WaypointCard(MDCard):
         self.longitude = longitude
         self.last_updated = last_updated
 
+        self.menu_items = []
+        self.buttons = [
+            ('Edit', 'pencil-outline', self.edit_waypoint),
+            ('Delete', 'delete-outline', self.delete_waypoint),
+        ]
+
+        self.on_edit_btn_clicked = EventHandler()
+        self.on_delete_btn_clicked = EventHandler()
+
         super(WaypointCard, self).__init__(**kwargs)
+
+    def on_kv_post(self, base_widget):
+        self.menu_items = [
+            {
+                "text": button[0],
+                "left_icon": button[1],
+                "viewclass": "LanguageListItem",
+                "height": dp(54),
+                "on_release": lambda x=i: self.menu_item_selected(x),
+
+            } for i, button in enumerate(self.buttons)
+        ]
+
+        self.ids.drop_down.menu = MDDropdownMenu(
+            caller=self.ids.drop_down,
+            items=self.menu_items,
+            width_mult=3
+        )
+
+    def open_menu(self, *args):
+        self.ids.drop_down.menu.open()
+
+    def menu_item_selected(self, index):
+        self.buttons[index][2]()
+        self.ids.drop_down.menu.dismiss()
+
+    def edit_waypoint(self):
+        self.on_edit_btn_clicked.invoke(self)
+
+    def delete_waypoint(self):
+        self.on_delete_btn_clicked.invoke(self)
+
+
+class WaypointArea(MDAnchorLayout):
+    title = StringProperty()
+
+    def __init__(self, **kwargs):
+        self.on_save_btn_clicked = EventHandler()
+        self.on_discard_btn_clicked = EventHandler()
+
+        super(WaypointArea, self).__init__(**kwargs)
 
 
 class LanguageListItem(OneLineAvatarIconListItem):
@@ -710,6 +775,7 @@ class StartScreen(CustomScreen):
             Diese Signatur wird von Kivy vorgegeben.
         """
 
+
         print(f'{self.width} x {self.height}')
         Clock.schedule_interval(self.change_font, 2)
         super(StartScreen, self).on_enter(*args)
@@ -853,14 +919,6 @@ class AppSettingsScreen(CustomScreen):
         self.app_settings.add_settings()
 
 
-class SupportExpansionContent(MDBoxLayout):
-    answer = StringProperty()
-
-    def __init__(self, text, **kwargs):
-        self.answer = text
-        super(SupportExpansionContent, self).__init__(**kwargs)
-
-
 class SupportScreen(CustomScreen):
     """
     Support Bildschirm.
@@ -873,30 +931,10 @@ class SupportScreen(CustomScreen):
 
         super(SupportScreen, self).__init__(**kwargs)
 
-    def load_drawer(self, *args):
-        super(SupportScreen, self).load_drawer(*args)
-        self.icon_text = {
-            'start': {
-                'text': 'Start',
-                'icon': 'home-outline'
-            },
-            'connection': {
-                'text': 'Connect',
-                'icon': 'database-search-outline'
-            },
-            'settings': {
-                'text': 'Settings',
-                'icon': 'cog-outline'
-            },
-            'waypoints': {
-                'text': 'Waypoints',
-                'icon': 'map-outline'
-            },
-            'support': {
-                'text': 'Support',
-                'icon': 'help-circle-outline'
-            }
-        }
+    def on_enter(self, *args) -> None:
+        toolbar = MDApp.get_running_app().root_widget.toolbar
+        toolbar.title = translate('Connection')
+        super(SupportScreen, self).on_enter(*args)
 
     def on_kv_post(self, base_widget):
         for i in range(len(self.questions)):
@@ -906,10 +944,63 @@ class SupportScreen(CustomScreen):
                         text=self.answers[i]
                     ),
                     panel_cls=MDExpansionPanelOneLine(
-                        text=self.answers[i]
+                        text=self.questions[i]
                     )
                 )
             )
+
+    def load_drawer(self, *args):
+        if MDApp.get_running_app().connected:
+            self.icon_text = {
+                'start': {
+                    'text': 'Start',
+                    'icon': 'home-outline'
+                },
+                'connection': {
+                    'text': 'Connect',
+                    'icon': 'database-search-outline'
+                },
+                'control': {
+                    'text': 'Control',
+                    'icon': 'controller-classic-outline'
+                },
+                'settings': {
+                    'text': 'Settings',
+                    'icon': 'cog-outline'
+                },
+                'waypoints': {
+                    'text': 'Waypoints',
+                    'icon': 'map-outline'
+                },
+                'support': {
+                    'text': 'Support',
+                    'icon': 'help-circle-outline'
+                }
+            }
+        else:
+            self.icon_text = {
+                'start': {
+                    'text': 'Start',
+                    'icon': 'home-outline'
+                },
+                'connection': {
+                    'text': 'Connect',
+                    'icon': 'database-search-outline'
+                },
+                'appSettings': {
+                    'text': 'Settings',
+                    'icon': 'cog-outline'
+                },
+                'waypoints': {
+                    'text': 'Waypoints',
+                    'icon': 'map-outline'
+                },
+                'support': {
+                    'text': 'Support',
+                    'icon': 'help-circle-outline'
+                }
+            }
+        super(SupportScreen, self).load_drawer(*args)
 
 
 class ConnectionScreen(CustomScreen):
@@ -958,6 +1049,9 @@ class ConnectionScreen(CustomScreen):
         self.status.text = self.waiting_text
 
     def on_enter(self, *args) -> None:
+        toolbar = MDApp.get_running_app().root_widget.toolbar
+        toolbar.title = translate('Connection')
+
         self.ids.loading_anim.start_animation()
 
         self.waiting_anim_thread.save_start()
@@ -1135,7 +1229,6 @@ class ControlScreen(CustomScreen):
             Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
             angenommen werden.
         """
-
         if not self.app_config['testcase']:
             if self.manager.current in self.control_screens[2:]:
                 wlan_client.send_message(f'CMD{SEPARATOR}set_hover_mode{SEPARATOR}False')
@@ -1144,6 +1237,8 @@ class ControlScreen(CustomScreen):
             self.receive_thread.save_start()
             self.send_thread.save_start()
             self.connection_thread.save_start()
+
+        MDApp.get_running_app().connected = True
 
         toolbar = MDApp.get_running_app().root_widget.toolbar
         set_visible(toolbar, False)
@@ -1194,6 +1289,10 @@ class ControlScreen(CustomScreen):
                 'text': 'Settings',
                 'icon': 'cog-outline'
             },
+            'control': {
+                'text': 'Control',
+                'icon': 'controller-classic-outline'
+            },
             'waypoints': {
                 'text': 'Waypoints',
                 'icon': 'map-outline'
@@ -1220,16 +1319,14 @@ class ControlScreen(CustomScreen):
         """
 
         waypoints = self.app_config['waypoints']
-
+        names = [waypoint['name'] for waypoint in waypoints]
         # Erstelle dynamisch den Namen des Wegpunkts, ohne dass sie sich doppeln
-        name = DEFAULT_WP_PREFIX
-        i = 0
-        while name in waypoints.keys():
-            i += 1
-            name = DEFAULT_WP_PREFIX + '(' + str(i) + ')'
+
+        name = get_waypoint_name(names)
 
         # Erstelle den Wegpunkt mithilfe der momentanen Sensordaten
         new_waypoint = {
+            'name': name,
             "date": datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
             "altitude": self.altitude,
             "longitude": self.longitude,
@@ -1237,11 +1334,10 @@ class ControlScreen(CustomScreen):
         }
 
         # Speicher den Wegpunkt in der Konfigurationsdatei
-        self.app_config['waypoints'][name] = new_waypoint
+        self.app_config['waypoints'].append(new_waypoint)
         self.configuration.save_config()
 
-        # Status: Wegpunkt: NAME erstellt
-        self.status = translate('Waypoint') + ': ' + name + ' ' + translate('set')
+        self.log_message(translate('Waypoint') + ': ' + name + ' ' + translate('set'))
 
     def on_config_changed(self) -> None:
         """
@@ -1277,6 +1373,7 @@ class ControlScreen(CustomScreen):
         In dieser Funktion werden die Daten vom ESP32 empfangen, aufbereitet und in den
         zugehörigen Variablen gespeichert.
         """
+        wlan_client.send_message(f'CMD{SEPARATOR}get_geo_data')
 
         # Format GEODATA|ALTITUDE|SPEED|LATITUDE|LONGITUDE
         response = wlan_client.wait_for_response(flag='GEODATA')
@@ -1305,12 +1402,13 @@ class ControlScreen(CustomScreen):
         self.esp_connection = translate(esp_con)
 
     def check_esp_connection(self) -> (int, str):
+        wlan_client.send_message(f'CMD{SEPARATOR}get_connect_strength')
+
         response = wlan_client.wait_for_response(flag='CONDATA')
         data = response.split(SEPARATOR)
 
         return self.get_connectivity(data[1])
 
-    # TODO: Implement own Connection check
     def check_own_connection(self) -> (int, str):
         return self.get_connectivity(100)
 
@@ -1335,6 +1433,7 @@ class ControlScreen(CustomScreen):
         self.send_thread.stop()
         self.receive_thread.stop()
 
+        MDApp.get_running_app().connected = False
         self.go_back('start')
 
     def log_message(self, message, log_level='info'):
@@ -1372,6 +1471,12 @@ class SettingsScreen(CustomScreen):
 
     app_settings = ObjectProperty(None)
 
+    def on_enter(self, *args) -> None:
+        toolbar = MDApp.get_running_app().root_widget.toolbar
+        toolbar.title = translate('Settings')
+
+        super(SettingsScreen, self).on_enter(*args)
+
     def load_drawer(self, *args):
         self.icon_text = {
             'start': {
@@ -1385,6 +1490,10 @@ class SettingsScreen(CustomScreen):
             'settings': {
                 'text': 'Settings',
                 'icon': 'cog-outline'
+            },
+            'control': {
+                'text': 'Control',
+                'icon': 'controller-classic-outline'
             },
             'waypoints': {
                 'text': 'Waypoints',
@@ -1438,48 +1547,243 @@ class WaypointsScreen(CustomScreen):
 
     def __init__(self, **kwargs):
         self.waypoints = []
+        self.waypoint_cards = []
+
+        self.current_edited_index = None
+        self.clear_waypoints_dialog = None
+
         super(WaypointsScreen, self).__init__(**kwargs)
 
-    def on_enter(self, *args) -> None:
-        self.waypoints = self.app_config['waypoints']
-        for name, data in self.waypoints.items():
-            card = WaypointCard(name, data['altitude'], data['latitude'],
-                                data['longitude'], data['date'])
-            self.ids.grid.add_widget(card)
+    def on_kv_post(self, base_widget):
+        self.ids.edit_waypoint_area.on_save_btn_clicked.add_function(lambda area: self.save_waypoint(area, 'edit'))
+        self.ids.edit_waypoint_area.on_discard_btn_clicked.add_function(self.discard_waypoint)
 
-        self.ids.grid.height = 70 * len(self.waypoints)
+        self.ids.add_waypoint_area.on_save_btn_clicked.add_function(lambda area: self.save_waypoint(area, 'add'))
+        self.ids.add_waypoint_area.on_discard_btn_clicked.add_function(self.discard_waypoint)
+
+        set_visible(self.ids.edit_waypoint_area, False)
+        set_visible(self.ids.add_waypoint_area, False)
+
+    def on_enter(self, *args) -> None:
+        toolbar = MDApp.get_running_app().root_widget.toolbar
+        toolbar.right_action_items = [
+            ['plus', self.add_waypoint],
+            ['delete-alert-outline', self.delete_waypoints]
+        ]
+        toolbar.title = translate('Waypoints')
+
+        self.load_grid()
         super(WaypointsScreen, self).on_enter(*args)
 
     def on_leave(self, *args):
-        self.ids.grid.clear_widgets()
-        self.waypoints.clear()
+        self.clear_grid()
         super(WaypointsScreen, self).on_leave(*args)
 
     def load_drawer(self, *args):
-        self.icon_text = {
-            'start': {
-                'text': 'Start',
-                'icon': 'home-outline'
-            },
-            'connection': {
-                'text': 'Connect',
-                'icon': 'database-search-outline'
-            },
-            'settings': {
-                'text': 'Settings',
-                'icon': 'cog-outline'
-            },
-            'waypoints': {
-                'text': 'Waypoints',
-                'icon': 'map-outline'
-            },
-            'support': {
-                'text': 'Support',
-                'icon': 'help-circle-outline'
+        if MDApp.get_running_app().connected:
+            self.icon_text = {
+                'start': {
+                    'text': 'Start',
+                    'icon': 'home-outline'
+                },
+                'connection': {
+                    'text': 'Connect',
+                    'icon': 'database-search-outline'
+                },
+                'control': {
+                    'text': 'Control',
+                    'icon': 'controller-classic-outline'
+                },
+                'settings': {
+                    'text': 'Settings',
+                    'icon': 'cog-outline'
+                },
+                'waypoints': {
+                    'text': 'Waypoints',
+                    'icon': 'map-outline'
+                },
+                'support': {
+                    'text': 'Support',
+                    'icon': 'help-circle-outline'
+                }
             }
-        }
+        else:
+            self.icon_text = {
+                'start': {
+                    'text': 'Start',
+                    'icon': 'home-outline'
+                },
+                'connection': {
+                    'text': 'Connect',
+                    'icon': 'database-search-outline'
+                },
+                'appSettings': {
+                    'text': 'Settings',
+                    'icon': 'cog-outline'
+                },
+                'waypoints': {
+                    'text': 'Waypoints',
+                    'icon': 'map-outline'
+                },
+                'support': {
+                    'text': 'Support',
+                    'icon': 'help-circle-outline'
+                }
+            }
         super(WaypointsScreen, self).load_drawer(*args)
 
+    def load_grid(self):
+        self.waypoints = self.app_config['waypoints'].copy()
+
+        for waypoint in self.waypoints:
+            card = WaypointCard(waypoint['name'], waypoint['altitude'], waypoint['latitude'],
+                                waypoint['longitude'], waypoint['date'])
+            card.on_edit_btn_clicked.add_function(self.edit_waypoint)
+            card.on_delete_btn_clicked.add_function(self.delete_waypoint)
+            self.waypoint_cards.append(card)
+            self.ids.grid.add_widget(card)
+
+        self.ids.grid.height = 70 * len(self.waypoints)
+
+    def clear_grid(self):
+        self.ids.grid.clear_widgets()
+        self.waypoints.clear()
+        self.waypoint_cards.clear()
+
+    def edit_waypoint(self, waypoint_card):
+        edit_area = self.ids.edit_waypoint_area
+        index = self.waypoint_cards.index(waypoint_card)
+
+        card = self.waypoint_cards[index]
+        self.current_edited_index = index
+
+        edit_area.ids.name_field.text = card.ids.name_label.text
+        edit_area.ids.altitude_field.text = card.ids.altitude_label.text
+        edit_area.ids.latitude_field.text = card.ids.latitude_label.text
+        edit_area.ids.longitude_field.text = card.ids.longitude_label.text
+
+        set_visible(edit_area, True)
+
+    def save_waypoint(self, area, mode):
+        name = area.ids.name_field.text
+        names = [waypoint['name'] for waypoint in self.waypoints]
+        old_name = self.waypoint_cards[self.current_edited_index].ids.name_label.text
+        
+        if name == '':
+            CustomSnackbar(
+                text=MDApp.get_running_app().bind_text(self, 'Name can´t be emtpy!'),
+                icon='information',
+                snackbar_x='10dp',
+                snackbar_y='10dp',
+                size_hint_x=.5
+            ).open()
+        elif name in names and name != old_name:
+            CustomSnackbar(
+                text=MDApp.get_running_app().bind_text(self, 'Name has already been taken!'),
+                icon='information',
+                snackbar_x='10dp',
+                snackbar_y='10dp',
+                size_hint_x=.5
+            ).open()
+        else:
+            waypoint = {
+                'name': area.ids.name_field.text,
+                'altitude': area.ids.altitude_field.text,
+                'latitude': area.ids.latitude_field.text,
+                'longitude': area.ids.longitude_field.text,
+                'date': datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+            }
+
+            if mode == 'edit':
+                self.apply_edit_changes(waypoint)
+            elif mode == 'add':
+                self.apply_add_changes(waypoint)
+
+            set_visible(area, False)
+
+    def delete_waypoint(self, waypoint_card):
+        index = self.waypoint_cards.index(waypoint_card)
+
+        self.waypoints.pop(index)
+        self.waypoint_cards.pop(index)
+        self.ids.grid.remove_widget(waypoint_card)
+
+        self.app_config['waypoints'].pop(index)
+        self.configuration.save_config()
+
+    @staticmethod
+    def discard_waypoint(area):
+        set_visible(area, False)
+
+    def add_waypoint(self, button):
+        add_area = self.ids.add_waypoint_area
+
+        names = [waypoint['name'] for waypoint in self.waypoints]
+        add_area.ids.name_field.text = get_waypoint_name(names)
+        add_area.ids.altitude_field.text = '0'
+        add_area.ids.latitude_field.text = '0'
+        add_area.ids.longitude_field.text = '0'
+
+        set_visible(add_area, True)
+
+    def apply_edit_changes(self, waypoint):
+        self.waypoints[self.current_edited_index] = waypoint
+        self.app_config['waypoints'][self.current_edited_index] = waypoint
+        self.configuration.save_config()
+
+        self.ids.grid.remove_widget(self.waypoint_cards[self.current_edited_index])
+
+        card = WaypointCard(waypoint['name'], waypoint['altitude'], waypoint['latitude'],
+                            waypoint['longitude'], waypoint['date'])
+        card.on_edit_btn_clicked.add_function(self.edit_waypoint)
+        card.on_delete_btn_clicked.add_function(self.delete_waypoint)
+        self.waypoint_cards[self.current_edited_index] = card
+        self.ids.grid.add_widget(card, (len(self.waypoints) - 1) - self.current_edited_index)
+
+        self.current_edited_index = -1
+
+    def apply_add_changes(self, waypoint):
+        self.waypoints.append(waypoint)
+        self.app_config['waypoints'].append(waypoint)
+        self.configuration.save_config()
+
+        card = WaypointCard(waypoint['name'], waypoint['altitude'], waypoint['latitude'],
+                            waypoint['longitude'], waypoint['date'])
+        card.on_edit_btn_clicked.add_function(self.edit_waypoint)
+        card.on_delete_btn_clicked.add_function(self.delete_waypoint)
+
+        self.waypoint_cards.append(card)
+        self.ids.grid.add_widget(card)
+
+    def accept_clear(self, button):
+        self.app_config['waypoints'].clear()
+        self.configuration.save_config()
+
+        self.clear_grid()
+        self.clear_waypoints_dialog.dismiss()
+
+    def cancel_clear(self, button):
+        self.clear_waypoints_dialog.dismiss()
+
+    def delete_waypoints(self, *args):
+        self.clear_waypoints_dialog = MDDialog(
+            text=MDApp.get_running_app().bind_text(self, 'Do u really want to delete all entries?'),
+            buttons=[
+                MDFlatButton(
+                    text=MDApp.get_running_app().bind_text(self, 'Yes'),
+                    theme_text_color="Custom",
+                    text_color=MDApp.get_running_app().theme_cls.primary_color,
+                    on_release=self.accept_clear
+                ),
+                MDFlatButton(
+                    text=MDApp.get_running_app().bind_text(self, 'No'),
+                    theme_text_color="Custom",
+                    text_color=MDApp.get_running_app().theme_cls.primary_color,
+                    on_release=self.cancel_clear
+                )
+            ]
+        )
+        self.clear_waypoints_dialog.open()
 
 # *******************************************************************
 
@@ -1493,9 +1797,11 @@ class DroneRoot(MDScreen):
     toolbar = ObjectProperty()
 
     def on_kv_post(self, base_widget):
-        self.toolbar.left_action_items.append(
+        self.toolbar.left_action_items = [
             ['menu', self.show_nav_drawer, '']
-        )
+        ]
+        self.toolbar.title = translate('Start')
+
         super(DroneRoot, self).on_kv_post(base_widget)
 
     def show_nav_drawer(self, *args):
@@ -1524,13 +1830,15 @@ class DroneApp(MDApp):
 
         self.translation = None
 
+        self.connected = False
+
         self.configuration.on_config_changed.add_function(self.on_config_changed)
         super(DroneApp, self).__init__(**kwargs)
 
     def on_config_changed(self) -> None:
         self.configuration.load_config()
 
-    def bind_text(self, label, text, entire_text) -> str:
+    def bind_text(self, label, text, entire_text=None) -> str:
         """
         Registriert den Label. Durch die update_text Funktion kann dann der Text aktualisiert werden.
         Das wird vor allem wichtig, wenn die Sprache geändert wurde una alle Texte in der App
@@ -1554,6 +1862,9 @@ class DroneApp(MDApp):
 
         self.translated_labels.append(label)
         translated_text = self.translation.gettext(text)
+
+        if entire_text is None:
+            entire_text = text
 
         self.translated_parts.append(translated_text)
         return entire_text.replace(text, translated_text)
@@ -1603,6 +1914,16 @@ def set_visible(wid, visible) -> None:
     elif not visible:
         wid.saved_attrs = wid.height, wid.size_hint_y, wid.opacity, wid.disabled
         wid.height, wid.size_hint_y, wid.opacity, wid.disabled = 0, None, 0, True
+
+
+def get_waypoint_name(existing_names) -> str:
+    name = DEFAULT_WP_PREFIX
+    i = 0
+    while name in existing_names:
+        i += 1
+        name = DEFAULT_WP_PREFIX + '(' + str(i) + ')'
+    return name
+
 
 # *******************************************************************
 

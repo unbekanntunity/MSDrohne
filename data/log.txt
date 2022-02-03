@@ -7,62 +7,60 @@ canvas.before:
 
 C:\Users\nguye\AppData\Local\Programs\Python\Python38\Tools\i18n\msgfmt.py base
 
- def on_touch_up(self, touch):
-        """
-        Wird aufgerufen, sobald der Benutzer sein Finger von den Bildschirm abhebt.
-        Diese Funktion ist für die Wischfunktion in den Menübildschirm verantwortlich.
-        Basierend auf die Richtung der Wisches, wird der nächste Bildschirm oder der vorherige
-        Bildschirm aufgerufen.
-
-        Diese Signatur wird von Kivy vorgegeben.
-
-        Parameters
-        ----------
-        touch: MouseMotionEvent
-            Das Objekt, das Daten über die Berührung wie z.B die Position enthält.
-        """
-
-        # touch.ox beinhaltet die Startposition des Touches
-        if touch.x < touch.ox - self.app_config['swipe_distance']:
-            self.manager.go_next_screen_of_group('settings')
-        elif touch.x > touch.ox + self.app_config['swipe_distance']:
-            self.manager.go_previous_screen_of_group('settings')
-
- def on_touch_move(self, touch):
-        self.tick += 1
-        if self.tick == self.max_tick:
-            if len(self.points) == 0:
-                return
-
-            last_point = self.points.pop()
-            new_point = touch.pos
-
-            diff_x = last_point[0] - new_point[0]
-            diff_y = last_point[1] - new_point[1]
-            print(diff_x, diff_y)
-
-            if diff_x > 0:
-                diff_x = -1
-            elif diff_x < 0:
-                diff_x = 1
-            else:
-                diff_x = 0
-
-            if diff_y > 0:
-                diff_y = 1
-            elif diff_y < 0:
-                diff_y = -1
-            else:
-                diff_y = 0
-
-            if diff_y == 0 and diff_x == 0:
-                return
-
-            print(diff_x, diff_y)
-            self.rot.axis = (diff_y, diff_x, 0)
-            print(self.rot.axis)
-            self.update_glsl(1/60.)
-
-            self.points.append(touch.pos)
-            self.tick = 0
-        super(Renderer, self).on_touch_move(touch)
+ <WaypointArea>:
+    MDCard:
+        id: waypoint_card
+        size_hint: (.5, .7)
+        style: 'outlined'
+        line_color: (0.2, 0.5, 0.2, 0.8)
+        MDBoxLayout:
+            padding: 30
+            spacing: 30
+            orientation: 'vertical'
+            MDLabel:
+                adaptive_height: True
+                halign: 'center'
+                text: root.title
+            MDBoxLayout:
+                orientation: 'vertical'
+                spacing: 10
+                MDTextField:
+                    id: name_field
+                    mode: "rectangle"
+                    hint_text: 'Name'
+                    required: True
+                    helper_text_mode: 'on_error'
+                NumericTextInput:
+                    id: altitude_field
+                    mode: "rectangle"
+                    required: True
+                    hint_text: 'Altitude'
+                    helper_text_mode: 'on_error'
+                MDTextField:
+                    id: latitude_field
+                    mode: "rectangle"
+                    required: True
+                    hint_text: 'Latitude'
+                    helper_text_mode: 'on_error'
+                MDTextField:
+                    id: longitude_field
+                    mode: "rectangle"
+                    required: True
+                    hint_text: 'Longitude'
+                    helper_text_mode: 'on_error'
+            AnchorLayout:
+                size_hint_y: .5
+                BoxLayout:
+                    spacing: 10
+                    MDRectangleFlatButton:
+                        text: app.bind_text(self, 'Discard', 'Discard')
+                        text_color: 0, 0, 1, 1
+                        line_color: 1, .2, .7, 1
+                        theme_icon_color: "Custom"
+                        on_release: root.on_discard_btn_clicked.invoke(root)
+                    MDRectangleFlatButton:
+                        text: app.bind_text(self, 'Save', 'Save')
+                        text_color: 0, 0, 1, 1
+                        line_color: .2, 1, .7, 1
+                        theme_icon_color: "Custom"
+                        on_release: root.on_save_btn_clicked.invoke(root)
