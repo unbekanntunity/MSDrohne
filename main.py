@@ -1025,6 +1025,10 @@ class StartScreen(CustomScreen):
 
 
 class AppSettingsScreen(CustomScreen):
+    """
+    Bildschirm mit den Einstellungen, die ohne Verbindung verändert werden können.
+    """
+
     app_settings = ObjectProperty(None)
 
     def __init__(self, **kwargs):
@@ -1094,8 +1098,7 @@ class AppSettingsScreen(CustomScreen):
 
 class SupportScreen(CustomScreen):
     """
-    Support Bildschirm.
-    Der Bildschirm soll die FAQs anzeigen.
+    Der Bildschirm soll die FAQs in Form von ausklappbaren Boxen anzeigen.
     """
 
     def __init__(self, **kwargs):
@@ -1180,26 +1183,18 @@ class SupportScreen(CustomScreen):
 
 class ConnectionScreen(CustomScreen):
     """
-    Verbindungsbildschirm. In diesen Bildschirm wird eine Verbindung zum ESP32 aufgebaut.
+    Verbindungsbildschirm.
+    In diesen Bildschirm wird eine Verbindung zur Drohne aufgebaut.
 
-    Reihenfolge:
-    Im ersten Schritt über Bluetooth und dann im zweiten Schritt über WLAN.
-    Als erstes werden WLAN-name und Passwort über Bluetooth übermittelt.
-    Wir vertrauen darauf dass der Benutzer sich mithilfe der Bluetooth Funktion seines Betriebssystems
-    mit dem ESP32 verbunden hat.
+    Zuvor muss die Drohne angeschaltet sein, damit sie sich dann mithilfe einer internen Liste gefüllt
+    mit Netzwerknamen und Passwörter ins Netzwerk einklingt.
+    Dann wird ein Server erstellt, mit dem dann über Sockets kommuniziert werden kann.
 
-    Anschließend nachdem der ESP32 sich mit dem Netz verbunden hat und ein WLAN-Server erstellt hat,
-    senden wir unsere IP-Adresse. Setzt natürlich voraus, dass wir uns ebenfalls im Netzwerk befinden.
-
-    Wenn alles geglückt ist, kann man zum nächsten Bildschirm gehen.
-
-    Attributes
-    ----------
-    status: Label
-        Ein Text, welches den momentanen Status anzeigt.
+    Wer verwenden zwei Threads.
+    Der register_thread, versucht über einen Befehl, die IP-Adresse des Gerätes zu registrieren und
+    der receive_thread wartet dann auf eine Antwort.
+    Wenn diese Antwort positiv also eine 1 enthält, wird man zum Kontrollbildschirm weitergeleitet.
     """
-
-    status = ObjectProperty()
 
     def __init__(self, **kw):
         super(ConnectionScreen, self).__init__(**kw)
@@ -1231,6 +1226,7 @@ class ConnectionScreen(CustomScreen):
 
         self.waiting_anim_thread.save_start()
         self.register_thread.save_start()
+        self.receive_thread.save_start()
         super(ConnectionScreen, self).on_enter(*args)
 
     def on_leave(self, *args) -> None:
@@ -1287,7 +1283,7 @@ class ConnectionScreen(CustomScreen):
             pass
 
         if sent_request:
-            self.manager.current = 'control'
+            self.register_thread.stop()
 
     @staticmethod
     def unregister_ip():
@@ -1612,13 +1608,13 @@ class ControlScreen(CustomScreen):
         timestamp = datetime.now().strftime("%H:%M:%S")
         terminal_log = f'[{timestamp}] [{log_level}] {message}'
 
-        l = MDLabel(text=terminal_log)
-        l.font_name = './data/customfonts/Consola'
-        l.adaptive_height = True
-        l.font_size = 10
-        l.color = [.5, .5, .5, 1]
+        label = MDLabel(text=terminal_log)
+        label.font_name = './data/customfonts/Consola'
+        label.adaptive_height = True
+        label.font_size = 10
+        label.color = [.5, .5, .5, 1]
 
-        self.ids.terminal.add_widget(l)
+        self.ids.terminal.add_widget(label)
 
     @staticmethod
     def get_connectivity(value) -> (int, str):
@@ -1632,14 +1628,7 @@ class ControlScreen(CustomScreen):
 
 class SettingsScreen(CustomScreen):
     """
-    Einstellungsbildschirm im Bedingungsbildschirm.
-    Die Einstellungen umfassen neben den Appeinstellungen vom Appeinstellungenbildschirm
-    auch Einstellungen für den ESP32.
-
-    Attributes
-    ----------
-    app_settings: AppSettings
-        Die Appeinstellungen
+    Bildschirm mit den Einstellungen, die ohne Verbindung verändert werden können.
     """
 
     app_settings = ObjectProperty(None)
@@ -2001,6 +1990,25 @@ class WaypointsScreen(CustomScreen):
 
 
 class DroneRoot(MDScreen):
+    """
+    Das 'Root-Widget' der App, der ganz oben in der Hierarchie steht und auf
+    den alles hinführt.
+
+    Man muss sich den Aufbau wie ein Wurzelwerk eines Baumes vorstellen.
+    Jedes Widget hat Eltern- und Tochterwidget/-s.
+
+    Die hier definierten Widgets werden durch jeden Bildschirm verwendet.
+
+    Attributes
+    ----------
+    nav_drawer: MDNavigationDrawer
+        Die Navigationsleiste an der Seite.
+    nav_drawer_list: MDNavigationDrawerMenu
+        Der eigentliche Inhalt der Navigationsleiste mit den Knöpfen und Texten.
+    toolbar: MDToolbar
+        Die Leisten ganz oben.
+    """
+
     nav_drawer = ObjectProperty()
     nav_drawer_list = ObjectProperty()
 
@@ -2023,14 +2031,11 @@ class DroneRoot(MDScreen):
 
 class DroneApp(MDApp):
     """
-    Klasse für die App
-    Parent: Kivy.App
+    Die App an sich.
     """
 
     # Gibt die version an. Diese Zeichenkette, ist auch für Buildozer nötig.
     __version__ = "0.1"
-
-    root_widget = ObjectProperty()
 
     def __init__(self, **kwargs) -> None:
         self.configuration = Configuration('./data/config.json', True)
@@ -2042,6 +2047,7 @@ class DroneApp(MDApp):
 
         self.connected = False
 
+        self.root_widget = None
         self.configuration.on_config_changed.add_function(self.on_config_changed)
         super(DroneApp, self).__init__(**kwargs)
 
@@ -2097,7 +2103,8 @@ class DroneApp(MDApp):
                                                languages=[language])
         self.translation.install()
 
-    def translate(self, message: str) -> str:
+    @staticmethod
+    def translate(message: str) -> str:
         """
         Übersetzte eine Zeichenkette mit der Sprache, die gerade in der App
         eingestellt ist und gibt sie wieder zurück.
@@ -2106,10 +2113,11 @@ class DroneApp(MDApp):
         Parameters
         ----------
         message: str
-            Die zuübersetztende Zeichenkette.
+            Die zu übersetztene Zeichenkette.
         """
 
-        return self.translation.gettext(message.lower())
+        app = MDApp.get_running_app()
+        return app.translation.gettext(message.lower())
 
     def build(self) -> None:
         self.set_translation()
