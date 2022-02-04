@@ -264,14 +264,14 @@ class LanguageListItem(OneLineAvatarIconListItem):
     left_icon = StringProperty()
 
 
-class LanguageDropDown(MDBoxLayout):
+class MenuDropDown(MDBoxLayout):
     """
     Das Menü.
     """
 
     def __init__(self, **kwargs):
         self.menu = None
-        super(LanguageDropDown, self).__init__(**kwargs)
+        super(MenuDropDown, self).__init__(**kwargs)
 
     def on_touch_down(self, touch):
         if self.collide_point(*touch.pos):
@@ -296,7 +296,7 @@ class NumericTextInput(MDTextField):
         Ein von Kivy implementierter Filter, der dafür sorgt, dass nur Zahlen angenommen werden.
     filter_type: str
         default: float
-        Gibt an ob, nur ganze Zahlen oder auch Fließkommanzahlen angegeben werden können-
+        Gibt an ob, nur ganze Zahlen oder auch Fließkommazahlen angegeben werden können-
     """
 
     positive_values = BooleanProperty(True)
@@ -333,8 +333,10 @@ class NumericTextInput(MDTextField):
 
     def insert_text(self, substring: str, from_undo: bool = False) -> None:
         """
-        Wird aufgerufen, sobald ein Text eingsetzt werden soll. Also sprich beim Einfügen oder beim
+        Wird aufgerufen, sobald ein Text eingesetzt werden soll. Also sprich beim Einfügen oder beim
         Eintippen. Diese Methode verwenden wird um die Eingabe zu manipulieren.
+        Entspricht die Zahl nicht der Anforderungen, wird sie zu 0 oder
+        zur niedrigsten Zahl zurückgesetzt.
 
         Parameters
         ----------
@@ -350,30 +352,36 @@ class NumericTextInput(MDTextField):
 
         # Ist die Zahl negativ ?
         if not self.negative_values and current_number < 0:
+            self.text = '0'
             return
         # Ist die Zahl positiv ?
         if not self.positive_values and current_number > 0:
+            self.text = '0'
             return
 
         # Ist die Zahl im Intervall ?
         lower, upper = self.number_range
         if upper and lower is not None:
             if current_number < lower or current_number > upper:
+                self.text = str(lower)
                 return
-        # Wenn Nein lösche die zuletzt eingegebene Zahl
+
+    def on_focus(self, instance_text_field, focus: bool) -> None:
+        print('')
 
 
-class AppSettings(BoxLayout):
+class AppSettings(MDBoxLayout):
     """
     Klasse für die Implementierung der App-Einstellungen.
     Das Grundlayout wird dabei als BoxLayout angesehen. Sprich wenn man AppSettings als
     Widget hinzufügt, wird es als BoxLayout behandelt.
     """
 
+    swipe_distance_field = ObjectProperty()
+
     def __init__(self, **kwargs):
         self.languages_full = [entry for entry in os.listdir('./locales') if os.path.isdir('./locales/' + entry)]
         self._last_index = 0
-
         super(AppSettings, self).__init__(**kwargs)
 
     def on_kv_post(self, base_widget) -> None:
@@ -414,7 +422,7 @@ class AppSettings(BoxLayout):
         self.ids.caller_btn.source = f'./data/res/{app_config["current_language"]}_flag.png'
         self.ids.caller_label.text = app_config["current_language"]
 
-        self.ids.swipe_distance_text_input.text = str(app_config['swipe_distance'])
+        self.swipe_distance_field.text = str(app_config['swipe_distance'])
 
     def has_changed(self) -> bool:
         """
@@ -431,7 +439,7 @@ class AppSettings(BoxLayout):
         app = MDApp.get_running_app()
         app_config = app.configuration.config_dict['app']
 
-        current_distance_in_field = self.ids.swipe_distance_text_input.text
+        current_distance_in_field = self.swipe_distance_field.text
         current_distance_in_con = str(app_config['swipe_distance'])
         if current_distance_in_field != current_distance_in_con:
             return True
@@ -793,10 +801,10 @@ class MyScreenManager(ScreenManager):
             übergeben werden. kw kann also beliebig viele Parameter mit variablen Namen darstellen.
         """
 
-        super(MyScreenManager, self).__init__(**kwargs)
         self.screen_groups = {
             'settings': ['settings', 'waypoints']
         }
+        super(MyScreenManager, self).__init__(**kwargs)
 
     def go_next_screen_of_group(self, group_name: str) -> None:
         """
@@ -931,7 +939,6 @@ class StartScreen(CustomScreen):
         self.fonts = list(map(lambda x: f'{FONTS_DIRECTORY}/{x}', os.listdir(FONTS_DIRECTORY)))
         self.texts = ['Welcome', 'Willkommen']
 
-        self.drawer_items = []
         super(StartScreen, self).__init__(**kw)
 
     def on_enter(self, *args) -> None:
@@ -1032,7 +1039,9 @@ class AppSettingsScreen(CustomScreen):
     app_settings = ObjectProperty(None)
 
     def __init__(self, **kwargs):
-        self.dialog = None
+
+        self._dialog = None
+        self._touch_card = False
         super(AppSettingsScreen, self).__init__(**kwargs)
 
     def load_drawer(self, *args):
@@ -1063,7 +1072,7 @@ class AppSettingsScreen(CustomScreen):
     def on_pre_leave(self, *args):
         changed = self.app_settings.has_changed()
         if changed:
-            self.dialog = MDDialog(
+            self._dialog = MDDialog(
                 text="Discard draft?",
                 buttons=[
                     MDFlatButton(
@@ -1078,15 +1087,30 @@ class AppSettingsScreen(CustomScreen):
                     ),
                 ]
             )
-            self.dialog.open()
+            self._dialog.open()
         super(AppSettingsScreen, self).on_pre_enter(*args)
 
+    def on_touch_down(self, touch):
+        # Wurde der graue Bereich berührt?
+        if self.app_settings.ids.touch_card.collide_point(*touch.pos):
+            self._touch_card = True
+        super(AppSettingsScreen, self).on_touch_down(touch)
+
+    def on_touch_up(self, touch):
+        # Wurde der graue Bereich am Anfang und am Ende berührt?
+        if self._touch_card and self.app_settings.ids.touch_card.collide_point(*touch.pos):
+            # Berechne die Distanz, wobei wir nur die absolute und gerundete Zahl nehmen
+            rounded_distance = round(touch.ox - touch.pos[0])
+            self.app_settings.swipe_distance_field.text = str(abs(rounded_distance))
+            self._touch_card = False
+        super(AppSettingsScreen, self).on_touch_up(touch)
+
     def cancel_leave(self, *args):
-        self.dialog.dismiss()
+        self._dialog.dismiss()
         self.manager.current = 'appSettings'
 
     def confirm_leave(self, *args):
-        self.dialog.dismiss()
+        self._dialog.dismiss()
 
     def save_config(self, *args):
         self.app_settings.save_config()
@@ -1128,7 +1152,7 @@ class SupportScreen(CustomScreen):
     def load_drawer(self, *args):
         # Einige Bereiche sind erst betrettbar, sobald man sich einmal verbunden hat
         # Aus diesen Grund müssen zwei Versionen von Navigationsleisten erstellt werden
-        if MDApp.get_running_app().connected:
+        if MDApp.get_running_app()._connected:
             self.icon_text = {
                 'home': {
                     'text': 'Home',
@@ -1204,16 +1228,16 @@ class ConnectionScreen(CustomScreen):
         self.waiting_text = DroneApp.translate('Waiting for response')
 
         self.max_steps = 4
-        self.current_step = 0
+        self._current_step = 0
 
-        self.waiting_anim_thread = DisposableLoopThread()
-        self.waiting_anim_thread.add_function(self.wait_anim)
+        self._waiting_anim_thread = DisposableLoopThread()
+        self._waiting_anim_thread.add_function(self.wait_anim)
 
-        self.register_thread = DisposableLoopThread()
-        self.register_thread.add_function(self.register_ip)
+        self._register_thread = DisposableLoopThread()
+        self._register_thread.add_function(self.register_ip)
 
-        self.receive_thread = DisposableLoopThread()
-        self.receive_thread.add_function(self.receive_response)
+        self._receive_thread = DisposableLoopThread()
+        self._receive_thread.add_function(self.receive_response)
 
     def on_kv_post(self, base_widget) -> None:
         self.status.text = self.waiting_text
@@ -1224,15 +1248,15 @@ class ConnectionScreen(CustomScreen):
 
         self.ids.loading_anim.start_animation()
 
-        self.waiting_anim_thread.save_start()
-        self.register_thread.save_start()
-        self.receive_thread.save_start()
+        self._waiting_anim_thread.save_start()
+        self._register_thread.save_start()
+        self._receive_thread.save_start()
         super(ConnectionScreen, self).on_enter(*args)
 
     def on_leave(self, *args) -> None:
-        self.waiting_anim_thread.stop()
-        self.register_thread.stop()
-        self.receive_thread.stop()
+        self._waiting_anim_thread.stop()
+        self._register_thread.stop()
+        self._receive_thread.stop()
         super(ConnectionScreen, self).on_leave(*args)
 
     def load_drawer(self, *args):
@@ -1261,10 +1285,10 @@ class ConnectionScreen(CustomScreen):
         super(ConnectionScreen, self).load_drawer(*args)
 
     def wait_anim(self):
-        self.current_step += 1
-        if self.current_step == self.max_steps:
+        self._current_step += 1
+        if self._current_step == self.max_steps:
             self.status.text = self.waiting_text
-            self.current_step = 0
+            self._current_step = 0
         else:
             self.status.text += '.'
 
@@ -1283,7 +1307,7 @@ class ConnectionScreen(CustomScreen):
             pass
 
         if sent_request:
-            self.register_thread.stop()
+            self._register_thread.stop()
 
     @staticmethod
     def unregister_ip():
@@ -1362,25 +1386,25 @@ class ControlScreen(CustomScreen):
             übergeben werden. kw kann also beliebig viele Parameter mit variablen Namen darstellen.
         """
 
-        self.receive_thread = DisposableLoopThread()
-        self.send_thread = DisposableLoopThread()
-        self.connection_thread = DisposableLoopThread()
-
-        self.connection_thread.add_function(self.check_connection)
-        self.connection_thread.interval_sec = CON_INTERVAL
-
-        self.receive_thread.add_function(self.receive_data)
-        self.receive_thread.interval_sec = CON_INTERVAL
-
-        self.send_thread.add_function(self.send_data)
-        self.send_thread.interval_sec = CON_INTERVAL
-
         self.r_joystick = JoyStick()
         self.l_joystick = JoyStick()
 
         self.esp_connection = DroneApp.translate('strong')
 
-        self.created = False
+        self._receive_thread = DisposableLoopThread()
+        self._send_thread = DisposableLoopThread()
+        self._connection_thread = DisposableLoopThread()
+
+        self._receive_thread.add_function(self.receive_data)
+        self._receive_thread.interval_sec = CON_INTERVAL
+
+        self._send_thread.add_function(self.send_data)
+        self._send_thread.interval_sec = CON_INTERVAL
+
+        self._connection_thread.add_function(self.check_connection)
+        self._connection_thread.interval_sec = CON_INTERVAL
+
+        self._created = False
 
         self.control_screens = ['control', 'settings', 'support', 'waypoints']
 
@@ -1406,11 +1430,11 @@ class ControlScreen(CustomScreen):
                 wlan_client.send_message(f'CMD{SEPARATOR}set_hover_mode{SEPARATOR}False')
                 wlan_client.send_message(f'CMD{SEPARATOR}set_hover_mode{SEPARATOR}False')
 
-            self.receive_thread.save_start()
-            self.send_thread.save_start()
-            self.connection_thread.save_start()
+            self._receive_thread.save_start()
+            self._send_thread.save_start()
+            self._connection_thread.save_start()
 
-        MDApp.get_running_app().connected = True
+        MDApp.get_running_app()._connected = True
 
         # Lass die Anzeige oben verschwinden
         toolbar = MDApp.get_running_app().root_widget.toolbar
@@ -1422,13 +1446,13 @@ class ControlScreen(CustomScreen):
         self.esp_connection_icon = CON_ICON[100]
 
         # Wurden die Joysticks schon erstellt?
-        if not self.created:
+        if not self._created:
             self.ids.joystick_a.add_widget(self.r_joystick)
             self.ids.joystick_a.add_widget(self.l_joystick)
 
             Clock.schedule_once(self.r_joystick.set_center, 0.01)
             Clock.schedule_once(self.l_joystick.set_center, 0.01)
-            self.created = True
+            self._created = True
 
             if not self.app_config['testcase']:
                 # Damit der ESP32 eine Connection hat, um die Sensordaten zu senden
@@ -1438,9 +1462,9 @@ class ControlScreen(CustomScreen):
     def on_leave(self, *args) -> None:
         # Beende die Threads
         if not self.app_config['testcase']:
-            self.receive_thread.stop()
-            self.send_thread.stop()
-            self.connection_thread.stop()
+            self._receive_thread.stop()
+            self._send_thread.stop()
+            self._connection_thread.stop()
             # Isst der Benutzer z.B in den Einstellungen, soll die Drohne auf gleicher Höhe bleiben
             if self.manager.current in self.control_screens[2:]:
                 wlan_client.send_message(f'CMD{SEPARATOR}set_hover_mode{SEPARATOR}True')
@@ -1526,7 +1550,7 @@ class ControlScreen(CustomScreen):
         """
 
         super(ControlScreen, self).on_config_changed()
-        self.send_thread.interval_sec = self.machine_config['tick']['value']
+        self._send_thread.interval_sec = self.machine_config['tick']['value']
 
     def send_data(self) -> None:
         """
@@ -1598,10 +1622,10 @@ class ControlScreen(CustomScreen):
 
         wlan_client.reset()
 
-        self.send_thread.stop()
-        self.receive_thread.stop()
+        self._send_thread.stop()
+        self._receive_thread.stop()
 
-        MDApp.get_running_app().connected = False
+        MDApp.get_running_app()._connected = False
         self.go_back('home')
 
     def log_message(self, message, log_level='info'):
@@ -1638,6 +1662,21 @@ class SettingsScreen(CustomScreen):
         toolbar.title = DroneApp.translate('Settings')
 
         super(SettingsScreen, self).on_enter(*args)
+
+    def on_touch_down(self, touch):
+        # Wurde der graue Bereich berührt?
+        if self.app_settings.ids.touch_card.collide_point(*touch.pos):
+            self._touch_card = True
+        super(SettingsScreen, self).on_touch_down(touch)
+
+    def on_touch_up(self, touch):
+        # Wurde der graue Bereich am Anfang und am Ende berührt?
+        if self._touch_card and self.app_settings.ids.touch_card.collide_point(*touch.pos):
+            # Berechne die Distanz, wobei wir nur die absolute und gerundete Zahl nehmen
+            rounded_distance = round(touch.ox - touch.pos[0])
+            self.app_settings.swipe_distance_field.text = str(abs(rounded_distance))
+            self._touch_card = False
+        super(SettingsScreen, self).on_touch_up(touch)
 
     def load_drawer(self, *args):
         self.icon_text = {
@@ -1709,10 +1748,11 @@ class WaypointsScreen(CustomScreen):
 
     def __init__(self, **kwargs):
         self.waypoints = []
-        self.waypoint_cards = []
 
-        self.current_edited_index = None
-        self.clear_waypoints_dialog = None
+        self._waypoint_cards = []
+
+        self._current_edited_index = None
+        self._clear_waypoints_dialog = None
 
         super(WaypointsScreen, self).__init__(**kwargs)
 
@@ -1746,7 +1786,7 @@ class WaypointsScreen(CustomScreen):
     def load_drawer(self, *args):
         # Einige Bereiche sind erst betrettbar, sobald man sich einmal verbunden hat
         # Aus diesen Grund müssen zwei Versionen von Navigationsleisten erstellt werden
-        if MDApp.get_running_app().connected:
+        if MDApp.get_running_app()._connected:
             self.icon_text = {
                 'home': {
                     'text': 'Home',
@@ -1806,7 +1846,7 @@ class WaypointsScreen(CustomScreen):
                                     waypoint['longitude'], waypoint['date'])
                 card.on_edit_btn_clicked.add_function(self.edit_waypoint)
                 card.on_delete_btn_clicked.add_function(self.delete_waypoint)
-                self.waypoint_cards.append(card)
+                self._waypoint_cards.append(card)
                 self.ids.grid.add_widget(card)
 
         # Höhe des Layouts abhängig von der Anzahl der Zeilen
@@ -1817,14 +1857,14 @@ class WaypointsScreen(CustomScreen):
     def clear_grid(self):
         self.ids.grid.clear_widgets()
         self.waypoints.clear()
-        self.waypoint_cards.clear()
+        self._waypoint_cards.clear()
 
     def edit_waypoint(self, waypoint_card):
         edit_area = self.ids.edit_waypoint_area
-        index = self.waypoint_cards.index(waypoint_card)
+        index = self._waypoint_cards.index(waypoint_card)
 
-        card = self.waypoint_cards[index]
-        self.current_edited_index = index
+        card = self._waypoint_cards[index]
+        self._current_edited_index = index
 
         edit_area.ids.name_field.text = card.ids.name_label.text
         edit_area.ids.altitude_field.text = card.ids.altitude_label.text
@@ -1840,7 +1880,7 @@ class WaypointsScreen(CustomScreen):
         name = area.ids.name_field.text
         names = [waypoint['name'] for waypoint in self.waypoints]
         if mode == 'edit':
-            old_name = self.waypoint_cards[self.current_edited_index].ids.name_label.text
+            old_name = self._waypoint_cards[self._current_edited_index].ids.name_label.text
         else:
             old_name = ''
 
@@ -1883,10 +1923,10 @@ class WaypointsScreen(CustomScreen):
             set_visible(area, False)
 
     def delete_waypoint(self, waypoint_card):
-        index = self.waypoint_cards.index(waypoint_card)
+        index = self._waypoint_cards.index(waypoint_card)
 
         self.waypoints.pop(index)
-        self.waypoint_cards.pop(index)
+        self._waypoint_cards.pop(index)
         self.ids.grid.remove_widget(waypoint_card)
 
         self.app_config['waypoints'].pop(index)
@@ -1916,20 +1956,20 @@ class WaypointsScreen(CustomScreen):
         set_visible(add_area, True)
 
     def apply_edit_changes(self, waypoint):
-        self.waypoints[self.current_edited_index] = waypoint
-        self.app_config['waypoints'][self.current_edited_index] = waypoint
+        self.waypoints[self._current_edited_index] = waypoint
+        self.app_config['waypoints'][self._current_edited_index] = waypoint
         self.configuration.save_config()
 
-        self.ids.grid.remove_widget(self.waypoint_cards[self.current_edited_index])
+        self.ids.grid.remove_widget(self._waypoint_cards[self._current_edited_index])
 
         card = WaypointCard(waypoint['name'], waypoint['altitude'], waypoint['latitude'],
                             waypoint['longitude'], waypoint['date'])
         card.on_edit_btn_clicked.add_function(self.edit_waypoint)
         card.on_delete_btn_clicked.add_function(self.delete_waypoint)
-        self.waypoint_cards[self.current_edited_index] = card
-        self.ids.grid.add_widget(card, (len(self.waypoints) - 1) - self.current_edited_index)
+        self._waypoint_cards[self._current_edited_index] = card
+        self.ids.grid.add_widget(card, (len(self.waypoints) - 1) - self._current_edited_index)
 
-        self.current_edited_index = -1
+        self._current_edited_index = -1
 
     def apply_add_changes(self, waypoint):
         self.waypoints.append(waypoint)
@@ -1941,7 +1981,7 @@ class WaypointsScreen(CustomScreen):
         card.on_edit_btn_clicked.add_function(self.edit_waypoint)
         card.on_delete_btn_clicked.add_function(self.delete_waypoint)
 
-        self.waypoint_cards.append(card)
+        self._waypoint_cards.append(card)
         self.ids.grid.add_widget(card)
 
         self.load_grid(False)
@@ -1951,7 +1991,7 @@ class WaypointsScreen(CustomScreen):
         self.configuration.save_config()
 
         self.clear_grid()
-        self.clear_waypoints_dialog.dismiss()
+        self._clear_waypoints_dialog.dismiss()
 
         CustomSnackbar(
             text=MDApp.get_running_app().bind_text(self, 'Waypoints deleted!'),
@@ -1962,10 +2002,10 @@ class WaypointsScreen(CustomScreen):
         ).open()
 
     def cancel_clear(self, button):
-        self.clear_waypoints_dialog.dismiss()
+        self._clear_waypoints_dialog.dismiss()
 
     def delete_waypoints(self, *args):
-        self.clear_waypoints_dialog = MDDialog(
+        self._clear_waypoints_dialog = MDDialog(
             text=MDApp.get_running_app().bind_text(self, 'Do u really want to delete all entries?'),
             buttons=[
                 MDFlatButton(
@@ -1982,7 +2022,7 @@ class WaypointsScreen(CustomScreen):
                 )
             ]
         )
-        self.clear_waypoints_dialog.open()
+        self._clear_waypoints_dialog.open()
 
 # *******************************************************************
 
@@ -2039,16 +2079,15 @@ class DroneApp(MDApp):
 
     def __init__(self, **kwargs) -> None:
         self.configuration = Configuration('./data/config.json', True)
+        self.configuration.on_config_changed.add_function(self.on_config_changed)
 
         self.translated_labels = []
         self.translated_parts = []
 
         self.translation = None
-
-        self.connected = False
-
         self.root_widget = None
-        self.configuration.on_config_changed.add_function(self.on_config_changed)
+
+        self._connected = False
         super(DroneApp, self).__init__(**kwargs)
 
     def on_config_changed(self) -> None:
@@ -2087,7 +2126,7 @@ class DroneApp(MDApp):
 
     def update_text(self) -> None:
         """
-        Aktualisiert die registrierten Labels.
+        Aktualisiert die registrierten Labels und übersetzt alle Texte nochmal.
         """
 
         for index, label in enumerate(self.translated_labels):

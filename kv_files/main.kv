@@ -135,19 +135,29 @@
             source: './data/res/main.jpg'
 
 <AppSettings>
+    swipe_distance_field: swipe_distance_text_input
     orientation: 'vertical'
     BoxLayout:
         orientation: 'vertical'
-        size_hint_y: None
         MDLabel:
             text: app.bind_text(self, 'TOUCH SETTINGS')
-        BoxLayout:
+        MDBoxLayout:
             MDLabel:
                 text: 'Swipe-Sensitivity:'
             NumericTextInput:
                 id: swipe_distance_text_input
                 size_hint_x: .5
                 pos_hint: {'y':.25}
+        MDCard:
+            id: touch_card
+            style: 'outlined'
+            line_color: (0.2, 0.2, 0.2, 0.8)
+            size_hint_y: None
+            height: dp(100)
+            MDLabel
+                text: app.bind_text(self, 'Swipe here to calculate the distance')
+                halign: 'center'
+                color: .5, .5, .5, .75
     BoxLayout:
         size_hint_y: None
         canvas:
@@ -164,7 +174,7 @@
         BoxLayout:
             MDLabel:
                 text: 'Language:'
-            LanguageDropDown:
+            MenuDropDown:
                 id: language_drop_down
                 size_hint: .5, .5
                 pos_hint: {'y':.25}
@@ -185,28 +195,30 @@
 <AppSettingsScreen>
     name: 'appSettings'
     app_settings: app_settings
-    MDBoxLayout:
-        padding: 30
-        spacing: 30
-        orientation: 'vertical'
-        pos_hint: {'center_y': .7}
-        AppSettings:
-            id: app_settings
+    ScrollView:
         MDBoxLayout:
-            spacing: 10
-            adaptive_height: True
-            MDRectangleFlatButton:
-                text: app.bind_text(self, 'Discard')
-                text_color: 0, 0, 1, 1
-                line_color: 1, .2, .7, 1
-                theme_icon_color: "Custom"
-                on_release: root.discard_config()
-            MDRectangleFlatButton:
-                text: app.bind_text(self, 'Save')
-                text_color: 0, 0, 1, 1
-                line_color: .2, 1, .7, 1
-                theme_icon_color: "Custom"
-                on_release: root.save_config()
+            size_hint_y: None
+            height: dp(600)
+            padding: 30
+            spacing: 30
+            orientation: 'vertical'
+            AppSettings:
+                id: app_settings
+            MDBoxLayout:
+                spacing: 10
+                adaptive_height: True
+                MDRectangleFlatButton:
+                    text: app.bind_text(self, 'Discard')
+                    text_color: 0, 0, 1, 1
+                    line_color: 1, .2, .7, 1
+                    theme_icon_color: "Custom"
+                    on_release: root.discard_config()
+                MDRectangleFlatButton:
+                    text: app.bind_text(self, 'Save')
+                    text_color: 0, 0, 1, 1
+                    line_color: .2, 1, .7, 1
+                    theme_icon_color: "Custom"
+                    on_release: root.save_config()
 
 <SupportScreen>:
     name: 'support'
@@ -284,28 +296,30 @@
 <SettingsScreen>:
     app_settings: app_settings
     name: 'settings'
-    MDBoxLayout:
-        padding: 30
-        spacing: 30
-        orientation: 'vertical'
-        pos_hint: {'center_y': .7}
-        AppSettings:
-            id: app_settings
+    ScrollView:
         MDBoxLayout:
-            spacing: 10
-            adaptive_height: True
-            MDRectangleFlatButton:
-                text: app.bind_text(self, 'Discard')
-                text_color: 0, 0, 1, 1
-                line_color: 1, .2, .7, 1
-                theme_icon_color: "Custom"
-                on_release: root.discard_config()
-            MDRectangleFlatButton:
-                text: app.bind_text(self, 'Save', 'Save')
-                text_color: 0, 0, 1, 1
-                line_color: .2, 1, .7, 1
-                theme_icon_color: "Custom"
-                on_release: root.save_config()
+            padding: 30
+            spacing: 30
+            orientation: 'vertical'
+            size_hint_y: None
+            height: dp(600)
+            AppSettings:
+                id: app_settings
+            MDBoxLayout:
+                spacing: 10
+                adaptive_height: True
+                MDRectangleFlatButton:
+                    text: app.bind_text(self, 'Discard')
+                    text_color: 0, 0, 1, 1
+                    line_color: 1, .2, .7, 1
+                    theme_icon_color: "Custom"
+                    on_release: root.discard_config()
+                MDRectangleFlatButton:
+                    text: app.bind_text(self, 'Save', 'Save')
+                    text_color: 0, 0, 1, 1
+                    line_color: .2, 1, .7, 1
+                    theme_icon_color: "Custom"
+                    on_release: root.save_config()
 
 <WaypointsScreen>:
     name: 'waypoints'
