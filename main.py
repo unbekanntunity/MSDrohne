@@ -3,7 +3,6 @@
 # *******************************************************************
 
 # **************************** Imports ****************a**************
-import math
 import os
 os.environ['KIVY_GL_BACKEND'] = 'angle_sdl2'
 
@@ -26,14 +25,14 @@ from kivymd.uix.label import MDLabel
 from kivymd.uix.card import MDCard
 from kivymd.uix.anchorlayout import MDAnchorLayout
 from kivymd.uix.snackbar import BaseSnackbar
+from kivymd.uix.floatlayout import MDFloatLayout
 
 from kivy.metrics import dp
 from kivy.graphics import Color, Ellipse
 from kivy.animation import Animation
 
-from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.relativelayout import RelativeLayout
-
+from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import ScreenManager
 
 from kivy.utils import get_color_from_hex, get_random_color
@@ -51,6 +50,7 @@ from customwidgets.joystick import *
 from random import randrange, uniform
 from datetime import datetime
 
+import math
 import platform
 import gettext
 
@@ -157,15 +157,15 @@ class WaypointCard(MDCard):
         Der Pfad des Bildes, das oben auf der Karte angezeigt wird.
     """
 
+    image_path = StringProperty()
     name = StringProperty()
     altitude = StringProperty()
     latitude = StringProperty()
     longitude = StringProperty()
     last_updated = StringProperty()
 
-    image_path = StringProperty('./data/res/example_landscape.jpg')
-
-    def __init__(self, name='', altitude='', latitude='', longitude='', last_updated='', **kwargs):
+    def __init__(self, img='', name='', altitude='', latitude='', longitude='', last_updated='', **kwargs):
+        self.image_path = img
         self.name = name
         self.altitude = altitude
         self.latitude = latitude
@@ -191,7 +191,7 @@ class WaypointCard(MDCard):
             {
                 "text": button[0],
                 "left_icon": button[1],
-                "viewclass": "LanguageListItem",
+                "viewclass": "MenuListItem",
                 "height": dp(54),
                 "on_release": lambda x=i: self.menu_item_selected(x),
 
@@ -227,6 +227,11 @@ class WaypointCard(MDCard):
         self.on_delete_btn_clicked.invoke(self)
 
 
+class LoadDialog(MDFloatLayout):
+    load = ObjectProperty(None)
+    cancel = ObjectProperty(None)
+
+
 class WaypointArea(MDAnchorLayout):
     """
     Diese Klasse unterscheidet sich von den WaypointCard und ist auch KEINE Subklasse von
@@ -248,10 +253,35 @@ class WaypointArea(MDAnchorLayout):
         self.on_save_btn_clicked = EventHandler()
         self.on_discard_btn_clicked = EventHandler()
 
+        self._popup = None
         super(WaypointArea, self).__init__(**kwargs)
 
+    def open_manager(self):
+        content = LoadDialog(load=self.load, cancel=self.dismiss_popup)
+        self._popup = Popup(title="Load file", content=content,
+                            size_hint=(0.9, 0.9))
+        self._popup.open()
 
-class LanguageListItem(OneLineAvatarIconListItem):
+    def dismiss_popup(self):
+        self._popup.dismiss()
+
+    def load(self, path, filename):
+        filename = filename[0]
+        suffix = filename.split('.')[-1]
+        if suffix == 'jpg' or suffix == 'png':
+            self.dismiss_popup()
+            self.ids.image.source = filename
+        else:
+            CustomSnackbar(
+                text=MDApp.get_running_app().bind_text(self, 'File has to a .jgp or .png file'),
+                icon='information',
+                snackbar_x='10dp',
+                snackbar_y='10dp',
+                size_hint_x=.5
+            ).open()
+
+
+class MenuListItem(OneLineAvatarIconListItem):
     """
     Diese Klasse stellt die Vorlage für die einzelnen Optionen des Menüs da.
 
@@ -406,7 +436,7 @@ class AppSettings(MDBoxLayout):
             {
                 "text": language.split('_')[0],
                 "left_icon": f'./data/res/{language.split("_")[0]}_flag.png',
-                "viewclass": "LanguageListItem",
+                "viewclass": "MenuListItem",
                 "height": dp(54),
                 "on_release": lambda x=i: self.menu_item_selected(x),
 
@@ -1529,6 +1559,7 @@ class ControlScreen(CustomScreen):
 
         # Erstelle den Wegpunkt mithilfe der momentanen Sensordaten
         new_waypoint = {
+            'img': './data/res/example_landscape.jpg',
             'name': name,
             "date": datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
             "altitude": self.altitude,
@@ -1754,6 +1785,7 @@ class WaypointsScreen(CustomScreen):
         self._current_edited_index = None
         self._clear_waypoints_dialog = None
 
+        self._toolbar = None
         super(WaypointsScreen, self).__init__(**kwargs)
 
     def on_kv_post(self, base_widget):
@@ -1765,22 +1797,25 @@ class WaypointsScreen(CustomScreen):
         self.ids.add_waypoint_area.on_save_btn_clicked.add_function(lambda area: self.save_waypoint(area, 'add'))
         self.ids.add_waypoint_area.on_discard_btn_clicked.add_function(self.discard_waypoint)
 
+        self._toolbar = MDApp.get_running_app().root_widget.toolbar
+
         set_visible(self.ids.edit_waypoint_area, False)
         set_visible(self.ids.add_waypoint_area, False)
 
     def on_enter(self, *args) -> None:
-        toolbar = MDApp.get_running_app().root_widget.toolbar
-        toolbar.right_action_items = [
+        self._toolbar.right_action_items = [
             ['plus', self.add_waypoint],
             ['delete-alert-outline', self.delete_waypoints]
         ]
-        toolbar.title = DroneApp.translate('Waypoints')
+        self._toolbar.title = DroneApp.translate('Waypoints')
 
         self.load_grid(True)
         super(WaypointsScreen, self).on_enter(*args)
 
     def on_leave(self, *args):
         self.clear_grid()
+        self._toolbar.right_action_items.clear()
+
         super(WaypointsScreen, self).on_leave(*args)
 
     def load_drawer(self, *args):
@@ -1842,17 +1877,15 @@ class WaypointsScreen(CustomScreen):
         self.waypoints = self.app_config['waypoints'].copy()
         if load_all:
             for waypoint in self.waypoints:
-                card = WaypointCard(waypoint['name'], waypoint['altitude'], waypoint['latitude'],
+                card = WaypointCard(waypoint['img'],
+                                    waypoint['name'], waypoint['altitude'], waypoint['latitude'],
                                     waypoint['longitude'], waypoint['date'])
                 card.on_edit_btn_clicked.add_function(self.edit_waypoint)
                 card.on_delete_btn_clicked.add_function(self.delete_waypoint)
+                card.size_hint = None, None
+                card.size = 160, 220
                 self._waypoint_cards.append(card)
                 self.ids.grid.add_widget(card)
-
-        # Höhe des Layouts abhängig von der Anzahl der Zeilen
-        # Breite des Layouts anhängig von der Anzahl Spalten
-        self.ids.grid.height = 220 * math.ceil(len(self.waypoints) / 4)
-        self.ids.grid.width = 180 * max(1, min(len(self.waypoints), 4))
 
     def clear_grid(self):
         self.ids.grid.clear_widgets()
@@ -1901,7 +1934,9 @@ class WaypointsScreen(CustomScreen):
                 size_hint_x=.5
             ).open()
         else:
+            print(area.ids)
             waypoint = {
+                'img': area.ids.image.source,
                 'name': area.ids.name_field.text,
                 'altitude': area.ids.altitude_field.text,
                 'latitude': area.ids.latitude_field.text,
@@ -1962,7 +1997,8 @@ class WaypointsScreen(CustomScreen):
 
         self.ids.grid.remove_widget(self._waypoint_cards[self._current_edited_index])
 
-        card = WaypointCard(waypoint['name'], waypoint['altitude'], waypoint['latitude'],
+        card = WaypointCard(waypoint['img'],
+                            waypoint['name'], waypoint['altitude'], waypoint['latitude'],
                             waypoint['longitude'], waypoint['date'])
         card.on_edit_btn_clicked.add_function(self.edit_waypoint)
         card.on_delete_btn_clicked.add_function(self.delete_waypoint)
@@ -1976,7 +2012,8 @@ class WaypointsScreen(CustomScreen):
         self.app_config['waypoints'].append(waypoint)
         self.configuration.save_config()
 
-        card = WaypointCard(waypoint['name'], waypoint['altitude'], waypoint['latitude'],
+        card = WaypointCard(waypoint['img'],
+                            waypoint['name'], waypoint['altitude'], waypoint['latitude'],
                             waypoint['longitude'], waypoint['date'])
         card.on_edit_btn_clicked.add_function(self.edit_waypoint)
         card.on_delete_btn_clicked.add_function(self.delete_waypoint)
@@ -2152,11 +2189,11 @@ class DroneApp(MDApp):
         Parameters
         ----------
         message: str
-            Die zu übersetztene Zeichenkette.
+            Die zu übersetzende Zeichenkette.
         """
 
         app = MDApp.get_running_app()
-        return app.translation.gettext(message.lower())
+        return app.translation.gettext(message)
 
     def build(self) -> None:
         self.set_translation()

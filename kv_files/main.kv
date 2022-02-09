@@ -42,9 +42,28 @@
         shorten_from: 'right'
         pos_hint: {'center_y': .5}
 
-<LanguageListItem>:
+<MenuListItem>:
     IconLeftWidget:
         icon: root.left_icon
+
+<LoadDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserListView:
+            id: filechooser
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+
+            Button:
+                text: "Load"
+                on_release: root.load(filechooser.path, filechooser.selection)
 
 <WaypointArea>:
     MDCard:
@@ -52,18 +71,26 @@
         size_hint: (.5, .75)
         style: 'outlined'
         line_color: (0.2, 0.5, 0.2, 0.8)
-        MDBoxLayout:
-            padding: 30
-            spacing: 30
-            orientation: 'vertical'
-            MDLabel:
-                adaptive_height: True
-                halign: 'center'
-                text: root.title
+        ScrollView:
             MDBoxLayout:
-                adaptive_height: True
+                size_hint_y: None
+                height: dp(700)
                 orientation: 'vertical'
-                spacing: 10
+                padding: 30
+                spacing: 30
+                MDLabel:
+                    adaptive_height: True
+                    halign: 'center'
+                    text: root.title
+                RelativeLayout:
+                    FitImage:
+                        id: image
+                        source: './data/res/example_landscape.jpg'
+                    MDIconButton:
+                        size_hint: .2, .15
+                        pos_hint: {'x': .8, 'y': .8}
+                        icon: 'pencil-outline'
+                        on_release: root.open_manager()
                 MDTextField:
                     id: name_field
                     mode: "rectangle"
@@ -88,9 +115,8 @@
                     required: True
                     hint_text: 'Longitude'
                     helper_text_mode: 'on_error'
-            AnchorLayout:
-                size_hint_y: .5
-                BoxLayout:
+                MDBoxLayout:
+                    adaptive_height: True
                     spacing: 10
                     MDRectangleFlatButton:
                         text: app.bind_text(self, 'Discard')
@@ -373,8 +399,8 @@
                     text: root.last_updated
         MDIconButton:
             id: drop_down
-            size_hint: .2, .15
             icon: 'dots-vertical'
+            size_hint: .2, .15
             pos_hint: {'x': .8, 'y': .8}
             on_release: root.open_menu()
 
