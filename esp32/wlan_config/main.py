@@ -200,6 +200,9 @@ class NetworkRoot(MDScreen):
         self.clear_networks_dialog.open()
 
     def accept_clear(self, *args):
+        networks = MDApp.get_running_app().configuration.config_dict['networks']
+
+        networks.clear()
         self.ids.network_list.clear_widgets()
         self.clear_networks_dialog.dismiss(force=True)
 
@@ -301,7 +304,8 @@ class NetworkRoot(MDScreen):
 
             networks.append(new_network)
 
-            self.ids.grid.remove_widget()
+            name_field.text = ''
+            password_field.text = ''
 
             self.add_to_network_list([new_network])
             self.ids.add_network_area.set_visibility(False)
