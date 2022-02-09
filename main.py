@@ -1799,12 +1799,12 @@ class WaypointsScreen(CustomScreen):
         self.ids.add_waypoint_area.on_save_btn_clicked.add_function(lambda area: self.save_waypoint(area, 'add'))
         self.ids.add_waypoint_area.on_discard_btn_clicked.add_function(self.discard_waypoint)
 
-        self._toolbar = MDApp.get_running_app().root_widget.toolbar
-
         set_visible(self.ids.edit_waypoint_area, False)
         set_visible(self.ids.add_waypoint_area, False)
 
     def on_enter(self, *args) -> None:
+        self._toolbar = MDApp.get_running_app().root_widget.toolbar
+
         self._toolbar.right_action_items = [
             ['plus', self.add_waypoint],
             ['delete-alert-outline', self.delete_waypoints]
@@ -2197,7 +2197,7 @@ class DroneApp(MDApp):
         app = MDApp.get_running_app()
         return app.translation.gettext(message)
 
-    def build(self) -> None:
+    def build(self):
         self.set_translation()
         self.load_kv_files()
 
