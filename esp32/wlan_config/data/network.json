@@ -3,23 +3,11 @@
     "networks": [
         {
             "name": "KHOA",
-            "password": "Khoa19610121"
+            "password": "Khoa196101211"
         },
         {
             "name": "LEMUEL",
             "password": "Khoa19610121"
-        },
-        {
-            "name": "DUC",
-            "password": "Khoa19610121"
-        },
-        {
-            "name": "SECRET",
-            "password": "Khoa19610121"
-        },
-        {
-            "name": "asd",
-            "password": "asd"
         }
     ]
 }

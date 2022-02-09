@@ -164,14 +164,17 @@ class NetworkRoot(MDScreen):
 
         self.ids.language_drop_down.menu.dismiss()
 
+    def create_list_item(self, name, password):
+        entry = NetworkListItem(name=name, password=password)
+        entry.on_edit = self.edit_network
+        entry.on_delete = self.delete_network
+        entry.on_arrow_up = lambda x: self.move_network('up', x)
+        entry.on_arrow_down = lambda y: self.move_network('down', y)
+        return entry
+
     def add_to_network_list(self, updated_part):
         for network in updated_part:
-            entry = NetworkListItem(name=network['name'], password=network['password'])
-            entry.on_edit = self.edit_network
-            entry.on_delete = self.delete_network
-            entry.on_arrow_up = lambda x: self.move_network('up', x)
-            entry.on_arrow_down = lambda y: self.move_network('down', y)
-            self.ids.network_list.add_widget(entry)
+            self.ids.network_list.add_widget(self.create_list_item(network['name'], network['password']))
 
     def add_network(self, *args):
         self.ids.add_network_area.set_visibility(True)
@@ -298,6 +301,8 @@ class NetworkRoot(MDScreen):
 
             networks.append(new_network)
 
+            self.ids.grid.remove_widget()
+
             self.add_to_network_list([new_network])
             self.ids.add_network_area.set_visibility(False)
 
@@ -353,10 +358,10 @@ class NetworkRoot(MDScreen):
     def save_edited_network(self, *args):
         networks = MDApp.get_running_app().configuration.config_dict['networks']
 
-        item = self.ids.network_list.children[self.current_edited_idx]
-
         names = [network['name'] for network in networks]
         passwords = [network['password'] for network in networks]
+
+        item = self.ids.network_list.children[self.current_edited_idx]
 
         name_field = self.ids.edit_network_area.name_field
         password_field = self.ids.edit_network_area.pass_field
@@ -395,8 +400,10 @@ class NetworkRoot(MDScreen):
                 'password': password_field.text
             }
 
-            item.network_name = name_field.text
-            item.network_pass = password_field.text
+            new_item = self.create_list_item(name_field.text, password_field.text)
+
+            self.ids.network_list.remove_widget(item)
+            self.ids.network_list.add_widget(new_item, self.current_edited_idx)
             self.ids.edit_network_area.set_visibility(False)
 
     def delete_network(self, *args):
