@@ -1666,7 +1666,7 @@ class ControlScreen(CustomScreen):
         terminal_log = f'[{timestamp}] [{log_level}] {message}'
 
         label = MDLabel(text=terminal_log)
-        label.font_name = './data/customfonts/Consola'
+        label.font_name = './data/customfonts/Consolas'
         label.adaptive_height = True
         label.font_size = 10
         label.color = [.5, .5, .5, 1]

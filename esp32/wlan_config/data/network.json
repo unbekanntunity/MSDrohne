@@ -1,13 +1,9 @@
 {
-    "current_language": "en",
+    "current_language": "de",
     "networks": [
         {
-            "name": "asdasd",
-            "password": "asdasd"
-        },
-        {
-            "name": "aaa",
-            "password": "aa"
+            "name": "adas",
+            "password": "asd"
         }
     ]
 }

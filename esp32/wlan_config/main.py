@@ -63,8 +63,7 @@ class LanguageDropDown(MDBoxLayout):
         super(LanguageDropDown, self).__init__(**kwargs)
 
     def on_touch_down(self, touch):
-        if self.collide_point(*touch.pos):
-            self.menu.open()
+        self.menu.open()
 
 
 class NetworkArea(AnchorLayout):
@@ -118,11 +117,13 @@ class NetworkRoot(MDScreen):
         self.ids.add_network_area.set_visibility(False)
         self.ids.edit_network_area.set_visibility(False)
 
-        self.ids.add_network_area.on_save = self.save_network
+        self.ids.add_network_area.on_save = lambda *arguements: \
+            self.save_network(self.ids.add_network_area, 'add')
         self.ids.add_network_area.on_discard = lambda *arguments: \
             self.discard_network(self.ids.add_network_area, *arguments)
 
-        self.ids.edit_network_area.on_save = self.save_edited_network
+        self.ids.edit_network_area.on_save = lambda *arguements: \
+            self.save_network(self.ids.edit_network_area, 'edit')
         self.ids.edit_network_area.on_discard = lambda *arguments: \
             self.discard_network(self.ids.edit_network_area, *arguments)
 
@@ -148,20 +149,26 @@ class NetworkRoot(MDScreen):
             width_mult=3
         )
 
-    def menu_item_selected(self, index):
+    def menu_item_selected(self, index: int) -> None:
         app = MDApp.get_running_app()
 
+        # In der Variable self.languague_full befinden sich die Namen der Verzeichnisse in denen die
+        # Übersetzungsdateien sind z.B de_DE
+        # Wir wollen jedoch nur eine den ersten Teil haben z.B de
         language = self.language_full[index].split('_')[0]
         app.configuration.config_dict['current_language'] = language
 
         self.ids.language_drop_down.children[0].text = language
         self.ids.language_drop_down.children[1].source = f'./data/res/{language.split("_")[0]}_flag.png'
 
+        # Speicher die Konfiguration ab
         app.configuration.save_config()
 
+        # Aktualisiere die registrierten Texte
         app.set_translation()
         app.update_text()
 
+        # Schließ das Menü
         self.ids.language_drop_down.menu.dismiss()
 
     def create_list_item(self, name, password):
@@ -201,10 +208,18 @@ class NetworkRoot(MDScreen):
 
     def accept_clear(self, *args):
         networks = MDApp.get_running_app().configuration.config_dict['networks']
-
         networks.clear()
+
         self.ids.network_list.clear_widgets()
         self.clear_networks_dialog.dismiss(force=True)
+
+        CustomSnackbar(
+            text=MDApp.get_running_app().bind_text(self, 'All entries deleted!'),
+            icon='information',
+            snackbar_x='10dp',
+            snackbar_y='10dp',
+            size_hint_x=.5
+        ).open()
 
     def cancel_clear(self, *args):
         self.clear_networks_dialog.dismiss(force=True)
@@ -257,58 +272,6 @@ class NetworkRoot(MDScreen):
                 snackbar_y='10dp',
                 size_hint_x=.5
             ).open()
-            pass
-
-    def save_network(self, *args):
-        networks = MDApp.get_running_app().configuration.config_dict['networks']
-
-        names = [network['name'] for network in networks]
-        passwords = [network['password'] for network in networks]
-
-        name_field = self.ids.add_network_area.name_field
-        password_field = self.ids.add_network_area.pass_field
-
-        if name_field.text == '':
-            CustomSnackbar(
-                text='Name cant be empty!',
-                icon='alert-circle-outline',
-                snackbar_x='10dp',
-                snackbar_y='10dp',
-                size_hint_x=.5
-            ).open()
-            return
-        if password_field.text == '':
-            CustomSnackbar(
-                text='Password cant be empty!',
-                icon='alert-circle-outline',
-                snackbar_x='10dp',
-                snackbar_y='10dp',
-                size_hint_x=.5
-            ).open()
-            return
-
-        if name_field.text in names and password_field.text in passwords:
-            CustomSnackbar(
-                text='Network already exists!',
-                icon='information',
-                snackbar_x='10dp',
-                snackbar_y='10dp',
-                size_hint_x=.5
-            ).open()
-            return
-        else:
-            new_network = {
-                    'name': name_field.text,
-                    'password': password_field.text
-                }
-
-            networks.append(new_network)
-
-            name_field.text = ''
-            password_field.text = ''
-
-            self.add_to_network_list([new_network])
-            self.ids.add_network_area.set_visibility(False)
 
     @staticmethod
     def discard_network(network_area, *args):
@@ -359,16 +322,17 @@ class NetworkRoot(MDScreen):
                 self.ids.edit_network_area.pass_field.text = networks[reversed_index]['password']
                 break
 
-    def save_edited_network(self, *args):
+    def save_network(self, area, mode):
+        if mode != 'edit' and mode != 'add':
+            raise ValueError('mode has to be edit or add')
+
         networks = MDApp.get_running_app().configuration.config_dict['networks']
 
         names = [network['name'] for network in networks]
         passwords = [network['password'] for network in networks]
 
-        item = self.ids.network_list.children[self.current_edited_idx]
-
-        name_field = self.ids.edit_network_area.name_field
-        password_field = self.ids.edit_network_area.pass_field
+        name_field = area.name_field
+        password_field = area.pass_field
 
         if name_field.text == '':
             CustomSnackbar(
@@ -399,16 +363,37 @@ class NetworkRoot(MDScreen):
             ).open()
             return
         else:
-            networks[len(networks) - 1 - self.current_edited_idx] = {
-                'name': name_field.text,
-                'password': password_field.text
-            }
-
-            new_item = self.create_list_item(name_field.text, password_field.text)
-
-            self.ids.network_list.remove_widget(item)
-            self.ids.network_list.add_widget(new_item, self.current_edited_idx)
+            if mode == 'edit':
+                self.apply_edit_changes(networks, name_field, password_field)
+            else:
+                self.apply_add_changes(networks, name_field, password_field)
             self.ids.edit_network_area.set_visibility(False)
+
+    def apply_add_changes(self, networks, name_field, password_field):
+        new_network = {
+            'name': name_field.text,
+            'password': password_field.text
+        }
+
+        networks.append(new_network)
+
+        name_field.text = ''
+        password_field.text = ''
+
+        self.add_to_network_list([new_network])
+
+    def apply_edit_changes(self, networks, name_field, password_field):
+        item = self.ids.network_list.children[self.current_edited_idx]
+
+        networks[len(networks) - 1 - self.current_edited_idx] = {
+            'name': name_field.text,
+            'password': password_field.text
+        }
+
+        new_item = self.create_list_item(name_field.text, password_field.text)
+
+        self.ids.network_list.remove_widget(item)
+        self.ids.network_list.add_widget(new_item, self.current_edited_idx)
 
     def delete_network(self, *args):
         networks = MDApp.get_running_app().configuration.config_dict['networks']
@@ -431,6 +416,8 @@ class NetworkApp(MDApp):
         self.translation = None
 
     def build(self):
+        self.theme_cls.material_style = "M3"
+
         self.set_translation()
         return NetworkRoot()
 
@@ -438,7 +425,6 @@ class NetworkApp(MDApp):
         language = self.configuration.config_dict['current_language'] + '_' + self.configuration.config_dict[
             'current_language'].capitalize()
 
-        self.theme_cls.material_style = "M3"
         self.translation = gettext.translation('base', localedir='locales',
                                                languages=[language])
         self.translation.install()
