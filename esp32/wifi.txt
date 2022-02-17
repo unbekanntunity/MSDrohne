@@ -2,8 +2,10 @@ import network
 import ubinascii
 
 from drohnev2.decorators import command
+from drohnev2.startup import setup
 
 import gc
+
 gc.collect()
 
 from time import sleep
@@ -12,6 +14,8 @@ try:
     import usocket as socket
 except:
     import socket
+
+import random
 
 SEPARATOR = '|'
 
@@ -25,21 +29,21 @@ connectStatus = {
     201: "NO AP FOUND"
 }
 
+
 class Wlan_Server(object):
     def __init__(self, nic):
         self.nic = nic
 
         self.server = None
         self.paired_device_ip = None
-        self.paired_device_connection = None
 
         self.data_container = {
             'RJ': 0,
-            'LJ': 0
+            'LJ': 0,
+            'Hover_mode': False
         }
 
-
-    def create_server(self):
+    def create_server(self) -> bool:
         try:
             print("Fordere Server-Socket an")
             self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -54,7 +58,8 @@ class Wlan_Server(object):
             return False
 
     def server_loop(self):
-        while 1:  # Endlosschleife
+        while True:
+            print('\nSearch for requests')
             c, addr = self.server.accept()  # Anfrage entgegennehmen
             print('\nGot a connection from %s' % str(addr))
             # c ist ein bytes-Objekt und muss als string decodiert werden
@@ -62,31 +67,34 @@ class Wlan_Server(object):
             request = c.recv(1024).decode("utf-8")
             print(f'data detected: {request}')
 
-            command_name, args = self.extract_public_command(request)
-            self.execute_public_command(command_name, c, *args)
+            command_name, args = self.extract_command(request)
+            if command_name is not None:
+                self.execute_public_command(command_name, c, addr, *args)
 
             if self.validate_data(c, addr):
                 self.process_data(c, addr, request)
-                c.send(f'Received data: {request}\n\n')
-
-            if c != self.paired_device_connection:
-                c.close()
-
+            c.close()
+            print('Connection closed')
 
     def validate_data(self, connection, address):
         if self.paired_device_ip is not None:
-            result = self.paired_device_ip == str(address)
+            result = self.paired_device_ip[0] == address[0]
+            print(f'result: {result}')
+            print(f'register: {self.paired_device_ip}')
+            print(f'address: {address}')
             if not result:
                 connection.send('Permission denied.')
+            return True
         else:
             return False
 
     def process_data(self, connection, address, data):
+        print('Processing data')
         if 'CMD' in data:
-            command_name, args = self.extract_private_command(data)
+            command_name, args = self.extract_command(data)
             print(f'command detected: {command_name}, {args}')
             self.execute_private_command(command_name, connection, address, *args)
-            #globals()[command_name](connection, *args)
+            # globals()[command_name](connection, *args)
         elif 'DATA' in data:
             result = self.extract_data()
             if result[0]:
@@ -101,31 +109,24 @@ class Wlan_Server(object):
 
         return (expected_data, data_key, data_value)
 
-    def extract_public_command(self, data):
+    # CMD|name|arg1|arg2|....
+    def extract_command(self, data):
         command_split = data.split(SEPARATOR)
-        command_name = command_split[1].lower()
-        args = []
-        if len(command_split) > 2:
-            args = command_split[2:]
 
-        return (command_name, args)
+        if len(command_split) >= 2:
+            command_name = command_split[1].lower()
+            args = []
+            if len(command_split) > 2:
+                args = command_split[2:]
+            return (command_name, args)
+        return (None, None)
 
-
-    def execute_public_command(self, name, connection, *args):
+    def execute_public_command(self, name, connection, address, *args):
+        print(f'Command detected: {name}')
         if hasattr(Wlan_Server, name):
-            getattr(Wlan_Server, name)(self, connection, 'public', '', *args)
+            getattr(Wlan_Server, name)(self, connection, 'public', address, *args)
         else:
             connection.send('Command not found.')
-
-    # CMD|name|arg1|arg2|....
-    def extract_private_command(self, data):
-        command_split = data.split(SEPARATOR)
-        command_name = command_split[1].lower()
-        args = []
-        if len(command_split) > 2:
-            args = command_split[2:]
-
-        return (command_name, args)
 
     def execute_private_command(self, name, connection, address, *args):
         if hasattr(Wlan_Server, name):
@@ -135,7 +136,6 @@ class Wlan_Server(object):
 
     @command(cmd_type='public')
     def reset(self, connection, passed_type, *args):
-        connection.close()
         self.socket.close()
         setup()
 
@@ -149,20 +149,22 @@ class Wlan_Server(object):
         except Exception as e:
             connection.send('CONFIG|0')
 
+    @command(cmd_type='private')
+    def set_hover_mode(self, connection, passed_type, *args):
+        if isinstance(args[0], bool):
+            self.data_container['Hover_mode'] = args[0]
+
     @command(cmd_type='public')
-    def register_ip(self, connection, passed_type, *args):
+    def register_ip(self, connection, passed_type, address, *args):
         if self.paired_device_ip is None:
-            self.paired_device_ip = args[0]
-            if self.paired_device_connection is None:
-                self.paired_device_connection = connection
-                print(f'Register ip with {args[0]}')
+            self.paired_device_ip = address
+            print(f'Register ip with {address}')
             connection.send('REGISTER|1')
         else:
             connection.send('REGISTER|0')
 
     @command(cmd_type='private')
     def unregister_ip(self, connection, passed_type, address, *args):
-        print(address)
         if self.paired_device_ip is not None and self.paired_device_ip == str(address):
             self.paired_device_ip = None
             print(f'Logout ip with {args[0]}')
@@ -170,24 +172,30 @@ class Wlan_Server(object):
         else:
             connection.send('UNREGISTER|0')
 
+    @command(cmd_type='private')
+    def get_sensor_data(self, connection, passed_type, address, *args):
+        try:
+            data = []
+            for i in range(4):
+                data.append(random.randint(1, 10))
 
-    def send_sensor_data(self):
-       if self.paired_device_connection is not None:
-           try:
-               message = 'GEODATA|1|1|1|1'
-               print('Sensor data sent')
-               self.paired_device_connection.send(message.encode())
-           except OSError as e:
-               pass
+            message = f'GEODATA|{data[0]}|{data[1]}|{data[2]}|{data[3]}'
+            connection.send(message.encode())
+            print('Sensor data sent')
+        except Exception as e:
+            print(f'Error while trying sending sensor data {e}')
+            pass
 
-    def send_conn_status(self):
-       if self.paired_device_connection is not None:
-           try:
-               message = 'CONDATA|100'
-               print('Wlan data sent')
-               self.paired_device_connection.send(message.encode())
-           except OSError as e:
-               pass
+    @command(cmd_type='private')
+    def get_conn_data(self, connection, passed_type, address, *args):
+        try:
+            message = f'CONDATA|{random.randint(1, 100)}'
+            connection.send(message.encode())
+            print(f'Wlan data sent: {message}')
+        except Exception as e:
+            print(f'Error while trying sending conn data {e}')
+            pass
+
 
 def hexMac(byteMac):
     """
@@ -200,6 +208,7 @@ def hexMac(byteMac):
         if i < len(byteMac) - 1:  # Trennzeichen bis auf das letzte Byte
             macString += "-"
     return macString
+
 
 def activate_nic():
     # Netzwerk-Interface-Instanz erzeugen und ESP32-Stationmodus aktivieren;
@@ -214,10 +223,11 @@ def activate_nic():
     print("STATION MAC: \t" + myMac + "\n")
     return nic
 
-def connect(nic, siD="pasteur-wlan", password="03Y01pasgymbln#12"):
+
+def connect(nic, siD="pasteur-wlan", password="03Y01pasgymbln#12") -> (bool, Any, Any):
     print('name: ' + siD)
-    print('password: ' +  password)
-    #zeige_ap_liste(nic)
+    print('password: ' + password)
+    # zeige_ap_liste(nic)
     max_tries = 10
     tries = 0
     # Verbindung mit AP im lokalen Netzwerk aufnehmen, falls noch nicht verbunden
@@ -240,19 +250,20 @@ def connect(nic, siD="pasteur-wlan", password="03Y01pasgymbln#12"):
 
     return (True, STAconf, nic)
 
+
 def scan(nic):
     """
     Scannt die Funkumgebung nach vorhandenen Accesspoints und liefert
     deren Kennung (SSID) sowie die Betriebsdaten zurück.
     """
-
     # Gib eine Liste der umgebenden APs aus
     networks_raw = nic.scan()
-    autModus=["open", "WEP", "WPA-PSK", "WPA2-PSK", "WPA/WPA2-PSK"]
+    autModus = ["open", "WEP", "WPA-PSK", "WPA2-PSK", "WPA/WPA2-PSK"]
 
     networks_decoded = []
     for AP in networks_raw:
-        decoded = (AP[0].decode("utf-8"), ubinascii.hexlify(AP[1],"-").decode("utf-8"), AP[2], AP[3], AP[4], AP[5])
+        decoded = (AP[0].decode("utf-8"), ubinascii.hexlify(AP[1], "-").decode("utf-8"), AP[2], AP[3], AP[4], AP[5])
         networks_decoded.append(decoded)
     return networks_decoded
+
 

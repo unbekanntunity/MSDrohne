@@ -1,18 +1,18 @@
 {
     "app": {
-        "current_language": "en",
+        "current_language": "de",
         "networks": [
             {
                 "name": "test",
                 "password": "test"
             }
         ],
-        "swipe_distance": 5.0,
+        "swipe_distance": 357.0,
         "testcase": true,
         "waypoints": [
             {
                 "altitude": "0",
-                "date": "02/08/2022, 19:03:55",
+                "date": "02/16/2022, 10:14:40",
                 "img": "./data/res/example_landscape.jpg",
                 "latitude": "0",
                 "longitude": "0",
@@ -41,6 +41,22 @@
                 "latitude": "0",
                 "longitude": "0",
                 "name": "new waypoint(3)"
+            },
+            {
+                "altitude": "0",
+                "date": "02/16/2022, 10:13:40",
+                "img": "./data/res/example_landscape.jpg",
+                "latitude": "0",
+                "longitude": "0",
+                "name": "new waypoint(4)"
+            },
+            {
+                "altitude": "H: 0",
+                "date": "02/17/2022, 19:25:54",
+                "img": "./data/res/example_landscape.jpg",
+                "latitude": "La: 0",
+                "longitude": "Lo: 0",
+                "name": "new waypoint(5)"
             }
         ]
     },

@@ -5,6 +5,7 @@
 # **************************** Imports ****************a**************
 import os
 import platform
+from time import sleep
 
 platform = platform.uname()
 os_on_device = platform.system
@@ -56,7 +57,6 @@ from customwidgets.joystick import *
 from random import randrange, uniform
 from datetime import datetime
 
-import math
 import gettext
 
 # ******************************************************************
@@ -71,19 +71,22 @@ KV_DIRECTORY = './kv_files'
 FONTS_DIRECTORY = './data/fonts'
 
 CON_INTERVAL = .5
+
 CON_STATUS = {
-    100: 'strong',
-    50: 'acceptable',
-    20: 'weak',
     10: 'too weak',
+    20: 'weak',
+    50: 'acceptable',
+    100: 'strong'
+}
+CON_ICON = {
+    10: './data/res/very_weak_wifi.png',
+    20: './data/res/weak_wifi.png',
+    50: './data/res/medium_wifi.png',
+    100: './data/res/strong_wifi.png'
 }
 
-CON_ICON = {
-    100: './data/res/strong_wifi.png',
-    50: './data/res/medium_wifi.png',
-    20: './data/res/weak_wifi.png',
-    10: './data/res/very_weal_wifi.png'
-}
+IP = '192.168.178.30'
+PORT = 9192
 
 # ******************************************************************
 
@@ -736,7 +739,7 @@ class CustomScreen(MDScreen):
         """
 
         self.manager.transition.direction = 'left'
-        Clock.schedule_once(self.load_drawer, .2)
+        Clock.schedule_once(self.load_drawer, 0)
 
     def on_leave(self, *args) -> None:
         """
@@ -761,13 +764,13 @@ class CustomScreen(MDScreen):
         self.machine_config = self.configuration.config_dict['machine']
         self.app_config = self.configuration.config_dict['app']
 
-    def load_drawer(self, *args) -> None:
+    def load_drawer(self, dt) -> None:
         """
         Erstellt die Navigationsleiste vor dem Betreten des Bildschirmes.
         Dabei verwenden wir das Dictionary 'text_icon'.
         Diese Dictionary beinhaltet:
             - Den Text der angezeigt wird.
-            - Das Icon was rechts davon agezeigt wird.
+            - Das Icon was rechts davon angezeigt wird.
             - Der Name des Bildschirmes zu dem gewechselt wird.
 
         Die Struktur muss dabei gleich bleiben.
@@ -1009,7 +1012,7 @@ class StartScreen(CustomScreen):
         Clock.unschedule(self.change_font)
         super(StartScreen, self).on_leave(*args)
 
-    def load_drawer(self, *args) -> None:
+    def load_drawer(self, dt) -> None:
         self.icon_text = {
             'home': {
                 'text': 'Home',
@@ -1032,22 +1035,19 @@ class StartScreen(CustomScreen):
                 'icon': 'help-circle-outline'
             }
         }
-        super(StartScreen, self).load_drawer(*args)
+        super(StartScreen, self).load_drawer(dt)
 
-    def change_font(self, *args) -> None:
+    def change_font(self, dt) -> None:
         """
         Wird von einem Thread in bestimmten Intervall takten ausgeführt.
 
         Diese Funktion wählt zufällig eine Schriftart und ein Text aus und verändert dementsprechend
         den Titelbildschirm.
 
-        Diese Signatur wird von Kivy vorgegeben.
-
         Parameters
         ----------
-        args: any
-            Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
-            angenommen werden.
+        dt: float
+            Die ZEit die zwischen Aufruf der Clock.schedule-Funktion und dieser
         """
 
         text = MarkupLabel(self.ids.title.text).markup[1]
@@ -1076,7 +1076,7 @@ class AppSettingsScreen(CustomScreen):
         self._touch_card = False
         super(AppSettingsScreen, self).__init__(**kwargs)
 
-    def load_drawer(self, *args):
+    def load_drawer(self, dt):
         self.icon_text = {
             'home': {
                 'text': 'Home',
@@ -1099,7 +1099,7 @@ class AppSettingsScreen(CustomScreen):
                 'icon': 'help-circle-outline'
             }
         }
-        super(AppSettingsScreen, self).load_drawer(*args)
+        super(AppSettingsScreen, self).load_drawer(dt)
 
     def on_pre_leave(self, *args):
         changed = self.app_settings.has_changed()
@@ -1137,18 +1137,18 @@ class AppSettingsScreen(CustomScreen):
             self._touch_card = False
         super(AppSettingsScreen, self).on_touch_up(touch)
 
-    def cancel_leave(self, *args):
+    def cancel_leave(self, button):
         self._dialog.dismiss()
         self.manager.current = 'appSettings'
 
-    def confirm_leave(self, *args):
+    def confirm_leave(self, button):
         self._dialog.dismiss()
 
-    def save_config(self, *args):
+    def save_config(self, button):
         self.app_settings.save_config()
         self.configuration.save_config()
 
-    def discard_config(self, *args):
+    def discard_config(self, button):
         self.app_settings.add_settings()
 
 
@@ -1181,8 +1181,8 @@ class SupportScreen(CustomScreen):
                 )
             )
 
-    def load_drawer(self, *args):
-        # Einige Bereiche sind erst betrettbar, sobald man sich einmal verbunden hat
+    def load_drawer(self, dt):
+        # Einige Bereiche sind erst betretbar, sobald man sich einmal verbunden hat
         # Aus diesen Grund müssen zwei Versionen von Navigationsleisten erstellt werden
         if MDApp.get_running_app()._connected:
             self.icon_text = {
@@ -1234,7 +1234,7 @@ class SupportScreen(CustomScreen):
                     'icon': 'help-circle-outline'
                 }
             }
-        super(SupportScreen, self).load_drawer(*args)
+        super(SupportScreen, self).load_drawer(dt)
 
 
 class ConnectionScreen(CustomScreen):
@@ -1254,8 +1254,6 @@ class ConnectionScreen(CustomScreen):
 
     def __init__(self, **kw):
         super(ConnectionScreen, self).__init__(**kw)
-        self.ip = '192.168.178.30'
-        self.port = '9192'
 
         self.waiting_text = DroneApp.translate('Waiting for response')
 
@@ -1282,7 +1280,6 @@ class ConnectionScreen(CustomScreen):
 
         self._waiting_anim_thread.save_start()
         self._register_thread.save_start()
-        self._receive_thread.save_start()
         super(ConnectionScreen, self).on_enter(*args)
 
     def on_leave(self, *args) -> None:
@@ -1291,7 +1288,7 @@ class ConnectionScreen(CustomScreen):
         self._receive_thread.stop()
         super(ConnectionScreen, self).on_leave(*args)
 
-    def load_drawer(self, *args):
+    def load_drawer(self, dt):
         self.icon_text = {
             'home': {
                 'text': 'Home',
@@ -1314,7 +1311,7 @@ class ConnectionScreen(CustomScreen):
                 'icon': 'help-circle-outline'
             }
         }
-        super(ConnectionScreen, self).load_drawer(*args)
+        super(ConnectionScreen, self).load_drawer(dt)
 
     def wait_anim(self):
         self._current_step += 1
@@ -1326,36 +1323,35 @@ class ConnectionScreen(CustomScreen):
 
     def register_ip(self):
         if self.app_config['testcase']:
+            sleep(3)
             self.manager.current = 'control'
             return
 
         sent_request = False
         try:
-            wlan_client.connect(self.ip, int(self.port))
-            wlan_client.send_message(f'CMD|register_ip|{wlan_client.get_ip_address()}')
+            wlan_client.connect(IP, PORT)
+
+            wlan_client.send_message(0, f'CMD|register_ip')
             sent_request = True
         except Exception as e:
             print(e)
-            pass
 
         if sent_request:
             self._register_thread.stop()
-
-    @staticmethod
-    def unregister_ip():
-        wlan_client.send_message(f'CMD|unregister_ip|{wlan_client.get_ip_address()}')
-        wlan_client.reset()
+            self._receive_thread.save_start()
 
     def receive_response(self):
         try:
-            response = wlan_client.wait_for_response(flag='REGISTER')
+            response = wlan_client.wait_for_response(0, flag='REGISTER')
+
             response_split = response.split(SEPARATOR)
             if response_split[1] == '1':
+
                 self.manager.current = 'control'
             elif response_split[1] == '0':
                 self.status.text = DroneApp.translate('Connection to esp32 failed. Please try again')
         except Exception as e:
-            pass
+            print(e)
 
 
 class ControlScreen(CustomScreen):
@@ -1396,11 +1392,11 @@ class ControlScreen(CustomScreen):
         Wurden die Joystick schon erstellt?
     """
 
-    altitude = StringProperty('0')
-    speed = StringProperty('0')
+    altitude = StringProperty('H: 0')
+    speed = StringProperty('S: 0')
 
-    latitude = StringProperty('0')
-    longitude = StringProperty('0')
+    latitude = StringProperty('La: 0')
+    longitude = StringProperty('Lo: 0')
     esp_connection = StringProperty('strong')
     esp_connection_icon = StringProperty('')
 
@@ -1423,20 +1419,21 @@ class ControlScreen(CustomScreen):
 
         self.esp_connection = DroneApp.translate('strong')
 
-        self._receive_thread = DisposableLoopThread()
+        self._data_thread = DisposableLoopThread()
         self._send_thread = DisposableLoopThread()
         self._connection_thread = DisposableLoopThread()
 
-        self._receive_thread.add_function(self.receive_data)
-        self._receive_thread.interval_sec = CON_INTERVAL
-
         self._send_thread.add_function(self.send_data)
         self._send_thread.interval_sec = CON_INTERVAL
+
+        self._data_thread.add_function(self.check_data)
+        self._data_thread.interval_sec = CON_INTERVAL
 
         self._connection_thread.add_function(self.check_connection)
         self._connection_thread.interval_sec = CON_INTERVAL
 
         self._created = False
+        self._hover_mode = False
 
         self.control_screens = ['control', 'settings', 'support', 'waypoints']
 
@@ -1458,12 +1455,18 @@ class ControlScreen(CustomScreen):
         """
         # Starte die Threads
         if not self.app_config['testcase']:
-            if self.manager.current in self.control_screens[2:]:
-                wlan_client.send_message(f'CMD{SEPARATOR}set_hover_mode{SEPARATOR}False')
-                wlan_client.send_message(f'CMD{SEPARATOR}set_hover_mode{SEPARATOR}False')
+            self.toggle_hover_mode(value=False)
 
-            self._receive_thread.save_start()
+            wlan_client.connect(IP, PORT)
+            wlan_client.connect(IP, PORT)
+            wlan_client.connect(IP, PORT)
+
+            # 1. socket: Daten senden
+            # 2. socket: Sensordaten abfragen
+            # 3: socket: Verbindungsdaten abfragen
+
             self._send_thread.save_start()
+            self._data_thread.save_start()
             self._connection_thread.save_start()
 
         MDApp.get_running_app()._connected = True
@@ -1486,20 +1489,17 @@ class ControlScreen(CustomScreen):
             Clock.schedule_once(self.l_joystick.set_center, 0.01)
             self._created = True
 
-            if not self.app_config['testcase']:
-                # Damit der ESP32 eine Connection hat, um die Sensordaten zu senden
-                wlan_client.send_message('ping')
         super(ControlScreen, self).on_enter(*args)
 
     def on_leave(self, *args) -> None:
         # Beende die Threads
         if not self.app_config['testcase']:
-            self._receive_thread.stop()
+            self._data_thread.stop()
             self._send_thread.stop()
             self._connection_thread.stop()
-            # Isst der Benutzer z.B in den Einstellungen, soll die Drohne auf gleicher Höhe bleiben
+            # Ist der Benutzer z.B in den Einstellungen, soll die Drohne auf gleicher Höhe bleiben
             if self.manager.current in self.control_screens[2:]:
-                wlan_client.send_message(f'CMD{SEPARATOR}set_hover_mode{SEPARATOR}True')
+                self.toggle_hover_mode(value=True)
 
         if self.manager.current not in self.control_screens:
             self.shutdown()
@@ -1510,7 +1510,7 @@ class ControlScreen(CustomScreen):
 
         super(ControlScreen, self).on_leave(*args)
 
-    def load_drawer(self, *args):
+    def load_drawer(self, dt):
         self.icon_text = {
             'home': {
                 'text': 'Home',
@@ -1537,9 +1537,9 @@ class ControlScreen(CustomScreen):
                 'icon': 'help-circle-outline'
             }
         }
-        super(ControlScreen, self).load_drawer(*args)
+        super(ControlScreen, self).load_drawer(dt)
 
-    def set_waypoint(self, *args):
+    def set_waypoint(self):
         """
         Diese Funktion wird von ein Knopf aufgerufen.
         Diese Funktion dient dazu ein Wegpunkt zu setzen.
@@ -1575,16 +1575,6 @@ class ControlScreen(CustomScreen):
 
         self.log_message(DroneApp.translate('Waypoint') + ': ' + name + ' ' + DroneApp.translate('set'))
 
-    def on_config_changed(self) -> None:
-        """
-        Wird aufgerufen, sobald die Konfiguration gespeichert wird, egal ob in diesen oder in einen anderen Bildschirm.
-        In dieser Funktion werden die Intervalle in den die Positionen der Joysticks gesendet, mit dem
-        aktuellen Wert überschrieben.
-        """
-
-        super(ControlScreen, self).on_config_changed()
-        self._send_thread.interval_sec = self.machine_config['tick']['value']
-
     def send_data(self) -> None:
         """
         Wird von dem send_thread aufgerufen.
@@ -1598,51 +1588,65 @@ class ControlScreen(CustomScreen):
         if not self.app_config['testcase']:
             # Format: RJ|POS_X|POS_Y
             message = f'RJ{SEPARATOR}{r_relative_pos[0]}{SEPARATOR}{r_relative_pos[1]}'
-            wlan_client.send_message(message)
+            wlan_client.send_message(1, message)
             # Format: LJ|POS_X|POS_Y
             message = f'LJ{SEPARATOR}{l_relative_pos[0]}{SEPARATOR}{l_relative_pos[1]}'
-            wlan_client.send_message(message)
+            wlan_client.send_message(1, message)
 
-    def receive_data(self) -> None:
+    def check_data(self) -> None:
         """
         Wird von dem receive_thread aufgerufen.
         In dieser Funktion werden die Daten vom ESP32 empfangen, aufbereitet und in den
         zugehörigen Variablen gespeichert.
         """
-        wlan_client.send_message(f'CMD{SEPARATOR}get_geo_data')
+        wlan_client.send_message(2, f'CMD{SEPARATOR}get_sensor_data')
 
-        # Format GEODATA|ALTITUDE|SPEED|LATITUDE|LONGITUDE
-        response = wlan_client.wait_for_response(flag='GEODATA')
-        data = response.split(SEPARATOR)
+        # Format GEODATA|SPEED|ALTITUDE|LATITUDE|LONGITUDE
+        response = wlan_client.wait_for_response(2, flag='GEODATA')
+        response_split = response.split(SEPARATOR)
 
-        self.altitude = data[1]
-        self.speed = data[2]
-        self.latitude = data[3]
-        self.longitude = data[4]
+        self.speed = f'S: {response_split[1]}'
+        self.altitude = f'H: {response_split[2]}'
+        self.latitude = f'La: {response_split[3]}'
+        self.longitude = f'Lo: {response_split[4]}'
 
     def check_connection(self) -> None:
         esp_con = self.check_esp_connection()
         own_con = self.check_own_connection()
 
         self.esp_connection_icon = CON_ICON[esp_con[0]]
-
-        if esp_con[1] == CON_STATUS[:-1]:
+        status_keys = list(CON_STATUS.keys())
+        if esp_con[1] == status_keys[0]:
             self.log_message(DroneApp.translate('WARNING: WEAK CONNECTION(ESP32)'), 'warning')
-        if own_con[1] == CON_STATUS[:-1]:
+        if own_con[1] == status_keys[0]:
             self.log_message(DroneApp.translate('WARNING: WEAK CONNECTION'), 'warning')
 
         self.esp_connection = DroneApp.translate(esp_con[1])
 
     def check_esp_connection(self) -> (int, str):
-        wlan_client.send_message(f'CMD{SEPARATOR}get_connect_strength')
+        wlan_client.send_message(3, f'CMD{SEPARATOR}get_conn_data')
 
-        response = wlan_client.wait_for_response(flag='CONDATA')
+        response = wlan_client.wait_for_response(3, flag='CONDATA')
         data = response.split(SEPARATOR)
 
         return self.get_connectivity(data[1])
 
     def check_own_connection(self) -> (int, str):
-        return self.get_connectivity(100)
+        return self.get_connectivity('100')
+
+    def toggle_hover_mode(self, value=None):
+        if value is None:
+            self._hover_mode = not self._hover_mode
+        elif isinstance(value, bool):
+            self._hover_mode = value
+        if self._hover_mode:
+            self.ids.hover_mode_btn.icon = 'butterfly-outline'
+            self.log_message('Hover mode activated', 'information')
+        else:
+            self.ids.hover_mode_btn.icon = 'butterfly'
+            self.log_message('Hover mode deactivated', 'information')
+        if not self.app_config['testcase']:
+            wlan_client.send_message(0, f'CMD{SEPARATOR}set_hover_mode{SEPARATOR}{self._hover_mode}')
 
     def shutdown(self) -> None:
         """
@@ -1651,12 +1655,12 @@ class ControlScreen(CustomScreen):
         """
 
         if not self.app_config['testcase']:
-            wlan_client.send_message(f'CMD{SEPARATOR}reset')
+            wlan_client.send_message(0, f'CMD{SEPARATOR}reset')
 
         wlan_client.reset()
 
         self._send_thread.stop()
-        self._receive_thread.stop()
+        self._data_thread.stop()
 
         MDApp.get_running_app()._connected = False
         self.go_back('home')
@@ -1674,21 +1678,33 @@ class ControlScreen(CustomScreen):
         self.ids.terminal.add_widget(label)
 
     @staticmethod
-    def get_connectivity(value) -> (int, str):
-        result = CON_STATUS[0]
+    def get_connectivity(value: str) -> (int, str):
+        if not str(value).isdigit():
+            raise ValueError('value has to be an integer')
+
         i = 0
-        for i, border, status in enumerate(CON_STATUS.items()):
-            if value > border:
-                result = status
-        return i, result
+        value = int(value)
+        result = CON_STATUS[10]
+
+        for i, (border, status) in enumerate(CON_STATUS.items()):
+            if value < border:
+                break
+
+            result = status
+        border_value = list(CON_STATUS.keys())[i]
+        return border_value, result
 
 
 class SettingsScreen(CustomScreen):
     """
-    Bildschirm mit den Einstellungen, die ohne Verbindung verändert werden können.
+    Bildschirm mit den Einstellungen, die mit Verbindung verändert werden können.
     """
 
     app_settings = ObjectProperty(None)
+
+    def __init__(self, **kw):
+        self._touch_card = True
+        super(SettingsScreen, self).__init__(**kw)
 
     def on_enter(self, *args) -> None:
         toolbar = MDApp.get_running_app().root_widget.toolbar
@@ -1711,7 +1727,7 @@ class SettingsScreen(CustomScreen):
             self._touch_card = False
         super(SettingsScreen, self).on_touch_up(touch)
 
-    def load_drawer(self, *args):
+    def load_drawer(self, dt):
         self.icon_text = {
             'home': {
                 'text': 'Home',
@@ -1738,28 +1754,20 @@ class SettingsScreen(CustomScreen):
                 'icon': 'help-circle-outline'
             }
         }
-        super(SettingsScreen, self).load_drawer(*args)
+        super(SettingsScreen, self).load_drawer(dt)
 
-    def save_config(self, *args) -> None:
+    def save_config(self) -> None:
         """
         Wird aufgerufen, der Speicher-knopf gedrückt wird.
         In dieser Funktion werden die Einstellungen gespeichert.
-
-        Diese Signatur wird von Kivy vorgegeben.
-
-        Parameters
-        ----------
-        args: any
-            Durch den einen Stern vor dem Namen können beliebig viele positionelle Argumente
-            angenommen werden.
         """
 
         self.app_settings.save_config()
         self.configuration.save_config()
-        self.notify()
+        #self.notify()
 
-        self.manager.get_screen('control').status = DroneApp.translate('Settings saved')
-        self.close_menu(None)
+        self.manager.get_screen('control').log_message(DroneApp.translate('Settings saved'), 'information')
+        self.go_back('control')
 
     def notify(self) -> None:
         """
@@ -1769,7 +1777,7 @@ class SettingsScreen(CustomScreen):
 
         if not self.app_config['testcase']:
             json_string = self.config_obj.get_json_string_from_dict(self.machine_config)
-            wlan_client.send_message(f'CMD{SEPARATOR}set_config{SEPARATOR}{json_string}')
+            wlan_client.send_message(0, f'CMD{SEPARATOR}set_config{SEPARATOR}{json_string}')
 
 
 class WaypointsScreen(CustomScreen):
@@ -1814,14 +1822,14 @@ class WaypointsScreen(CustomScreen):
         self.load_grid(True)
         super(WaypointsScreen, self).on_enter(*args)
 
-    def on_leave(self, *args):
+    def on_pre_leave(self, *args):
+        self._toolbar.right_action_items = []
         self.clear_grid()
-        self._toolbar.right_action_items.clear()
 
-        super(WaypointsScreen, self).on_leave(*args)
+        super(WaypointsScreen, self).on_pre_leave(*args)
 
-    def load_drawer(self, *args):
-        # Einige Bereiche sind erst betrettbar, sobald man sich einmal verbunden hat
+    def load_drawer(self, dt):
+        # Einige Bereiche sind erst betretbar, sobald man sich einmal verbunden hat
         # Aus diesen Grund müssen zwei Versionen von Navigationsleisten erstellt werden
         if MDApp.get_running_app()._connected:
             self.icon_text = {
@@ -1873,7 +1881,7 @@ class WaypointsScreen(CustomScreen):
                     'icon': 'help-circle-outline'
                 }
             }
-        super(WaypointsScreen, self).load_drawer(*args)
+        super(WaypointsScreen, self).load_drawer(dt)
 
     def load_grid(self, load_all):
         self.waypoints = self.app_config['waypoints'].copy()
@@ -1936,7 +1944,6 @@ class WaypointsScreen(CustomScreen):
                 size_hint_x=.5
             ).open()
         else:
-            print(area.ids)
             waypoint = {
                 'img': area.ids.image.source,
                 'name': area.ids.name_field.text,
@@ -1981,7 +1988,7 @@ class WaypointsScreen(CustomScreen):
     def discard_waypoint(area):
         set_visible(area, False)
 
-    def add_waypoint(self, button):
+    def add_waypoint(self):
         add_area = self.ids.add_waypoint_area
 
         names = [waypoint['name'] for waypoint in self.waypoints]
@@ -2043,7 +2050,7 @@ class WaypointsScreen(CustomScreen):
     def cancel_clear(self, button):
         self._clear_waypoints_dialog.dismiss()
 
-    def delete_waypoints(self, *args):
+    def delete_waypoints(self):
         self._clear_waypoints_dialog = MDDialog(
             text=MDApp.get_running_app().bind_text(self, 'Do u really want to delete all entries?'),
             buttons=[

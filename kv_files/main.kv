@@ -277,9 +277,14 @@
     name: 'control'
     RelativeLayout:
         MDFloatingActionButton:
-            pos_hint: {'center_x': .9, 'center_y': .9}
+            pos_hint: {'center_x': .85, 'center_y': .9}
             icon: 'map-marker-plus-outline'
             on_release: root.set_waypoint()
+        MDFloatingActionButton:
+            id: hover_mode_btn
+            pos_hint: {'center_x': .9, 'center_y': .75}
+            icon: 'butterfly'
+            on_release: root.toggle_hover_mode()
         MDFloatingActionButton:
             pos_hint: {'center_x': .1, 'center_y': .9}
             icon: 'menu'
@@ -294,7 +299,10 @@
                     source: root.esp_connection_icon
                 MDLabel:
                     halign: 'center'
-                    text: f'H: {root.altitude}\nS: {root.speed}'
+                    text: root.altitude
+                MDLabel:
+                    halign: 'center'
+                    text: root.speed
             MDCard:
                 style: 'outlined'
                 line_color: (0.2, 0.2, 0.2, 0.8)
@@ -309,10 +317,13 @@
                 orientation: 'vertical'
                 MDLabel:
                     halign: 'center'
-                    text: f'{root.battery}%'
+                    text: root.battery
                 MDLabel:
                     halign: 'center'
-                    text: f'Lo: {root.latitude}\nLa: {root.longitude}'
+                    text: root.latitude
+                MDLabel:
+                    halign: 'center'
+                    text: root.longitude
         BoxLayout:
             id: joystick_a
             pos_hint: {'center_y': .3}

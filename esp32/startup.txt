@@ -1,31 +1,37 @@
 from drohnev2.wifi import *
+from drohnev2.configuration import *
 
-networks = [{
-    "name": "KHOA",
-    "password": "Khoa19610121"
-    }]
+import os
 
-nic = activate_nic()
-scanned_networks = scan(nic)
+def startup():
+    config = Configuration('./drohnev2/wlan_config/data/network.json', load_at_init=True)
+    networks = config.config_dict['networks']
+    nic = activate_nic()
+    scanned_networks = scan(nic)
+    #print(networks)
+    #print(scanned_networks)
 
-names = [network[0] for network in scanned_networks]
+    names = [network[0] for network in scanned_networks]
 
-connected = False
+    connected = False
 
-for network in networks:
-    if network['name'] in names:
-        index = names.index(network['name'])
-        result = connect(nic, network['name'], network['password'])
+    for network in networks:
+        if network['name'] in names:
+            index = names.index(network['name'])
+            result = connect(nic, network['name'], network['password'])
+            if result:
+                print(f'connected to {network["name"]}')
+                connected = True
+                break
+
+    if connected:
+        server = Wlan_Server(nic)
+        result = server.create_server()
         if result:
-            print(f'connected to {network["name"]}')
-            connected = True
-            break
+            server.server_loop()
+    else:
+       print('Couldnt connect to any network')
 
-if connected:
-    server = Wlan_Server(nic)
-    result = server.create_server()
-    if result:
-        server.server_loop()
-
-
+if __name__ == '__main__':
+    startup()
 

@@ -7,6 +7,8 @@ from time import sleep
 import socket
 
 # Konstanten
+from typing import Union
+
 SIZE = 1024
 
 
@@ -43,11 +45,13 @@ class WLANClient(object):
         Erstellt alle nötigen Variablen für die WLANClient-Klasse.
         """
 
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.paired_device_ip = ''
-        self.paired_device_port = ''
+        self.sockets = []
+        self.paired_device_ips = []
+        self.paired_device_ports = []
 
-    def connect(self, address: str, port: int) -> None:
+        self._first_msgs = []
+
+    def connect(self, address: str, port: int, index: int = None) -> None:
         """
         Erstellt eine Verbindung mithilfe der IP-Adresse und dem Port über einem Socket
         und speichert die Daten.
@@ -58,57 +62,86 @@ class WLANClient(object):
             Die IP-Adresse des Zielgerätes(ESP32)
         port: int
             Der Port des Zielgerätes(ESP32)
-
+        index: int, optional
+            default: None
+            Der Index des Sockets
         """
+        if index is None:
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.connect((address, port))
+            self.sockets.append(s)
 
-        self.socket.connect((address, port))
+            self.paired_device_ips.append(address)
+            self.paired_device_ports.append(port)
+            self._first_msgs.append(False)
+        elif index >= 0:
+            self.sockets[index].connect((address, port))
+            self.paired_device_ips[index] = address
+            self.paired_device_ports[index] = port
+            self._first_msgs[index] = False
 
-    def send_message(self, message: str) -> None:
+    def send_message(self, index: int, message: str) -> None:
         """
         Sendet eine Nachricht über den Socket. Setzt voraus, dass ein Socket
         mithilfe der connect()-Methode erstellt wurde.
 
         Parameters
         ----------
+        index: int
+            Der Index des Sockets worüber die Nachricht gesendet werden soll.
         message: str
             Die Nachricht
         """
+        if self._first_msgs[index]:
+            ip = self.paired_device_ips[index]
+            port = self.paired_device_ports[index]
 
-        self.socket.send(message.encode())
+            self.reset(index)
+            self.connect(ip, int(port), index)
 
-    def wait_for_response(self, flag: str = '') -> str:
+        self.sockets[index].send(message.encode('utf-8'))
+        self._first_msgs[index] = True
+
+    def wait_for_response(self, index: int, flag: str = '') -> str:
         """
         Sendet eine Nachricht über den Socket. Setzt voraus, dass ein Socket
         mithilfe der connect()-Methode erstellt wurde.
 
         Parameters
         ----------
+        index: int:
+            Der Index des Sockets, worüber die Nachricht erwartet wird.
         flag: str, optional:
             default: ''
             Eine Zeichenkette, die die Nachricht zu beinhalten hat.
         """
 
         while True:
-            data = self.socket.recv(1024).decode('UTF-8')
+            data = self.sockets[index].recv(1024).decode('utf-8')
             if data:
                 if flag != '':
                     return data
                 else:
                     if flag in data:
                         return data
-                    else:
-                        return ''
 
-    def reset(self) -> None:
+    def reset(self, index: Union[int, None] = None) -> None:
         """
         Setzt den Client zurück.
         """
 
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.paired_device_ip = ''
-        self.paired_device_port = ''
+        if index is None:
+            for i in range(len(self.sockets)):
+                self.sockets[i].close()
+                self.sockets[i] = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                self.paired_device_ips[i] = ''
+                self.paired_device_ports[i] = ''
+        else:
+            self.sockets[index].close()
+            self.sockets[index] = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.paired_device_ips[index] = ''
+            self.paired_device_ports[index] = ''
 
-    # TODO: Funktioniert, es auch ohne WLAN?
     @staticmethod
     def get_ip_address() -> str:
         """
