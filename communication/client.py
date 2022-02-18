@@ -3,6 +3,7 @@
 # ************************************************************
 from datetime import datetime
 from time import sleep
+from who_is_on_my_wifi import *
 
 import socket
 
@@ -155,3 +156,10 @@ class WLANClient(object):
 
         h_name = socket.gethostname()
         return socket.gethostbyname(h_name)
+
+    @staticmethod
+    def get_all_devices_on_net():
+        result = who()  # who(n)
+        #for j in range(0, len(result)):
+        #    comm = f"\n{result[j][0]} {result[j][1]}\n{result[j][2]} {result[j][3]}\n{result[j][4]} {result[j][5]}\n"
+        return result
