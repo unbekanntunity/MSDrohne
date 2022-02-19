@@ -8,7 +8,7 @@
             }
         ],
         "swipe_distance": 357.0,
-        "testcase": true,
+        "testcase": false,
         "waypoints": [
             {
                 "altitude": "0",

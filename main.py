@@ -1015,23 +1015,23 @@ class StartScreen(CustomScreen):
     def load_drawer(self, dt) -> None:
         self.icon_text = {
             'home': {
-                'text': 'Home',
+                'text': DroneApp.translate('Home'),
                 'icon': 'home-outline'
             },
             'connection': {
-                'text': 'Connect',
+                'text': DroneApp.translate('Connect'),
                 'icon': 'database-search-outline'
             },
             'appSettings': {
-                'text': 'Settings',
+                'text': DroneApp.translate('Settings'),
                 'icon': 'cog-outline'
             },
             'waypoints': {
-                'text': 'Waypoints',
+                'text': DroneApp.translate('Waypoints'),
                 'icon': 'map-outline'
             },
             'support': {
-                'text': 'Support',
+                'text': DroneApp.translate('Support'),
                 'icon': 'help-circle-outline'
             }
         }
@@ -1079,15 +1079,15 @@ class AppSettingsScreen(CustomScreen):
     def load_drawer(self, dt):
         self.icon_text = {
             'home': {
-                'text': 'Home',
+                'text': DroneApp.translate('Home'),
                 'icon': 'home-outline'
             },
             'connection': {
-                'text': 'Connect',
+                'text': DroneApp.translate('Connect'),
                 'icon': 'database-search-outline'
             },
             'settings': {
-                'text': 'Settings',
+                'text': DroneApp.translate('Settings'),
                 'icon': 'cog-outline'
             },
             'waypoints': {
@@ -1095,7 +1095,7 @@ class AppSettingsScreen(CustomScreen):
                 'icon': 'map-outline'
             },
             'support': {
-                'text': 'Support',
+                'text': DroneApp.translate('Support'),
                 'icon': 'help-circle-outline'
             }
         }
@@ -1187,50 +1187,50 @@ class SupportScreen(CustomScreen):
         if MDApp.get_running_app()._connected:
             self.icon_text = {
                 'home': {
-                    'text': 'Home',
+                    'text': DroneApp.translate('Home'),
                     'icon': 'home-outline'
                 },
                 'connection': {
-                    'text': 'Connect',
+                    'text': DroneApp.translate('Connect'),
                     'icon': 'database-search-outline'
                 },
                 'control': {
-                    'text': 'Control',
+                    'text': DroneApp.translate('Control'),
                     'icon': 'controller-classic-outline'
                 },
                 'settings': {
-                    'text': 'Settings',
+                    'text': DroneApp.translate('Settings'),
                     'icon': 'cog-outline'
                 },
                 'waypoints': {
-                    'text': 'Waypoints',
+                    'text': DroneApp.translate('Waypoints'),
                     'icon': 'map-outline'
                 },
                 'support': {
-                    'text': 'Support',
+                    'text': DroneApp.translate('Support'),
                     'icon': 'help-circle-outline'
                 }
             }
         else:
             self.icon_text = {
                 'home': {
-                    'text': 'Home',
+                    'text': DroneApp.translate('Home'),
                     'icon': 'home-outline'
                 },
                 'connection': {
-                    'text': 'Connect',
+                    'text': DroneApp.translate('Connect'),
                     'icon': 'database-search-outline'
                 },
                 'appSettings': {
-                    'text': 'Settings',
+                    'text': DroneApp.translate('Settings'),
                     'icon': 'cog-outline'
                 },
                 'waypoints': {
-                    'text': 'Waypoints',
+                    'text': DroneApp.translate('Waypoints'),
                     'icon': 'map-outline'
                 },
                 'support': {
-                    'text': 'Support',
+                    'text': DroneApp.translate('Support'),
                     'icon': 'help-circle-outline'
                 }
             }
@@ -1291,23 +1291,23 @@ class ConnectionScreen(CustomScreen):
     def load_drawer(self, dt):
         self.icon_text = {
             'home': {
-                'text': 'Home',
+                'text': DroneApp.translate('Home'),
                 'icon': 'home-outline'
             },
             'connection': {
-                'text': 'Connect',
+                'text': DroneApp.translate('Connect'),
                 'icon': 'database-search-outline'
             },
             'settings': {
-                'text': 'Settings',
+                'text': DroneApp.translate('Settings'),
                 'icon': 'cog-outline'
             },
             'waypoints': {
-                'text': 'Waypoints',
+                'text': DroneApp.translate('Waypoints'),
                 'icon': 'map-outline'
             },
             'support': {
-                'text': 'Support',
+                'text': DroneApp.translate('Support'),
                 'icon': 'help-circle-outline'
             }
         }
@@ -1513,27 +1513,27 @@ class ControlScreen(CustomScreen):
     def load_drawer(self, dt):
         self.icon_text = {
             'home': {
-                'text': 'Home',
+                'text': DroneApp.translate('Home'),
                 'icon': 'home-outline'
             },
             'connection': {
-                'text': 'Connect',
+                'text': DroneApp.translate('Connect'),
                 'icon': 'database-search-outline'
             },
             'settings': {
-                'text': 'Settings',
+                'text': DroneApp.translate('Settings'),
                 'icon': 'cog-outline'
             },
             'control': {
-                'text': 'Control',
+                'text': DroneApp.translate('Control'),
                 'icon': 'controller-classic-outline'
             },
             'waypoints': {
-                'text': 'Waypoints',
+                'text': DroneApp.translate('Waypoints'),
                 'icon': 'map-outline'
             },
             'support': {
-                'text': 'Support',
+                'text': DroneApp.translate('Support'),
                 'icon': 'help-circle-outline'
             }
         }
@@ -1613,7 +1613,7 @@ class ControlScreen(CustomScreen):
     def check_connection(self) -> None:
         esp_con = self.check_esp_connection()
         own_con = self.check_own_connection()
-
+        print(CON_ICON[esp_con[0]])
         self.esp_connection_icon = CON_ICON[esp_con[0]]
         status_keys = list(CON_STATUS.keys())
         if esp_con[1] == status_keys[0]:
@@ -1730,27 +1730,27 @@ class SettingsScreen(CustomScreen):
     def load_drawer(self, dt):
         self.icon_text = {
             'home': {
-                'text': 'Home',
+                'text': DroneApp.translate('Home'),
                 'icon': 'home-outline'
             },
             'connection': {
-                'text': 'Connect',
+                'text': DroneApp.translate('Connect'),
                 'icon': 'database-search-outline'
             },
             'settings': {
-                'text': 'Settings',
+                'text': DroneApp.translate('Settings'),
                 'icon': 'cog-outline'
             },
             'control': {
-                'text': 'Control',
+                'text': DroneApp.translate('Control'),
                 'icon': 'controller-classic-outline'
             },
             'waypoints': {
-                'text': 'Waypoints',
+                'text': DroneApp.translate('Waypoints'),
                 'icon': 'map-outline'
             },
             'support': {
-                'text': 'Support',
+                'text': DroneApp.translate('Support'),
                 'icon': 'help-circle-outline'
             }
         }
@@ -1834,50 +1834,51 @@ class WaypointsScreen(CustomScreen):
         if MDApp.get_running_app()._connected:
             self.icon_text = {
                 'home': {
-                    'text': 'Home',
+                    'text': DroneApp.translate('Home'),
                     'icon': 'home-outline'
                 },
                 'connection': {
-                    'text': 'Connect',
+                    'text': DroneApp.translate('Connect'),
                     'icon': 'database-search-outline'
                 },
                 'control': {
-                    'text': 'Control',
+                    'text': DroneApp.translate('Control'),
                     'icon': 'controller-classic-outline'
                 },
                 'settings': {
-                    'text': 'Settings',
+                    'text': DroneApp.translate('Settings'),
                     'icon': 'cog-outline'
                 },
                 'waypoints': {
-                    'text': 'Waypoints',
+                    'text': DroneApp.translate('Waypoints'),
                     'icon': 'map-outline'
                 },
                 'support': {
-                    'text': 'Support',
+                    'text': DroneApp.translate('Support'),
                     'icon': 'help-circle-outline'
                 }
             }
         else:
+            
             self.icon_text = {
                 'home': {
-                    'text': 'Home',
+                    'text': DroneApp.translate('Home'),
                     'icon': 'home-outline'
                 },
                 'connection': {
-                    'text': 'Connect',
+                    'text': DroneApp.translate('Connect'),
                     'icon': 'database-search-outline'
                 },
                 'appSettings': {
-                    'text': 'Settings',
+                    'text': DroneApp.translate('Settings'),
                     'icon': 'cog-outline'
                 },
                 'waypoints': {
-                    'text': 'Waypoints',
+                    'text': DroneApp.translate('Waypoints'),
                     'icon': 'map-outline'
                 },
                 'support': {
-                    'text': 'Support',
+                    'text': DroneApp.translate('Support'),
                     'icon': 'help-circle-outline'
                 }
             }
