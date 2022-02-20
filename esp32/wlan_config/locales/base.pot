@@ -1,0 +1,67 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2022-01-08 13:30+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=cp1252\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+
+
+msgid "Network configuration"
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid "Clear"
+msgstr ""
+
+msgid "Discard"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Add new network"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid "Do you really want to delete all entries"
+msgstr ""
+
+msgid "No"
+msgstr ""
+
+msgid "Yes"
+msgstr ""
+
+msgid "Edit network"
+msgstr ""
+
+msgid "List refreshed!"
+msgstr ""
+
+msgid "List saved!"
+msgstr ""
+
+msgid "Ohh, something went wrong!"
+msgstr ""
+
+msgid "List is already up to date!"
+msgstr ""
+
+
+
