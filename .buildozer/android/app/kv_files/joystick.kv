@@ -1,0 +1,21 @@
+<JoyStick>:
+    id: js
+    canvas:
+        ###  Outer Background  ###
+        Color:
+            rgba: self.outer_background_color
+        Ellipse:
+            pos: (self.center_x - self.outer_radius), (self.center_y - self.outer_radius)
+            size: (self.outer_diameter, self.outer_diameter)
+        ###  Inner Background  ###
+        Color:
+            rgba: self.inner_background_color
+        Ellipse:
+            pos: (self.js_center_x - self.inner_radius), (self.js_center_y - self.inner_radius)
+            size: (self.inner_diameter, self.inner_diameter)
+        ###  Outer Border  ###
+        Color:
+            rgba: self.outer_line_color
+        Line:
+            circle: (self.center_x, self.center_y, (self.outer_radius - (self.outer_line_width / 2)))
+            width: self.outer_line_width
