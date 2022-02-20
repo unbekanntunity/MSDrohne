@@ -1,9 +1,3 @@
-from test import command
+import socket
 
-
-@command(cmd_type='private')
-def test(self, connection, address, *agrs):
-    print('Private command executed.')
-
-
-test(None, None, 'public', None, None)
+print(socket.gethostbyname('espressif.box'))

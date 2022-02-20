@@ -3,13 +3,10 @@ from drohnev2.functools import wraps
 def command(cmd_type='public'):
     def actual_decorator(func):
         @wraps(func)
-        def wrapper(self, connection, passed_type, address, *args):
-            if cmd_type == 'private':
-                if passed_type == 'private':
-                    return func(self, connection, passed_type, address, *args)
-                else:
-                    print('permission denied')
+        def wrapper(self, passed_type, connection, address, *args):
+            if cmd_type == passed_type:
+                return func(self, connection, address, *args)
             else:
-                return func(self, connection, passed_type, *args)
+                print(f'permission denied at {passed_type}')
         return wrapper
     return actual_decorator

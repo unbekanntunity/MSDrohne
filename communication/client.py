@@ -1,9 +1,6 @@
 # *********************** client.py **************************
 # Eine Klasse für die Kommunikation mit der Drohne (ESP32)
 # ************************************************************
-from datetime import datetime
-from time import sleep
-from who_is_on_my_wifi import *
 
 import socket
 

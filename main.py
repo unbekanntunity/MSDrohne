@@ -5,6 +5,7 @@
 # **************************** Imports ****************a**************
 import os
 import platform
+import socket
 from time import sleep
 
 platform = platform.uname()
@@ -85,7 +86,7 @@ CON_ICON = {
     100: './data/res/strong_wifi.png'
 }
 
-IP = '192.168.178.30'
+IP = socket.gethostbyname('espressif.box')
 PORT = 9192
 
 # ******************************************************************
@@ -1144,7 +1145,7 @@ class AppSettingsScreen(CustomScreen):
     def confirm_leave(self, button):
         self._dialog.dismiss()
 
-    def save_config(self, button):
+    def save_config(self):
         self.app_settings.save_config()
         self.configuration.save_config()
 

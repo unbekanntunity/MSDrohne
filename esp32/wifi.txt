@@ -2,7 +2,7 @@ import network
 import ubinascii
 
 from drohnev2.decorators import command
-from drohnev2.startup import setup
+from drohnev2.startup import startup
 
 import gc
 
@@ -57,22 +57,26 @@ class Wlan_Server(object):
             print(e)
             return False
 
-    def server_loop(self):
+    def server_loop(self) -> None:
         while True:
             print('\nSearch for requests')
             c, addr = self.server.accept()  # Anfrage entgegennehmen
             print('\nGot a connection from %s' % str(addr))
+            done = False
             # c ist ein bytes-Objekt und muss als string decodiert werden
             # damit string-Methoden darauf angewandt werden koennen.
             request = c.recv(1024).decode("utf-8")
             print(f'data detected: {request}')
 
-            command_name, args = self.extract_command(request)
-            if command_name is not None:
-                self.execute_public_command(command_name, c, addr, *args)
+            if 'CMD' in request:
+                command_name, args = self.extract_command(request)
+                if command_name is not None:
+                    print(f'Public command detected: {command_name}, {args}')
+                    self.execute_command(command_name, 'public', c, addr, *args)
 
             if self.validate_data(c, addr):
-                self.process_data(c, addr, request)
+                self.process_request(c, addr, request)
+
             c.close()
             print('Connection closed')
 
@@ -84,20 +88,22 @@ class Wlan_Server(object):
             print(f'address: {address}')
             if not result:
                 connection.send('Permission denied.')
+                return False
             return True
         else:
             return False
 
-    def process_data(self, connection, address, data):
+    def process_request(self, connection, address, request):
         print('Processing data')
-        if 'CMD' in data:
-            command_name, args = self.extract_command(data)
-            print(f'command detected: {command_name}, {args}')
-            self.execute_private_command(command_name, connection, address, *args)
-            # globals()[command_name](connection, *args)
-        elif 'DATA' in data:
-            result = self.extract_data()
+        if 'CMD' in request:
+            command_name, args = self.extract_command(request)
+            if command_name is not None:
+                print(f'Private command detected: {command_name}, {args}')
+                self.execute_command(command_name, 'private', connection, address, *args)
+        elif 'DATA' in request:
+            result = self.extract_data(request)
             if result[0]:
+                print(f'Data detected: {result[1]}: {result[2]}')
                 self.data_container[result[1]] = result[2]
 
     def extract_data(self, data):
@@ -121,26 +127,19 @@ class Wlan_Server(object):
             return (command_name, args)
         return (None, None)
 
-    def execute_public_command(self, name, connection, address, *args):
-        print(f'Command detected: {name}')
+    def execute_command(self, name, mode, connection, address, *args):
         if hasattr(Wlan_Server, name):
-            getattr(Wlan_Server, name)(self, connection, 'public', address, *args)
-        else:
-            connection.send('Command not found.')
-
-    def execute_private_command(self, name, connection, address, *args):
-        if hasattr(Wlan_Server, name):
-            getattr(Wlan_Server, name)(self, connection, 'private', address, *args)
+            getattr(Wlan_Server, name)(self, mode, connection, address, *args)
         else:
             connection.send('Command not found.')
 
     @command(cmd_type='public')
     def reset(self, connection, passed_type, *args):
-        self.socket.close()
+        self.server.close()
         setup()
 
     @command(cmd_type='private')
-    def set_config(self, connection, passed_type, *args):
+    def set_config(self, connection, address, *args):
         try:
             config_str = args[0]
             self.config.save_config_with_jsonstr(config_str)
@@ -150,12 +149,12 @@ class Wlan_Server(object):
             connection.send('CONFIG|0')
 
     @command(cmd_type='private')
-    def set_hover_mode(self, connection, passed_type, *args):
+    def set_hover_mode(self, connection, address, *args):
         if isinstance(args[0], bool):
             self.data_container['Hover_mode'] = args[0]
 
     @command(cmd_type='public')
-    def register_ip(self, connection, passed_type, address, *args):
+    def register_ip(self, connection, address, *args):
         if self.paired_device_ip is None:
             self.paired_device_ip = address
             print(f'Register ip with {address}')
@@ -164,7 +163,7 @@ class Wlan_Server(object):
             connection.send('REGISTER|0')
 
     @command(cmd_type='private')
-    def unregister_ip(self, connection, passed_type, address, *args):
+    def unregister_ip(self, connection, address, *args):
         if self.paired_device_ip is not None and self.paired_device_ip == str(address):
             self.paired_device_ip = None
             print(f'Logout ip with {args[0]}')
@@ -173,7 +172,7 @@ class Wlan_Server(object):
             connection.send('UNREGISTER|0')
 
     @command(cmd_type='private')
-    def get_sensor_data(self, connection, passed_type, address, *args):
+    def get_sensor_data(self, connection, address, *args):
         try:
             data = []
             for i in range(4):
@@ -187,9 +186,11 @@ class Wlan_Server(object):
             pass
 
     @command(cmd_type='private')
-    def get_conn_data(self, connection, passed_type, address, *args):
+    def get_conn_data(self, connection, address, *args):
         try:
-            message = f'CONDATA|{random.randint(1, 100)}'
+            number = random.randint(1, 100)
+            number = 1
+            message = f'CONDATA|{number}'
             connection.send(message.encode())
             print(f'Wlan data sent: {message}')
         except Exception as e:
@@ -216,6 +217,7 @@ def activate_nic():
     # AT-based oder Adruino-IDE ist in MicroPython nicht möglich
     nic = network.WLAN(network.STA_IF)  # Constructor
     nic.active(True)
+    print(f'Hostname: {nic.config("dhcp_hostname")}')
 
     # binäre MAC-Adresse abrufen und in ein Hex-Tupel umgewandelt ausgeben
     MAC = nic.config('mac')
@@ -238,7 +240,7 @@ def connect(nic, siD="pasteur-wlan", password="03Y01pasgymbln#12") -> (bool, Any
         # warten bis die Verbindung zum Accesspoint steht
         while nic.status() != network.STAT_GOT_IP:
             if tries == max_tries:
-                return (false, None, None)
+                return (False, None, None)
 
             print(connectStatus[nic.status()])
             tries += 1
