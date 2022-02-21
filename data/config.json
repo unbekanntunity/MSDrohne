@@ -1,12 +1,6 @@
 {
     "app": {
         "current_language": "en",
-        "networks": [
-            {
-                "name": "test",
-                "password": "test"
-            }
-        ],
         "swipe_distance": 357.0,
         "testcase": false,
         "waypoints": [
