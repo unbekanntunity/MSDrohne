@@ -22,7 +22,7 @@ source.include_exts = py,png,jpg,kv,atlas,ttf,json,jpeg,mo,po
 #source.exclude_exts = spec
 
 # (list) List of directory to exclude (let empty to not exclude anything)
-source.exclude_dirs = esp32,venv,__pycache__
+source.exclude_dirs = esp32,venv
 
 # (list) List of exclusions using pattern matching
 #source.exclude_patterns = license,images/*/*.jpg
