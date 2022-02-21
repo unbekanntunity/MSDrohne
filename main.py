@@ -86,9 +86,6 @@ CON_ICON = {
     100: './data/res/strong_wifi.png'
 }
 
-IP = socket.gethostbyname('espressif.box')
-PORT = 9192
-
 # ******************************************************************
 
 # ********************* Plattformspezifisch ************************
@@ -1330,7 +1327,8 @@ class ConnectionScreen(CustomScreen):
 
         sent_request = False
         try:
-            wlan_client.connect(IP, PORT)
+            ip, port = get_server_address()
+            wlan_client.connect(ip, port)
 
             wlan_client.send_message(0, f'CMD|register_ip')
             sent_request = True
@@ -1458,9 +1456,11 @@ class ControlScreen(CustomScreen):
         if not self.app_config['testcase']:
             self.toggle_hover_mode(value=False)
 
-            wlan_client.connect(IP, PORT)
-            wlan_client.connect(IP, PORT)
-            wlan_client.connect(IP, PORT)
+            ip, port = get_server_address()
+
+            wlan_client.connect(ip, port)
+            wlan_client.connect(ip, port)
+            wlan_client.connect(ip, port)
 
             # 1. socket: Daten senden
             # 2. socket: Sensordaten abfragen
@@ -2266,6 +2266,9 @@ def get_waypoint_name(existing_names) -> str:
         name = DEFAULT_WP_PREFIX + '(' + str(i) + ')'
     return name
 
+
+def get_server_address() -> (str, int):
+    return  socket.gethostbyname('espressif.box'), 9192
 
 # *******************************************************************
 
