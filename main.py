@@ -2185,7 +2185,7 @@ class DroneApp(MDApp):
     def set_translation(self) -> None:
         language = self.configuration.config_dict['app']['current_language'] + '_' + \
                    self.configuration.config_dict['app']['current_language'].capitalize()
-
+        print(language)
         self.translation = gettext.translation('base', localedir='locales',
                                                languages=[language])
         self.translation.install()
