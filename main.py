@@ -7,7 +7,6 @@ import os
 import platform
 import socket
 from time import sleep
-from typing import Union
 
 platform = platform.uname()
 os_on_device = platform.system
@@ -34,6 +33,7 @@ from kivymd.uix.card import MDCard
 from kivymd.uix.anchorlayout import MDAnchorLayout
 from kivymd.uix.snackbar import BaseSnackbar
 from kivymd.uix.floatlayout import MDFloatLayout
+from kivymd.uix.bottomsheet import MDGridBottomSheet
 
 from kivy.metrics import dp
 from kivy.graphics import Color, Ellipse
@@ -267,22 +267,37 @@ class WaypointArea(MDAnchorLayout):
         self.on_discard_btn_clicked = EventHandler()
 
         self._popup = None
+
         super(WaypointArea, self).__init__(**kwargs)
 
-    def open_manager(self) -> None:
+    def show_bottom_sheet(self):
+        _bottom_sheet_menu = MDGridBottomSheet()
+        data = [
+            ("System folder", "folder-cog-outline", "."),
+            ("Gallery folder", "folder-image", ".")
+        ]
+        for name, icon, path in data:
+            _bottom_sheet_menu.add_item(
+                name,
+                lambda path=path: self.sheet_item_selected(path),
+                icon_src=icon,
+            )
+        _bottom_sheet_menu.open()
+
+    def sheet_item_selected(self, path):
+        self.open_manager(path)
+
+    def open_manager(self, init_path) -> None:
         """
         Öffnet das Fenster/die Dialogbox, der dann alle Dateien auf den Gerät auflistet.
         """
-        if os_on_device in ['android', 'linux']:
-            from android.permissions import request_permissions, Permission
-            request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])
-
-        content = LoadDialog(load=self.load, cancel=self.dismiss_popup)
+        content = LoadDialog(load=self.load, cancel=self.dismiss_manager)
+        content.path = init_path
         self._popup = Popup(title="Load file", content=content,
                             size_hint=(0.9, 0.9))
         self._popup.open()
 
-    def dismiss_popup(self) -> None:
+    def dismiss_manager(self) -> None:
         """
         Schließt das Fenster/die Dialogbox wieder.
         """
@@ -293,20 +308,29 @@ class WaypointArea(MDAnchorLayout):
         """
         Lädt die Datei. Die Datei muss ein .jpg oder .png Datei sein.
         """
-
-        filename = filename[0]
-        suffix = filename.split('.')[-1]
-        if suffix == 'jpg' or suffix == 'png':
-            self.dismiss_popup()
-            self.ids.image.source = filename
-        else:
+        if len(filename) == 0:
             CustomSnackbar(
-                text=MDApp.get_running_app().bind_text(self, 'File has to a .jgp or .png file'),
+                text=MDApp.get_running_app().translate('No file selected!'),
                 icon='information',
                 snackbar_x='10dp',
                 snackbar_y='10dp',
                 size_hint_x=.5
             ).open()
+            self.dismiss_popup()
+        else:
+            filename = filename[0]
+            suffix = filename.split('.')[-1]
+            if suffix == 'jpg' or suffix == 'png':
+                self.ids.image.source = filename
+                self.dismiss_popup()
+            else:
+                CustomSnackbar(
+                    text=MDApp.get_running_app().translate('File has to a .jgp or .png file!'),
+                    icon='information',
+                    snackbar_x='10dp',
+                    snackbar_y='10dp',
+                    size_hint_x=.5
+                ).open()
 
 
 class MenuListItem(OneLineAvatarIconListItem):
@@ -2092,13 +2116,7 @@ class WaypointsScreen(CustomScreen):
             content = waypoints
 
         for waypoint in content:
-            card = WaypointCard(waypoint['img'],
-                                waypoint['name'], waypoint['altitude'], waypoint['latitude'],
-                                waypoint['longitude'], waypoint['date'])
-            card.on_edit_btn_clicked.add_function(self.edit_waypoint)
-            card.on_delete_btn_clicked.add_function(self.delete_waypoint)
-            card.size_hint = None, None
-            card.size = 160, 220
+            card = self.build_card(waypoint)
             self._waypoint_cards.append(card)
             self.ids.grid.add_widget(card)
 
@@ -2130,6 +2148,7 @@ class WaypointsScreen(CustomScreen):
         card = self._waypoint_cards[index]
         self._current_edited_index = index
 
+        edit_area.ids.image.source = card.ids.image.source
         edit_area.ids.name_field.text = card.ids.name_label.text
         edit_area.ids.altitude_field.text = card.ids.altitude_label.text
         edit_area.ids.latitude_field.text = card.ids.latitude_label.text
@@ -2164,7 +2183,7 @@ class WaypointsScreen(CustomScreen):
 
         if name == '':
             CustomSnackbar(
-                text=MDApp.get_running_app().bind_text(self, 'Name can´t be empty!'),
+                text=MDApp.get_running_app().translate('Name can´t be empty!'),
                 icon='information',
                 snackbar_x='10dp',
                 snackbar_y='10dp',
@@ -2172,7 +2191,7 @@ class WaypointsScreen(CustomScreen):
             ).open()
         elif name in names and name != old_name:
             CustomSnackbar(
-                text=MDApp.get_running_app().bind_text(self, 'Name already exists'),
+                text=MDApp.get_running_app().translate('Name already exists'),
                 icon='information',
                 snackbar_x='10dp',
                 snackbar_y='10dp',
@@ -2193,7 +2212,7 @@ class WaypointsScreen(CustomScreen):
             else:
                 self.apply_add_changes(waypoint)
             CustomSnackbar(
-                text=MDApp.get_running_app().bind_text(self, 'Changes applied!'),
+                text=MDApp.get_running_app().translate('Changes applied!'),
                 icon='information',
                 snackbar_x='10dp',
                 snackbar_y='10dp',
@@ -2222,27 +2241,12 @@ class WaypointsScreen(CustomScreen):
         self.configuration.save_config()
 
         CustomSnackbar(
-            text=MDApp.get_running_app().bind_text(self, 'Waypoint deleted!'),
+            text=MDApp.get_running_app().translate('Waypoint deleted!'),
             icon='information',
             snackbar_x='10dp',
             snackbar_y='10dp',
             size_hint_x=.5
         ).open()
-
-    @staticmethod
-    def discard_waypoint(area) -> None:
-        """
-        Verwirft die Änderungen. Wird sowohl beim Bearbeiten, als auch beim Hinzufügen
-        eines Wegpunktes verwendet.
-
-        Parameters
-        ----------
-        area: WaypointArea
-            Das Fenster zum Bearbeiten oder Hinzufügen.
-        """
-
-        # Lass das Fenster wieder unsichtbar werden.
-        set_visible(area, False)
 
     def add_waypoint(self, button):
         """
@@ -2284,11 +2288,7 @@ class WaypointsScreen(CustomScreen):
 
         self.ids.grid.remove_widget(self._waypoint_cards[self._current_edited_index])
 
-        card = WaypointCard(waypoint['img'],
-                            waypoint['name'], waypoint['altitude'], waypoint['latitude'],
-                            waypoint['longitude'], waypoint['date'])
-        card.on_edit_btn_clicked.add_function(self.edit_waypoint)
-        card.on_delete_btn_clicked.add_function(self.delete_waypoint)
+        card = self.build_card(waypoint)
         self._waypoint_cards[self._current_edited_index] = card
         self.ids.grid.add_widget(card, (len(self.waypoints) - 1) - self._current_edited_index)
 
@@ -2308,10 +2308,10 @@ class WaypointsScreen(CustomScreen):
         self.waypoints.append(waypoint)
         self.app_config['waypoints'].append(waypoint)
         self.configuration.save_config()
-        
+
         self.load_grid([waypoint])
 
-    def accept_clear(self, button):
+    def accept_clear(self, button) -> None:
         """
         Bestätigt man das Löschen aller Wegpunkte, wird diese Funktion ausgeführt,
         die alle Wegpunkte in der graphischen Liste, in der internen Liste und
@@ -2324,7 +2324,7 @@ class WaypointsScreen(CustomScreen):
         """
         if len(self.app_config['waypoints']) == 0:
             CustomSnackbar(
-                text=MDApp.get_running_app().bind_text(self, 'List is already empty!'),
+                text=MDApp.get_running_app().translate('List is already empty!'),
                 icon='information',
                 snackbar_x='10dp',
                 snackbar_y='10dp',
@@ -2338,14 +2338,14 @@ class WaypointsScreen(CustomScreen):
             self._clear_waypoints_dialog.dismiss()
 
             CustomSnackbar(
-                text=MDApp.get_running_app().bind_text(self, 'Waypoints deleted!'),
+                text=MDApp.get_running_app().translate('Waypoints deleted!'),
                 icon='information',
                 snackbar_x='10dp',
                 snackbar_y='10dp',
                 size_hint_x=.5
             ).open()
 
-    def cancel_clear(self, button):
+    def cancel_clear(self, button) -> None:
         """
         Möchte man doch nicht alle Wegpunkte löschen, wird diese Funktion ausgeführt,
         die den Dialog schließt.
@@ -2358,7 +2358,7 @@ class WaypointsScreen(CustomScreen):
 
         self._clear_waypoints_dialog.dismiss()
 
-    def delete_waypoints(self, button):
+    def delete_waypoints(self, button) -> None:
         """
         Möchte man alle Wegpunkte löschen, erscheint ein Dialog/Fenster als Bestätigung,
         der ein Text und zwei Knöpfe beinhaltet.
@@ -2388,6 +2388,30 @@ class WaypointsScreen(CustomScreen):
         )
         self._clear_waypoints_dialog.open()
 
+    def build_card(self, waypoint) -> WaypointCard:
+        card = WaypointCard(waypoint['img'],
+                            waypoint['name'], waypoint['altitude'], waypoint['latitude'],
+                            waypoint['longitude'], waypoint['date'])
+        card.on_edit_btn_clicked.add_function(self.edit_waypoint)
+        card.on_delete_btn_clicked.add_function(self.delete_waypoint)
+        card.size_hint = None, None
+        card.size = 160, 220
+        return card
+
+    @staticmethod
+    def discard_waypoint(area) -> None:
+        """
+        Verwirft die Änderungen. Wird sowohl beim Bearbeiten, als auch beim Hinzufügen
+        eines Wegpunktes verwendet.
+
+        Parameters
+        ----------
+        area: WaypointArea
+            Das Fenster zum Bearbeiten oder Hinzufügen.
+        """
+
+        # Lass das Fenster wieder unsichtbar werden.
+        set_visible(area, False)
 
 # *******************************************************************
 
@@ -2542,6 +2566,9 @@ class DroneApp(MDApp):
         """
         #from kivy.core.window import Window
         #Window.size = (900, 400)
+        if os_on_device in ['android', 'linux']:
+            from android.permissions import request_permissions, Permission
+            request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])
 
         self.set_translation()
         self.load_kv_files()

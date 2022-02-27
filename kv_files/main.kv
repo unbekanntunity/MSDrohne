@@ -57,10 +57,10 @@
             size_hint_y: None
             height: 30
             Button:
-                text: "Cancel"
+                text: app.bind_text(self, 'Cancel')
                 on_release: root.cancel()
             Button:
-                text: "Load"
+                text: app.bind_text(self, 'Load')
                 on_release: root.load(filechooser.path, filechooser.selection)
 
 <WaypointArea>:
@@ -94,7 +94,7 @@
                         size_hint: .2, .15
                         pos_hint: {'x': .8, 'y': .8}
                         icon: 'pencil-outline'
-                        on_release: root.open_manager()
+                        on_release: root.show_bottom_sheet()
                 MDTextField:
                     id: name_field
                     mode: "rectangle"
@@ -384,6 +384,7 @@
         MDBoxLayout:
             orientation: 'vertical'
             FitImage:
+                id: image
                 radius: 6, 6, 0, 0
                 source: root.image_path
             MDBoxLayout:
