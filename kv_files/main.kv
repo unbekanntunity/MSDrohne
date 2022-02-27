@@ -265,13 +265,13 @@
     name: 'connection'
     status: status_label
 
-    BoxLayout:
+    MDBoxLayout:
         orientation: 'vertical'
         LoadingAnimation:
             id: loading_anim
             points_size: 20, 20
         MDLabel:
-            size_hint_y: .4
+            size_hint_y: .3
             id: status_label
             halign: 'center'
             font_size: 20
@@ -364,12 +364,13 @@
 
 <WaypointsScreen>:
     name: 'waypoints'
-    AnchorLayout:
-        pos_hint: {'y' : -.1}
+    MDAnchorLayout:
+        anchor_y: 'bottom'
+        padding: 30
         ScrollView:
-            size_hint: .9, .9
+            size_hint_y: .9
             MDGridLayout:
-                size_hint: None, None
+                size_hint_y: None
                 id: grid
                 spacing: 30, 30
     WaypointArea:

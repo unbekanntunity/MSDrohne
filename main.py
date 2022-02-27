@@ -6,6 +6,7 @@
 import os
 import platform
 import socket
+
 from time import sleep
 
 platform = platform.uname()
@@ -18,7 +19,6 @@ import kivy
 kivy.require('2.0.0')
 
 from kivymd.app import MDApp
-
 from kivymd.uix.textfield import MDTextField
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.navigationdrawer import MDNavigationDrawerItem
@@ -271,10 +271,11 @@ class WaypointArea(MDAnchorLayout):
 
     def show_bottom_sheet(self) -> None:
         if os_on_device in ['android', 'linux']:
+            from android.storage import app_storage_path
             _bottom_sheet_menu = MDGridBottomSheet()
             data = [
                 ("System folder", "folder-cog-outline", "."),
-                ("Gallery folder", "folder-image", ".")
+                ("Gallery folder", "folder-image", os.path.join(app_storage_path, 'DCIM'))
             ]
             for name, icon, path in data:
                 _bottom_sheet_menu.add_item(
@@ -293,6 +294,9 @@ class WaypointArea(MDAnchorLayout):
         """
         Öffnet das Fenster/die Dialogbox, der dann alle Dateien auf den Gerät auflistet.
         """
+        if os_on_device in ['android', 'linux']:
+            from android.permissions import request_permissions, Permission
+            request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])
         content = LoadDialog(load=self.load, cancel=self.dismiss_manager)
         content.path = init_path
         self._popup = Popup(title="Load file", content=content,
@@ -624,10 +628,11 @@ class BouncingPoints(Widget):
 
         with self.canvas:
             for i in range(self.number):
-                adjusted_y = self.y + self.height / 2 + i * self.spacing_y
+                adjusted_y = self.y + self.height / 2 + i * self.spacing_y - \
+                            (self.number / 2 * self.spacing_y + self.points_size[1]) + self.spacing_y / 2
                 adjusted_x = self.x + self.width / 2 + i * self.spacing_x - \
                              (self.number / 2 * self.spacing_x + self.points_size[0]) + self.spacing_x / 2
-                c = Color(rgba=get_random_color())
+                c = Color(rgba=get_random_color(1))
                 e = Ellipse(pos=(adjusted_x + 10, adjusted_y), size=(self.points_size[0], self.points_size[1]))
                 self.points.append(e)
 
@@ -1488,6 +1493,7 @@ class ConnectionScreen(CustomScreen):
                 self.manager.current = 'control'
             elif response_split[1] == '0':
                 self.status.text = DroneApp.translate('Connection to drone failed. Please try again')
+            self._receive_thread.stop()
         except Exception as e:
             print(e)
 
@@ -1660,10 +1666,6 @@ class ControlScreen(CustomScreen):
             'home': {
                 'text': DroneApp.translate('Home'),
                 'icon': 'home-outline'
-            },
-            'connection': {
-                'text': DroneApp.translate('Connect'),
-                'icon': 'database-search-outline'
             },
             'settings': {
                 'text': DroneApp.translate('Settings'),
@@ -2111,12 +2113,10 @@ class WaypointsScreen(CustomScreen):
         Lädt das grid, indem er die Widgets konstruiert und sie zu dem Layout hinzufügt.
         """
 
-        self.waypoints = self.app_config['waypoints'].copy()
         if load_all:
-            content = self.waypoints
+            content = self.app_config['waypoints'].copy()
         else:
             content = waypoints
-
         for waypoint in content:
             card = self.build_card(waypoint)
             self._waypoint_cards.append(card)
@@ -2574,11 +2574,6 @@ class DroneApp(MDApp):
 
         self.set_translation()
         self.load_kv_files()
-
-        if os_on_device in ['android', 'linux']:
-            import android
-            android.map_key(android.KEYCODE_BACK, 1001)
-
         self.root_widget = DroneRoot()
         return self.root_widget
 
@@ -2641,7 +2636,7 @@ def set_visible(wid, visible) -> None:
     Parameters
     ----------
     wid: Widget
-        Das Objekt. Das Objekt muss dabei von der Widget-Klase erben.
+        Das Objekt. Das Objekt muss dabei von der Widget-Klasse erben.
     visible: bool
         True: Sichtbar
         False: Unsichtbar
@@ -2653,7 +2648,7 @@ def set_visible(wid, visible) -> None:
             del wid.saved_attrs
     elif not visible:
         wid.saved_attrs = wid.height, wid.size_hint_y, wid.opacity, wid.disabled
-        wid.height, wid.size_hint_y, wid.opacity, wid.disabled = 0, None, 0, True
+        wid.height, wid.size_hint_y, wid.opacity, wid.disabled = 0, None, 0, False
 
 
 def get_waypoint_name(existing_names) -> str:
