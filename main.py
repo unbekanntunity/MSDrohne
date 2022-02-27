@@ -267,24 +267,26 @@ class WaypointArea(MDAnchorLayout):
         self.on_discard_btn_clicked = EventHandler()
 
         self._popup = None
-
         super(WaypointArea, self).__init__(**kwargs)
 
-    def show_bottom_sheet(self):
-        _bottom_sheet_menu = MDGridBottomSheet()
-        data = [
-            ("System folder", "folder-cog-outline", "."),
-            ("Gallery folder", "folder-image", ".")
-        ]
-        for name, icon, path in data:
-            _bottom_sheet_menu.add_item(
-                name,
-                lambda path=path: self.sheet_item_selected(path),
-                icon_src=icon,
-            )
-        _bottom_sheet_menu.open()
+    def show_bottom_sheet(self) -> None:
+        if os_on_device in ['android', 'linux']:
+            _bottom_sheet_menu = MDGridBottomSheet()
+            data = [
+                ("System folder", "folder-cog-outline", "."),
+                ("Gallery folder", "folder-image", ".")
+            ]
+            for name, icon, path in data:
+                _bottom_sheet_menu.add_item(
+                    name,
+                    lambda path=path: self.sheet_item_selected(path),
+                    icon_src=icon,
+                )
+            _bottom_sheet_menu.open()
+        else:
+            self.open_manager('.')
 
-    def sheet_item_selected(self, path):
+    def sheet_item_selected(self, path) -> None:
         self.open_manager(path)
 
     def open_manager(self, init_path) -> None:
