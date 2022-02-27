@@ -6,7 +6,7 @@
         "waypoints": [
             {
                 "altitude": "0",
-                "date": "02/27/2022, 15:59:50",
+                "date": "02/27/2022, 19:46:40",
                 "img": "./data/res/example_landscape.jpg",
                 "latitude": "0",
                 "longitude": "0",
@@ -14,43 +14,11 @@
             },
             {
                 "altitude": "0",
-                "date": "02/27/2022, 19:07:32",
+                "date": "02/27/2022, 19:46:42",
                 "img": "./data/res/example_landscape.jpg",
                 "latitude": "0",
                 "longitude": "0",
                 "name": "new waypoint(1)"
-            },
-            {
-                "altitude": "0",
-                "date": "02/27/2022, 19:10:09",
-                "img": "./data/res/example_landscape.jpg",
-                "latitude": "0",
-                "longitude": "0",
-                "name": "new waypoint"
-            },
-            {
-                "altitude": "0",
-                "date": "02/27/2022, 19:11:10",
-                "img": "./data/res/example_landscape.jpg",
-                "latitude": "0",
-                "longitude": "0",
-                "name": "new waypoint"
-            },
-            {
-                "altitude": "0",
-                "date": "02/27/2022, 19:12:27",
-                "img": "./data/res/example_landscape.jpg",
-                "latitude": "0",
-                "longitude": "0",
-                "name": "new waypoint"
-            },
-            {
-                "altitude": "0",
-                "date": "02/27/2022, 19:17:33",
-                "img": "./data/res/example_landscape.jpg",
-                "latitude": "0",
-                "longitude": "0",
-                "name": "new waypoint"
             }
         ]
     },

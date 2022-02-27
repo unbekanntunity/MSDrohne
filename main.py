@@ -2112,7 +2112,7 @@ class WaypointsScreen(CustomScreen):
         """
         Lädt das grid, indem er die Widgets konstruiert und sie zu dem Layout hinzufügt.
         """
-
+        self.waypoints = self.app_config['waypoints'].copy()
         if load_all:
             content = self.app_config['waypoints'].copy()
         else:
@@ -2294,7 +2294,6 @@ class WaypointsScreen(CustomScreen):
         self._waypoint_cards[self._current_edited_index] = card
         self.ids.grid.add_widget(card, (len(self.waypoints) - 1) - self._current_edited_index)
 
-        self._current_edited_index = -1
 
     def apply_add_changes(self, waypoint) -> None:
         """
