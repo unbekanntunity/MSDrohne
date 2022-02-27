@@ -66,6 +66,12 @@
                 on_release: root.load(filechooser.path, filechooser.selection)
 
 <WaypointArea>:
+    canvas.before:
+		Color:
+			rgba: .5, .5, .5, .5
+		Rectangle:
+			pos: self.pos
+			size: self.size
     MDCard:
         id: waypoint_card
         size_hint: (.5, .75)

@@ -2,55 +2,15 @@
     "app": {
         "current_language": "en",
         "swipe_distance": 357.0,
-        "testcase": false,
+        "testcase": true,
         "waypoints": [
             {
                 "altitude": "0",
-                "date": "02/16/2022, 10:14:40",
+                "date": "02/27/2022, 07:32:19",
                 "img": "./data/res/example_landscape.jpg",
                 "latitude": "0",
                 "longitude": "0",
                 "name": "new waypoint"
-            },
-            {
-                "altitude": "0",
-                "date": "02/08/2022, 19:03:56",
-                "img": "./data/res/example_landscape.jpg",
-                "latitude": "0",
-                "longitude": "0",
-                "name": "new waypoint(1)"
-            },
-            {
-                "altitude": "0",
-                "date": "02/08/2022, 19:03:57",
-                "img": "./data/res/example_landscape.jpg",
-                "latitude": "0",
-                "longitude": "0",
-                "name": "new waypoint(2)"
-            },
-            {
-                "altitude": "0",
-                "date": "02/08/2022, 19:03:57",
-                "img": "./data/res/example_landscape.jpg",
-                "latitude": "0",
-                "longitude": "0",
-                "name": "new waypoint(3)"
-            },
-            {
-                "altitude": "0",
-                "date": "02/16/2022, 10:13:40",
-                "img": "./data/res/example_landscape.jpg",
-                "latitude": "0",
-                "longitude": "0",
-                "name": "new waypoint(4)"
-            },
-            {
-                "altitude": "H: 0",
-                "date": "02/17/2022, 19:25:54",
-                "img": "./data/res/example_landscape.jpg",
-                "latitude": "La: 0",
-                "longitude": "Lo: 0",
-                "name": "new waypoint(5)"
             }
         ]
     },

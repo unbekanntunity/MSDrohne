@@ -77,7 +77,6 @@ class JoyStick(Widget):
     # Äußerer Kreis
     outer_background_color = ListProperty([0.75, 0.75, 0.75, 1])
     outer_radius = NumericProperty(70)
-    outer_diameter = NumericProperty(140)
 
     outer_line_color = ListProperty([0.25, 0.25, 0.25, 1])
     outer_line_width = NumericProperty(1)
@@ -85,7 +84,6 @@ class JoyStick(Widget):
     # Innerer Kreis
     inner_background_color = ListProperty([0.1, 0.7, 0.1, 1])
     inner_radius = NumericProperty(20)
-    inner_diameter = NumericProperty(40)
 
     inner_line_color = ListProperty([0.7, 0.7, 0.7, 1])
     inner_line_width = NumericProperty(1)
@@ -178,7 +176,7 @@ class JoyStick(Widget):
         if y > 1:
             y = 1
 
-        return (x, y)
+        return x, y
 
     # TODO: args entfernen
     def set_center(self, *args) -> None:

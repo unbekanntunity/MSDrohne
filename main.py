@@ -7,7 +7,6 @@ import os
 import platform
 import socket
 from time import sleep
-
 platform = platform.uname()
 os_on_device = platform.system
 
@@ -15,12 +14,10 @@ if os_on_device == 'Windows':
     os.environ['KIVY_GL_BACKEND'] = 'angle_sdl2'
 
 import kivy
-
 kivy.require('2.0.0')
 
 from kivymd.app import MDApp
 
-from kivy.uix.label import Label
 from kivymd.uix.textfield import MDTextField
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.navigationdrawer import MDNavigationDrawerItem
@@ -39,6 +36,7 @@ from kivymd.uix.floatlayout import MDFloatLayout
 from kivy.metrics import dp
 from kivy.graphics import Color, Ellipse
 from kivy.animation import Animation
+from kivy import Config
 
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.popup import Popup
@@ -49,6 +47,7 @@ from kivy.clock import Clock
 from kivy.lang import Builder
 from kivy.core.text.markup import MarkupLabel
 from kivy.properties import ObjectProperty, StringProperty, BooleanProperty, BoundedNumericProperty
+from kivy.core.window import Window
 
 from communication import client
 from misc.custom_threads import DisposableLoopThread
@@ -64,7 +63,6 @@ import gettext
 # ******************************************************************
 
 # ************************** Konstanten ****************************
-
 NAME = 'mpy-uart'
 SEPARATOR = '|'
 DEFAULT_WP_PREFIX = 'new waypoint'
@@ -91,11 +89,7 @@ CON_ICON = {
 
 # ********************* Plattformspezifisch ************************
 
-# Je nach Betriebssystem, werden andere Bibliotheken und
-# Funktionen für die Bluetooth-Kommunikation verwendet
-
 wlan_client = client.WLANClient()
-
 
 # *******************************************************************
 
@@ -199,7 +193,7 @@ class WaypointCard(MDCard):
         -----------
         base_widget: Widget
             Das Widget, was ganz oben in der Hierarchie steht.
-            Man muss es sich wie ein Wurzelwerk vorstellem.
+            Man muss es sich wie ein Wurzelwerk vorstellen.
         """
 
         self.menu_items = [
@@ -279,6 +273,9 @@ class WaypointArea(MDAnchorLayout):
         """
         Öffnet das Fenster/die Dialogbox, der dann alle Dateien auf den Gerät auflistet.
         """
+        if os_on_device in ['android', 'linux']:
+            from android.permissions import request_permissions, Permission
+            request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])
 
         content = LoadDialog(load=self.load, cancel=self.dismiss_popup)
         self._popup = Popup(title="Load file", content=content,
@@ -607,12 +604,13 @@ class BouncingPoints(Widget):
                 e = Ellipse(pos=(adjusted_x + 10, adjusted_y), size=(self.points_size[0], self.points_size[1]))
                 self.points.append(e)
 
-    def start_animation(self) -> None:
+    def start_animation(self, draw_points) -> None:
         """
         Zeichne die Punkte und starte die Animation.
         """
 
-        self.draw()
+        if draw_points:
+            self.draw()
         self.proceed = True
         self.run_animation()
 
@@ -679,14 +677,14 @@ class LoadingAnimation(RelativeLayout):
 
         self.ids.bouncing_p.points_size = self.points_size
 
-    def start_animation(self) -> None:
+    def start_animation(self, draw_points) -> None:
         """
         Starte die Lupen und Punkt-Animation
         """
 
         self.proceed = True
         self.run_glass_animation()
-        self.ids.bouncing_p.start_animation()
+        self.ids.bouncing_p.start_animation(draw_points)
 
     def stop_animation(self):
         """
@@ -750,10 +748,10 @@ class CustomScreen(MDScreen):
         self.configuration = MDApp.get_running_app().configuration
         self.machine_config = self.configuration.config_dict['machine']
         self.app_config = self.configuration.config_dict['app']
-
         self.icon_text = {}
 
         self.drawer_items = {}
+
         super(CustomScreen, self).__init__(**kw)
 
     def go_back(self, screen_name) -> None:
@@ -1174,8 +1172,8 @@ class AppSettingsScreen(CustomScreen):
         Wird aufgerufen sobald der Benutzer das Display berührt.
 
         Parameters
-        ---------
-        touch: MotionEvent
+        ----------
+        touch: MouseMotionEvent
             Enthält alle Informationen über die Berührung wie z.B die Position
         """
 
@@ -1190,7 +1188,7 @@ class AppSettingsScreen(CustomScreen):
 
         Parameters
         ---------
-        touch: MotionEvent
+        touch: MouseMotionEvent
             Enthält alle Informationen über die letzte Berührung wie z.B die Position.
         """
 
@@ -1262,7 +1260,7 @@ class SupportScreen(CustomScreen):
 
         # Einige Bereiche sind erst betretbar, sobald man sich einmal verbunden hat
         # Aus diesen Grund müssen zwei Versionen von Navigationsleisten erstellt werden
-        if MDApp.get_running_app()._connected:
+        if MDApp.get_running_app().connected:
             self.icon_text = {
                 'home': {
                     'text': DroneApp.translate('Home'),
@@ -1347,6 +1345,8 @@ class ConnectionScreen(CustomScreen):
         self._receive_thread = DisposableLoopThread()
         self._receive_thread.add_function(self.receive_response)
 
+        self._draw_points = True
+
     def on_kv_post(self, base_widget) -> None:
         """
         siehe line. 193
@@ -1362,10 +1362,10 @@ class ConnectionScreen(CustomScreen):
         toolbar = MDApp.get_running_app().root_widget.toolbar
         toolbar.title = DroneApp.translate('Connection')
 
-        self.ids.loading_anim.start_animation()
-
+        self.ids.loading_anim.start_animation(self._draw_points)
         self._waiting_anim_thread.save_start()
         self._register_thread.save_start()
+        self._draw_points = False
         super(ConnectionScreen, self).on_enter(*args)
 
     def on_leave(self, *args) -> None:
@@ -1373,6 +1373,7 @@ class ConnectionScreen(CustomScreen):
         siehe line. 757
         """
 
+        self.ids.loading_anim.stop_animation()
         self._waiting_anim_thread.stop()
         self._register_thread.stop()
         self._receive_thread.stop()
@@ -1460,7 +1461,7 @@ class ConnectionScreen(CustomScreen):
 
                 self.manager.current = 'control'
             elif response_split[1] == '0':
-                self.status.text = DroneApp.translate('Connection to esp32 failed. Please try again')
+                self.status.text = DroneApp.translate('Connection to drone failed. Please try again')
         except Exception as e:
             print(e)
 
@@ -1580,7 +1581,7 @@ class ControlScreen(CustomScreen):
             self._data_thread.save_start()
             self._connection_thread.save_start()
 
-        MDApp.get_running_app()._connected = True
+        MDApp.get_running_app().connected = True
 
         # Lass die Anzeige oben verschwinden
         toolbar = MDApp.get_running_app().root_widget.toolbar
@@ -1588,7 +1589,6 @@ class ControlScreen(CustomScreen):
 
         # Erstelle die erste Nachricht in der Konsole
         self.log_message(DroneApp.translate('Ready to take off'))
-
         self.esp_connection_icon = CON_ICON[100]
 
         # Wurden die Joysticks schon erstellt?
@@ -1658,7 +1658,7 @@ class ControlScreen(CustomScreen):
         }
         super(ControlScreen, self).load_drawer(dt)
 
-    def set_waypoint(self, button):
+    def set_waypoint(self) -> None:
         """
         Diese Funktion dient dazu ein Wegpunkt zu setzen.
         Es wird also ein neuer Wegpunkt erstellt und in der Konfiguration gespeichert.
@@ -1675,9 +1675,9 @@ class ControlScreen(CustomScreen):
             'img': './data/res/example_landscape.jpg',
             'name': name,
             "date": datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
-            "altitude": self.altitude,
-            "longitude": self.longitude,
-            "latitude": self.latitude
+            "altitude": self.altitude.split(':')[1].split()[0],
+            "longitude": self.longitude.split(':')[1].split()[0],
+            "latitude": self.latitude.split(':')[1].split()[0]
         }
 
         # Speicher den Wegpunkt in der Konfigurationsdatei
@@ -1801,7 +1801,7 @@ class ControlScreen(CustomScreen):
         self._send_thread.stop()
         self._data_thread.stop()
 
-        MDApp.get_running_app()._connected = False
+        MDApp.get_running_app().connected = False
         self.go_back('home')
 
     def log_message(self, message, log_level='info') -> None:
@@ -2020,7 +2020,7 @@ class WaypointsScreen(CustomScreen):
 
         # Einige Bereiche sind erst betretbar, sobald man sich einmal verbunden hat
         # Aus diesen Grund müssen zwei Versionen von Navigationsleisten erstellt werden
-        if MDApp.get_running_app()._connected:
+        if MDApp.get_running_app().connected:
             self.icon_text = {
                 'home': {
                     'text': DroneApp.translate('Home'),
@@ -2048,7 +2048,6 @@ class WaypointsScreen(CustomScreen):
                 }
             }
         else:
-
             self.icon_text = {
                 'home': {
                     'text': DroneApp.translate('Home'),
@@ -2133,8 +2132,8 @@ class WaypointsScreen(CustomScreen):
         Das gilt sowohl für das Bearbeiten des Wegpunktes, als auch
         das Hinzufügen eines neuen.
 
-        Paramters
-        ---------
+        Parameters
+        ----------
         area: WaypointArea
             Das Fenster
         mode: str
@@ -2321,20 +2320,28 @@ class WaypointsScreen(CustomScreen):
         button: Button
             Der Knopf der gedrückt wurde, damit diese Funktion ausgeführt wird.
         """
+        if len(self.app_config['waypoints']) == 0:
+            CustomSnackbar(
+                text=MDApp.get_running_app().bind_text(self, 'List is already empty!'),
+                icon='information',
+                snackbar_x='10dp',
+                snackbar_y='10dp',
+                size_hint_x=.5
+            ).open()
+        else:
+            self.app_config['waypoints'].clear()
+            self.configuration.save_config()
 
-        self.app_config['waypoints'].clear()
-        self.configuration.save_config()
+            self.clear_grid()
+            self._clear_waypoints_dialog.dismiss()
 
-        self.clear_grid()
-        self._clear_waypoints_dialog.dismiss()
-
-        CustomSnackbar(
-            text=MDApp.get_running_app().bind_text(self, 'Waypoints deleted!'),
-            icon='information',
-            snackbar_x='10dp',
-            snackbar_y='10dp',
-            size_hint_x=.5
-        ).open()
+            CustomSnackbar(
+                text=MDApp.get_running_app().bind_text(self, 'Waypoints deleted!'),
+                icon='information',
+                snackbar_x='10dp',
+                snackbar_y='10dp',
+                size_hint_x=.5
+            ).open()
 
     def cancel_clear(self, button):
         """
@@ -2453,7 +2460,8 @@ class DroneApp(MDApp):
         self.translation = None
         self.root_widget = None
 
-        self._connected = False
+        self.connected = False
+
         super(DroneApp, self).__init__(**kwargs)
 
     def on_config_changed(self) -> None:
@@ -2533,8 +2541,33 @@ class DroneApp(MDApp):
 
         self.set_translation()
         self.load_kv_files()
+
+        if os_on_device in ['android', 'linux']:
+            import android
+            android.map_key(android.KEYCODE_BACK, 1001)
+
         self.root_widget = DroneRoot()
         return self.root_widget
+
+    def on_stop(self):
+        self.cut_connection()
+
+    def on_pause(self):
+        if not self.configuration.config_dict['testcase']:
+            wlan_client.send_message(0, f'CMD{SEPARATOR}set_hover_mode{SEPARATOR}True')
+
+        Clock.schedule_once(self.cut_connection(), 10)
+        return True
+
+    def on_resume(self):
+        Clock.unschedule(self.cut_connection())
+
+        if not self.configuration.config_dict['testcase']:
+            wlan_client.send_message(0, f'CMD{SEPARATOR}set_hover_mode{SEPARATOR}False')
+
+    def cut_connection(self):
+        if not self.configuration.config_dict['testcase']:
+            wlan_client.send_message(0, f'CMD{SEPARATOR}reset')
 
     @staticmethod
     def load_kv_files() -> None:

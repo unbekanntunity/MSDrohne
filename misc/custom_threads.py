@@ -55,6 +55,7 @@ class DisposableLoopThread(Thread):
         Thread.__init__(self)
         self.event_handler = EventHandler()
         self.on_finished_events = EventHandler()
+        self.daemon = True
 
         self.started = False
         self.proceed = False
