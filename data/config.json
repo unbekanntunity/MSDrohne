@@ -11,6 +11,30 @@
                 "latitude": "0",
                 "longitude": "0",
                 "name": "new waypoint"
+            },
+            {
+                "altitude": "0",
+                "date": "02/27/2022, 15:15:01",
+                "img": "./data/res/example_landscape.jpg",
+                "latitude": "0",
+                "longitude": "0",
+                "name": "new waypoint(1)"
+            },
+            {
+                "altitude": "0",
+                "date": "02/27/2022, 15:18:36",
+                "img": "./data/res/example_landscape.jpg",
+                "latitude": "0",
+                "longitude": "0",
+                "name": "new waypoint(2)"
+            },
+            {
+                "altitude": "0",
+                "date": "02/27/2022, 15:18:39",
+                "img": "./data/res/example_landscape.jpg",
+                "latitude": "0",
+                "longitude": "0",
+                "name": "new waypoint(3)"
             }
         ]
     },

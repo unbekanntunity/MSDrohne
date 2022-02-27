@@ -7,6 +7,8 @@ import os
 import platform
 import socket
 from time import sleep
+from typing import Union
+
 platform = platform.uname()
 os_on_device = platform.system
 
@@ -36,7 +38,6 @@ from kivymd.uix.floatlayout import MDFloatLayout
 from kivy.metrics import dp
 from kivy.graphics import Color, Ellipse
 from kivy.animation import Animation
-from kivy import Config
 
 from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.popup import Popup
@@ -47,7 +48,6 @@ from kivy.clock import Clock
 from kivy.lang import Builder
 from kivy.core.text.markup import MarkupLabel
 from kivy.properties import ObjectProperty, StringProperty, BooleanProperty, BoundedNumericProperty
-from kivy.core.window import Window
 
 from communication import client
 from misc.custom_threads import DisposableLoopThread
@@ -598,8 +598,9 @@ class BouncingPoints(Widget):
 
         with self.canvas:
             for i in range(self.number):
-                adjusted_y = self.center_y + i * self.spacing_y
-                adjusted_x = self.center_x + i * self.spacing_x
+                adjusted_y = self.y + self.height / 2 + i * self.spacing_y
+                adjusted_x = self.x + self.width / 2 + i * self.spacing_x - \
+                             (self.number / 2 * self.spacing_x + self.points_size[0]) + self.spacing_x / 2
                 c = Color(rgba=get_random_color())
                 e = Ellipse(pos=(adjusted_x + 10, adjusted_y), size=(self.points_size[0], self.points_size[1]))
                 self.points.append(e)
@@ -1458,7 +1459,6 @@ class ConnectionScreen(CustomScreen):
 
             response_split = response.split(SEPARATOR)
             if response_split[1] == '1':
-
                 self.manager.current = 'control'
             elif response_split[1] == '0':
                 self.status.text = DroneApp.translate('Connection to drone failed. Please try again')
@@ -1577,9 +1577,9 @@ class ControlScreen(CustomScreen):
             # 2. socket: Sensordaten abfragen
             # 3: socket: Verbindungsdaten abfragen
 
-            self._send_thread.save_start()
             self._data_thread.save_start()
             self._connection_thread.save_start()
+            self._send_thread.save_start()
 
         MDApp.get_running_app().connected = True
 
@@ -1999,7 +1999,15 @@ class WaypointsScreen(CustomScreen):
         ]
         self._toolbar.title = DroneApp.translate('Waypoints')
 
-        self.load_grid(True)
+        # Breite des Grids bestimmen
+        for i in range(6):
+            cols = i
+            grid_width = i * (160 + 30)
+            if grid_width > self.width:
+                self.ids.grid.cols = cols - 1
+                break
+
+        self.load_grid(None, load_all=True)
         super(WaypointsScreen, self).on_enter(*args)
 
     def on_pre_leave(self, *args):
@@ -2072,23 +2080,27 @@ class WaypointsScreen(CustomScreen):
             }
         super(WaypointsScreen, self).load_drawer(dt)
 
-    def load_grid(self, load_all) -> None:
+    def load_grid(self, waypoints, load_all=False) -> None:
         """
         Lädt das grid, indem er die Widgets konstruiert und sie zu dem Layout hinzufügt.
         """
 
         self.waypoints = self.app_config['waypoints'].copy()
         if load_all:
-            for waypoint in self.waypoints:
-                card = WaypointCard(waypoint['img'],
-                                    waypoint['name'], waypoint['altitude'], waypoint['latitude'],
-                                    waypoint['longitude'], waypoint['date'])
-                card.on_edit_btn_clicked.add_function(self.edit_waypoint)
-                card.on_delete_btn_clicked.add_function(self.delete_waypoint)
-                card.size_hint = None, None
-                card.size = 160, 220
-                self._waypoint_cards.append(card)
-                self.ids.grid.add_widget(card)
+            content = self.waypoints
+        else:
+            content = waypoints
+
+        for waypoint in content:
+            card = WaypointCard(waypoint['img'],
+                                waypoint['name'], waypoint['altitude'], waypoint['latitude'],
+                                waypoint['longitude'], waypoint['date'])
+            card.on_edit_btn_clicked.add_function(self.edit_waypoint)
+            card.on_delete_btn_clicked.add_function(self.delete_waypoint)
+            card.size_hint = None, None
+            card.size = 160, 220
+            self._waypoint_cards.append(card)
+            self.ids.grid.add_widget(card)
 
     def clear_grid(self) -> None:
         """
@@ -2293,21 +2305,11 @@ class WaypointsScreen(CustomScreen):
         waypoint: dict
             Der neue Wegpunkt in Form eines Dictionary.
         """
-
         self.waypoints.append(waypoint)
         self.app_config['waypoints'].append(waypoint)
         self.configuration.save_config()
-
-        card = WaypointCard(waypoint['img'],
-                            waypoint['name'], waypoint['altitude'], waypoint['latitude'],
-                            waypoint['longitude'], waypoint['date'])
-        card.on_edit_btn_clicked.add_function(self.edit_waypoint)
-        card.on_delete_btn_clicked.add_function(self.delete_waypoint)
-
-        self._waypoint_cards.append(card)
-        self.ids.grid.add_widget(card)
-
-        self.load_grid(False)
+        
+        self.load_grid([waypoint])
 
     def accept_clear(self, button):
         """
@@ -2538,6 +2540,8 @@ class DroneApp(MDApp):
         """
         Diese Funktion baut die App und ist die Ausgangsfunktion.
         """
+        #from kivy.core.window import Window
+        #Window.size = (900, 400)
 
         self.set_translation()
         self.load_kv_files()
@@ -2549,23 +2553,41 @@ class DroneApp(MDApp):
         self.root_widget = DroneRoot()
         return self.root_widget
 
-    def on_stop(self):
+    def on_stop(self) -> None:
+        """
+        Wird aufgerufen wenn die App gestoppt wird bzw geschlossen wird.
+        """
+
         self.cut_connection()
 
-    def on_pause(self):
+    def on_pause(self) -> bool:
+        """
+        Wird aufgerufen wenn die App pausiert wird.
+
+        Returns
+        -------
+        <nameless>: bool
+            True: App pausieren
+            False: App sofort stoppen/schließen
+        """
+
         if not self.configuration.config_dict['testcase']:
             wlan_client.send_message(0, f'CMD{SEPARATOR}set_hover_mode{SEPARATOR}True')
 
         Clock.schedule_once(self.cut_connection(), 10)
         return True
 
-    def on_resume(self):
+    def on_resume(self) -> None:
+        """
+        Wird aufgerufen wenn die App fortgesetzt wird.
+        """
+
         Clock.unschedule(self.cut_connection())
 
         if not self.configuration.config_dict['testcase']:
             wlan_client.send_message(0, f'CMD{SEPARATOR}set_hover_mode{SEPARATOR}False')
 
-    def cut_connection(self):
+    def cut_connection(self) -> None:
         if not self.configuration.config_dict['testcase']:
             wlan_client.send_message(0, f'CMD{SEPARATOR}reset')
 

@@ -21,9 +21,9 @@
         size_hint: .1, .1
     BouncingPoints:
         id: bouncing_p
+        size_hint_y: .2
         size: 10, 10
         spacing_x: 50
-        pos_hint: {'center_x': .38, 'center_y': .0}
 
 <CustomSnackbar>
     MDIconButton:
@@ -53,14 +53,12 @@
         orientation: "vertical"
         FileChooserListView:
             id: filechooser
-
         BoxLayout:
             size_hint_y: None
             height: 30
             Button:
                 text: "Cancel"
                 on_release: root.cancel()
-
             Button:
                 text: "Load"
                 on_release: root.load(filechooser.path, filechooser.selection)
@@ -203,7 +201,7 @@
         size_hint_y: None
         MDLabel:
             text: app.bind_text(self, 'APPEARANCE SETTINGS')
-        BoxLayout:
+        MDBoxLayout:
             MDLabel:
                 text: 'Language:'
             MenuDropDown:
@@ -373,7 +371,6 @@
             MDGridLayout:
                 size_hint: None, None
                 id: grid
-                cols: 4
                 spacing: 30, 30
     WaypointArea:
         id: edit_waypoint_area

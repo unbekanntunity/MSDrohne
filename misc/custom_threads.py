@@ -136,9 +136,9 @@ class DisposableLoopThread(Thread):
         self.event_handler.add_function(function)
         self.results[function] = None
 
-    def remove_event(self, function) -> None:
+    def remove_function(self, function) -> None:
         """
-        Entfernt eine Funktion, sofern sie existiert und deren Plart in der 'self.results' Liste.
+        Entfernt eine Funktion, sofern sie existiert und deren Part in der 'self.results' Liste.
 
         Parameters
         ----------
