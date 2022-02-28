@@ -366,7 +366,6 @@ class MenuDropDown(MDBoxLayout):
         siehe line. 1147
         """
 
-        print(type(touch))
         # Berührt es auch dieses Objekt?
         if self.collide_point(*touch.pos):
             self.menu.open()
@@ -580,7 +579,7 @@ class AppSettings(MDBoxLayout):
         self.add_settings()
 
         # Aktualisiere alle Texte in der App
-        # MDApp.get_running_app().set_translation()
+        MDApp.get_running_app().set_translation()
         MDApp.get_running_app().update_text()
 
 
@@ -1158,7 +1157,7 @@ class AppSettingsScreen(CustomScreen):
                 'icon': 'cog-outline'
             },
             'waypoints': {
-                'text': 'map-outline',
+                'text': DroneApp.translate('Waypoints'),
                 'icon': 'map-outline'
             },
             'support': {
@@ -1167,6 +1166,15 @@ class AppSettingsScreen(CustomScreen):
             }
         }
         super(AppSettingsScreen, self).load_drawer(dt)
+
+    def on_enter(self, *args) -> None:
+        """
+        siehe line 746.
+        """
+
+        toolbar = MDApp.get_running_app().root_widget.toolbar
+        toolbar.title = DroneApp.translate('Settings')
+        super(AppSettingsScreen, self).on_enter(args)
 
     def on_pre_leave(self, *args):
         """
@@ -1242,6 +1250,8 @@ class AppSettingsScreen(CustomScreen):
     def save_config(self):
         self.app_settings.save_config()
         self.configuration.save_config()
+        self.destroy_drawer(None)
+        self.load_drawer(None)
 
     def discard_config(self, button):
         self.app_settings.add_settings()
@@ -1963,7 +1973,10 @@ class SettingsScreen(CustomScreen):
 
         self.app_settings.save_config()
         self.configuration.save_config()
-        # self.notify()
+        self.destroy_drawer(None)
+        self.load_drawer(None)
+        toolbar = MDApp.get_running_app().root_widget.toolbar
+        toolbar.title = DroneApp.translate('Settings')
 
         self.manager.get_screen('control').log_message(DroneApp.translate('Settings saved'), 'information')
         self.go_back('control')
@@ -2117,6 +2130,9 @@ class WaypointsScreen(CustomScreen):
             content = self.app_config['waypoints'].copy()
         else:
             content = waypoints
+        print(content)
+        print(self.ids.grid.width)
+        print(self.ids.grid.cols)
         for waypoint in content:
             card = self.build_card(waypoint)
             self._waypoint_cards.append(card)
@@ -2293,7 +2309,6 @@ class WaypointsScreen(CustomScreen):
         card = self.build_card(waypoint)
         self._waypoint_cards[self._current_edited_index] = card
         self.ids.grid.add_widget(card, (len(self.waypoints) - 1) - self._current_edited_index)
-
 
     def apply_add_changes(self, waypoint) -> None:
         """
@@ -2521,8 +2536,7 @@ class DroneApp(MDApp):
         """
 
         self.translated_labels.append(label)
-        translated_text = self.translation.gettext(text)
-
+        translated_text = self.translate(text)
         if entire_text is None:
             entire_text = text
 
@@ -2533,9 +2547,8 @@ class DroneApp(MDApp):
         """
         Aktualisiert die registrierten Labels und übersetzt alle Texte nochmal.
         """
-
         for index, label in enumerate(self.translated_labels):
-            translated_text = self.translation.gettext(self.translated_parts[index])
+            translated_text = self.translate(self.translated_parts[index])
             label.text = label.text.replace(self.translated_parts[index], translated_text)
             self.translated_parts[index] = translated_text
 
@@ -2559,7 +2572,18 @@ class DroneApp(MDApp):
             Die zu übersetzende Zeichenkette.
         """
         app = MDApp.get_running_app()
-        return app.translation.gettext(message)
+        raw = app.translation.gettext(message)
+
+        try:
+            decoded = raw.encode("latin-1").decode("utf-8")
+        except UnicodeDecodeError as e:
+            print(e)
+            print(raw)
+            print(raw.encode('utf-8'))
+            print(app.translation.gettext(message))
+            print(app.translation.gettext('Eingangsbereich'))
+            decoded = app.translation.gettext(message)
+        return decoded
 
     def build(self):
         """

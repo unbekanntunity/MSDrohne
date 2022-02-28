@@ -1,8 +1,8 @@
-@command(cmd_type='public')
-def register_ip(self, connection, address, *args):
-    if self.paired_device_ip is None:
-        self.paired_device_ip = address
-        print(f'Register ip with {address}')
-        connection.send('REGISTER|1')
-    else:
-        connection.send('REGISTER|0')
+import gettext
+
+language = 'de_DE'
+translation = gettext.translation('base', localedir='locales', languages=[language])
+translation.install()
+
+str = translation.gettext('Connect to device').encode("latin-1").decode("utf-8")
+print(str)

@@ -173,7 +173,7 @@
             text: app.bind_text(self, 'TOUCH SETTINGS')
         MDBoxLayout:
             MDLabel:
-                text: 'Swipe-Sensitivity:'
+                text: app.bind_text(self, 'Swipe-Sensitivity:')
             NumericTextInput:
                 id: swipe_distance_text_input
                 size_hint_x: .5
@@ -203,7 +203,7 @@
             text: app.bind_text(self, 'APPEARANCE SETTINGS')
         MDBoxLayout:
             MDLabel:
-                text: 'Language:'
+                text: app.bind_text(self, 'Language:')
             MenuDropDown:
                 id: language_drop_down
                 size_hint: .5, .5
@@ -365,9 +365,21 @@
 <WaypointsScreen>:
     name: 'waypoints'
     MDAnchorLayout:
+        canvas.before:
+            Color:
+                rgba: .5,.5,.5,1
+            Line:
+                width: 2
+                rectangle: self.x,self.y,self.width,self.height
         anchor_y: 'bottom'
         padding: 30
         ScrollView:
+            canvas.before:
+                Color:
+                    rgba: 1,.5,1,1
+                Line:
+                    width: 2
+                    rectangle: self.x,self.y,self.width,self.height
             size_hint_y: .9
             MDGridLayout:
                 size_hint_y: None
