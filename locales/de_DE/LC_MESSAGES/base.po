@@ -109,3 +109,15 @@ msgstr "Wegpunkte gelöscht!"
 
 msgid "Ohh, something went wrong!"
 msgstr "Ohh, irgendetwas ist schief gelaufen!"
+
+msgid "Cant connect to device?"
+msgstr "Du kannst dich nicht mit deiner Drohne verbinden?"
+
+msgid "There can be several problems:\n- A other device has already establish a connection to the drone\n- Weak connection\n- Internal problems\n\nYour options:\n- Turn off and on the drone\n- Restart the application\n- Make sure that both devices are on the same network"
+msgstr "Es kann an folgenden Problemen liegen:\n- Ein anderes Gerät hat sich schon verbunden\n- Schwache Verbindung\n- Interne Verbindung\n\Mögliche Lösungsansätze:\n- Schalte die Drohne aus und an\n- Starte die Applikation neu\n- Stelle sicher, dass beide Geräte im selben Netzwerk sind"
+
+msgid "Cant find the solution?"
+msgstr "Nichts hilft?"
+
+msgid 'Send an e-mail to monarch_softwork@gmail.com'
+msgstr "Sende eine Email an monarch_softwork@gmail.com"

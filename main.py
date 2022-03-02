@@ -8,7 +8,6 @@ import platform
 import socket
 
 from time import sleep
-
 platform = platform.uname()
 os_on_device = platform.system
 
@@ -1263,9 +1262,16 @@ class SupportScreen(CustomScreen):
     """
 
     def __init__(self, **kwargs):
-        self.questions = ['Connection lost?', 'Cant find your problem here?']
-        self.answers = ['Restart the app.', 'Send an e-mail to fake_email@gmail.com']
-
+        self.questions = ['Cant connect to device?', 'Cant find the solution?']
+        self.answers = ['There can be several problems:\n'
+                        '- A other device has already establish a connection to the drone\n'
+                        '- Weak connection\n'
+                        '- Internal problems\n\n'
+                        'Your options:\n'
+                        '- Turn off and on the drone'
+                        '- Restart the application'
+                        '- Make sure that both devices are on the same network'
+                        , 'Send an e-mail to monarch_softwork@gmail.com']
         super(SupportScreen, self).__init__(**kwargs)
 
     def on_enter(self, *args) -> None:
@@ -2469,7 +2475,6 @@ class DroneRoot(MDScreen):
             ['menu', self.show_nav_drawer, '']
         ]
         self.toolbar.title = DroneApp.translate('Home')
-
         super(DroneRoot, self).on_kv_post(base_widget)
 
     def show_nav_drawer(self, *args) -> None:

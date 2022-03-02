@@ -109,3 +109,12 @@ msgstr "Waypoints deleted!"
 
 msgid "Ohh, irgendetwas ist schief gelaufen!"
 msgstr "Ohh, something went wrong!"
+
+msgid "Es kann an folgenden Problemen liegen:\n- Ein anderes Gerät hat sich schon verbunden\n- Schwache Verbindung\n- Interne Verbindung\n\Mögliche Lösungsansätze:\n- Schalte die Drohne aus und an\n- Starte die Applikation neu\n- Stelle sicher, dass beide Geräte im selben Netzwerk sind"
+msgstr "There can be several problems:\n- A other device has already establish a connection to the drone\n- Weak connection\n- Internal problems\n\nYour options:\n- Turn off and on the drone\n- Restart the application\n- Make sure that both devices are on the same network"
+
+msgid "Nichts hilft?"
+msgstr "Cant find the solution?"
+
+msgid "Sende eine Email an monarch_softwork@gmail.com"
+msgstr 'Send an e-mail to monarch_softwork@gmail.com'

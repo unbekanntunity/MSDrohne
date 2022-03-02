@@ -1,5 +1,6 @@
 #:kivy 2.0.0
 #:import get_color_from_hex kivy.utils.get_color_from_hex
+#:import MapSource kivy_garden.mapview.MapSource
 
 <BouncingPoints>:
 
@@ -143,7 +144,7 @@
         Rectangle:
             pos: self.center_x - .5, 0
             size: 1, self.height
-    BoxLayout:
+    MDBoxLayout:
         AnchorLayout:
             BoxLayout:
                 orientation: 'vertical'
@@ -196,7 +197,7 @@
             Line:
                 width: .5
                 rectangle: self.x, self.y * 1.2, self.width, .5
-    BoxLayout:
+    MDBoxLayout:
         orientation: 'vertical'
         size_hint_y: None
         MDLabel:
@@ -280,22 +281,37 @@
 <ControlScreen>:
     name: 'control'
     RelativeLayout:
-        MDFloatingActionButton:
-            pos_hint: {'center_x': .85, 'center_y': .9}
-            icon: 'map-marker-plus-outline'
-            on_release: root.set_waypoint()
-        MDFloatingActionButton:
-            id: hover_mode_btn
-            pos_hint: {'center_x': .9, 'center_y': .75}
-            icon: 'butterfly'
-            on_release: root.toggle_hover_mode()
-        MDFloatingActionButton:
-            pos_hint: {'center_x': .1, 'center_y': .9}
-            icon: 'menu'
-            on_release: app.root_widget.show_nav_drawer()
+        MDAnchorLayout:
+            anchor_x: 'left'
+            anchor_y: 'top'
+            MDBoxLayout:
+                size_hint: .3, .4
+                orientation: 'vertical'
+                MapView:
+                    id: mapview
+                    lat: 50.6394
+                    lon: 3.057
+                    zoom: 8
+                MDBoxLayout:
+                    adaptive_size: True
+                    orientation: 'horizontal'
+                    MDRectangleFlatIconButton:
+                        text: ' '
+                        icon: 'map-marker-plus-outline'
+                        on_release: root.set_waypoint()
+                    MDRectangleFlatIconButton:
+                        id: hover_mode_btn
+                        text: ' '
+                        icon: 'butterfly'
+                        on_release: root.toggle_hover_mode()
+                    MDRectangleFlatIconButton:
+                        text: ' '
+                        icon: 'menu'
+                        on_release: app.root_widget.show_nav_drawer()
+
         MDBoxLayout:
             size_hint: .6, .15
-            pos_hint: {'center_x': .5 , 'center_y': .9}
+            pos_hint: {'center_x': .6 , 'center_y': .9}
             MDBoxLayout:
                 orientation: 'vertical'
                 adaptive_width: True
@@ -374,12 +390,6 @@
         anchor_y: 'bottom'
         padding: 30
         ScrollView:
-            canvas.before:
-                Color:
-                    rgba: 1,.5,1,1
-                Line:
-                    width: 2
-                    rectangle: self.x,self.y,self.width,self.height
             size_hint_y: .9
             MDGridLayout:
                 size_hint_y: None
