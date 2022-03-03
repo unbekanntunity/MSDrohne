@@ -6,9 +6,10 @@
 
 <SupportExpansionContent>:
     adaptive_height: True
-    OneLineIconListItem:
+    padding: 10
+    MDLabel:
+        adaptive_height: True
         text: root.answer
-
 <LoadingAnimation>:
     Image:
         id: server_img
@@ -169,29 +170,40 @@
     orientation: 'vertical'
     MDBoxLayout:
         orientation: 'vertical'
-        MDLabel:
-            adaptive_height: True
-            text: app.bind_text(self, 'APPEARANCE SETTINGS')
+        spacing: 30
         MDBoxLayout:
+            orientation: 'vertical'
             MDLabel:
-                text: app.bind_text(self, 'Language:')
-            MenuDropDown:
-                id: language_drop_down
-                size_hint: .5, .5
-                pos_hint: {'y':.25}
-                size: caller_btn.width + 40, caller_btn.height
-                canvas.before:
-                    Color:
-                        rgba: .2, .1, 1, 1
-                    Line:
-                        width: .5
-                        rectangle: self.x,self.y,self.width,self.height
-                Image:
-                    id: caller_btn
-                    size: 20, 20
+                text: app.bind_text(self, 'APPEARANCE SETTINGS')
+            MDBoxLayout:
                 MDLabel:
-                    id: caller_label
-                    text: app.configuration.config_dict['app']['current_language']
+                    text: app.bind_text(self, 'Language:')
+                MenuDropDown:
+                    id: language_drop_down
+                    size_hint: .5, .5
+                    pos_hint: {'y':.25}
+                    size: caller_btn.width + 40, caller_btn.height
+                    canvas.before:
+                        Color:
+                            rgba: .2, .1, 1, 1
+                        Line:
+                            width: .5
+                            rectangle: self.x,self.y,self.width,self.height
+                    Image:
+                        id: caller_btn
+                        size: 20, 20
+                    MDLabel:
+                        id: caller_label
+                        text: app.configuration.config_dict['app']['current_language']
+        MDBoxLayout:
+            orientation: 'vertical'
+            spacing: 20
+            MDLabel:
+                adaptive_height: True
+                text: app.bind_text(self, 'MAP SETTINGS')
+            MDRectangleFlatButton:
+                text: app.bind_text(self, 'Clear cache')
+                on_release: root.clear_cache()
 
 <AppSettingsScreen>
     name: 'appSettings'
@@ -200,7 +212,7 @@
         pos_hint: {'y': -.1}
         MDBoxLayout:
             size_hint_y: None
-            height: dp(300)
+            height: dp(400)
             padding: 30
             spacing: 30
             orientation: 'vertical'

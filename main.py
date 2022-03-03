@@ -68,6 +68,7 @@ DEFAULT_WP_PREFIX = 'new waypoint'
 
 KV_DIRECTORY = './kv_files'
 FONTS_DIRECTORY = './data/fonts'
+MAP_CACHE_DIRECTORY = './cache'
 
 CON_INTERVAL = .5
 
@@ -510,6 +511,29 @@ class AppSettings(MDBoxLayout):
 
         self.ids.caller_btn.source = f'./data/res/{app_config["current_language"]}_flag.png'
         self.ids.caller_label.text = app_config["current_language"]
+
+    @staticmethod
+    def clear_cache():
+        try:
+            file_names = os.listdir(MAP_CACHE_DIRECTORY)
+            for name in file_names:
+                file = MAP_CACHE_DIRECTORY + '/' + name
+                os.remove(file)
+            CustomSnackbar(
+                text=MDApp.get_running_app().translate('Cache cleared!'),
+                icon='information',
+                snackbar_x='10dp',
+                snackbar_y='10dp',
+                size_hint_x=.5
+            ).open()
+        except OSError as e:
+            CustomSnackbar(
+                text=MDApp.get_running_app().translate('Ohh, something went wrong!'),
+                icon='information',
+                snackbar_x='10dp',
+                snackbar_y='10dp',
+                size_hint_x=.5
+            ).open()
 
     def has_changed(self) -> bool:
         """
@@ -1045,6 +1069,8 @@ class StartScreen(CustomScreen):
         siehe line 746.
         """
 
+        toolbar = MDApp.get_running_app().root_widget.toolbar
+        toolbar.title = DroneApp.translate('Home')
         print(f'{self.width} x {self.height}')
         Clock.schedule_interval(self.change_font, 2)
         super(StartScreen, self).on_enter(*args)
@@ -2556,8 +2582,8 @@ class DroneApp(MDApp):
         """
         Diese Funktion baut die App und ist die Ausgangsfunktion.
         """
-        from kivy.core.window import Window
-        Window.size = (1480, 720.0)
+        #from kivy.core.window import Window
+        #Window.size = (1480, 720.0)
         if os_on_device in ['android', 'linux']:
             from android.permissions import request_permissions, Permission
             request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])

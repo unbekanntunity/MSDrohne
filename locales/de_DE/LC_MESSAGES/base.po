@@ -124,3 +124,6 @@ msgstr "Sende eine Email an monarch_softwork@gmail.com"
 
 msgid "By Monarch Softworks"
 msgstr "Von Monarch Softworks"
+
+msgid "Cache cleared"
+msgstr "Speicher geleert"
