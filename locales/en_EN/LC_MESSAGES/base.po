@@ -118,3 +118,6 @@ msgstr "Cant find the solution?"
 
 msgid "Sende eine Email an monarch_softwork@gmail.com"
 msgstr 'Send an e-mail to monarch_softwork@gmail.com'
+
+msgid "Von Monarch Softworks"
+msgstr "By Monarch Softworks"

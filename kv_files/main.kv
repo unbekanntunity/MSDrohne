@@ -166,41 +166,11 @@
             source: './data/res/main.jpg'
 
 <AppSettings>
-    swipe_distance_field: swipe_distance_text_input
     orientation: 'vertical'
-    BoxLayout:
-        orientation: 'vertical'
-        MDLabel:
-            text: app.bind_text(self, 'TOUCH SETTINGS')
-        MDBoxLayout:
-            MDLabel:
-                text: app.bind_text(self, 'Swipe-Sensitivity:')
-            NumericTextInput:
-                id: swipe_distance_text_input
-                size_hint_x: .5
-                pos_hint: {'y':.25}
-        MDCard:
-            id: touch_card
-            style: 'outlined'
-            line_color: (0.2, 0.2, 0.2, 0.8)
-            size_hint_y: None
-            height: dp(100)
-            MDLabel
-                text: app.bind_text(self, 'Swipe here to calculate the distance')
-                halign: 'center'
-                color: .5, .5, .5, .75
-    BoxLayout:
-        size_hint_y: None
-        canvas:
-            Color:
-                rgba: .5, .5, .5, .5
-            Line:
-                width: .5
-                rectangle: self.x, self.y * 1.2, self.width, .5
     MDBoxLayout:
         orientation: 'vertical'
-        size_hint_y: None
         MDLabel:
+            adaptive_height: True
             text: app.bind_text(self, 'APPEARANCE SETTINGS')
         MDBoxLayout:
             MDLabel:
@@ -227,9 +197,10 @@
     name: 'appSettings'
     app_settings: app_settings
     ScrollView:
+        pos_hint: {'y': -.1}
         MDBoxLayout:
             size_hint_y: None
-            height: dp(600)
+            height: dp(300)
             padding: 30
             spacing: 30
             orientation: 'vertical'
@@ -287,31 +258,20 @@
             MDBoxLayout:
                 size_hint: .3, .4
                 orientation: 'vertical'
+                canvas.before:
+                    Color:
+                        rgba: .6, .1, .2, .6
+                    Line:
+                        width: 1
+                        rectangle: self.x,self.y,self.width,self.height
                 MapView:
                     id: mapview
-                    lat: 50.6394
-                    lon: 3.057
-                    zoom: 8
-                MDBoxLayout:
-                    adaptive_size: True
-                    orientation: 'horizontal'
-                    MDRectangleFlatIconButton:
-                        text: ' '
-                        icon: 'map-marker-plus-outline'
-                        on_release: root.set_waypoint()
-                    MDRectangleFlatIconButton:
-                        id: hover_mode_btn
-                        text: ' '
-                        icon: 'butterfly'
-                        on_release: root.toggle_hover_mode()
-                    MDRectangleFlatIconButton:
-                        text: ' '
-                        icon: 'menu'
-                        on_release: app.root_widget.show_nav_drawer()
-
+                    lat: 52.533320
+                    lon: 13.433042
+                    zoom: 17
         MDBoxLayout:
-            size_hint: .6, .15
-            pos_hint: {'center_x': .6 , 'center_y': .9}
+            size_hint: .5, .15
+            pos_hint: {'center_x': .5 , 'center_y': .9}
             MDBoxLayout:
                 orientation: 'vertical'
                 adaptive_width: True
@@ -344,7 +304,28 @@
                 MDLabel:
                     halign: 'center'
                     text: root.longitude
-        BoxLayout:
+        MDAnchorLayout:
+            anchor_x: 'right'
+            anchor_y: 'top'
+            MDBoxLayout:
+                adaptive_size: True
+                orientation: 'vertical'
+                padding: 20
+                spacing: 10
+                MDRectangleFlatIconButton:
+                    text: app.bind_text(self, 'Add waypoint')
+                    icon: 'map-marker-plus-outline'
+                    on_release: root.set_waypoint()
+                MDRectangleFlatIconButton:
+                    id: hover_mode_btn
+                    text: app.bind_text(self, 'Toggle hover')
+                    icon: 'butterfly'
+                    on_release: root.toggle_hover_mode()
+                MDRectangleFlatIconButton:
+                    text: app.bind_text(self, 'Menu')
+                    icon: 'menu'
+                    on_release: app.root_widget.show_nav_drawer()
+        MDBoxLayout:
             id: joystick_a
             pos_hint: {'center_y': .3}
             orientation: 'horizontal'
@@ -469,8 +450,8 @@
         MDNavigationDrawerMenu:
             id: nav_drawer_content
             MDNavigationDrawerHeader:
-                title: "Header title"
-                text: "Header text"
+                title: "MS Drone"
+                text: app.bind_text(self, "By Monarch Softworks")
                 spacing: "4dp"
                 padding: "12dp", 0, 0, "56dp"
             MDNavigationDrawerDivider:

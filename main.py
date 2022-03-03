@@ -467,8 +467,6 @@ class AppSettings(MDBoxLayout):
     Widget hinzufügt, wird es als BoxLayout behandelt.
     """
 
-    swipe_distance_field = ObjectProperty()
-
     def __init__(self, **kwargs):
         self.languages_full = [entry for entry in os.listdir('./locales') if os.path.isdir('./locales/' + entry)]
         self._last_index = 0
@@ -513,8 +511,6 @@ class AppSettings(MDBoxLayout):
         self.ids.caller_btn.source = f'./data/res/{app_config["current_language"]}_flag.png'
         self.ids.caller_label.text = app_config["current_language"]
 
-        self.swipe_distance_field.text = str(app_config['swipe_distance'])
-
     def has_changed(self) -> bool:
         """
         Vergleicht die Werte nach den Betreten und vor dem Verlassen der Einstellungen und
@@ -529,11 +525,6 @@ class AppSettings(MDBoxLayout):
 
         app = MDApp.get_running_app()
         app_config = app.configuration.config_dict['app']
-
-        current_distance_in_field = self.swipe_distance_field.text
-        current_distance_in_con = str(app_config['swipe_distance'])
-        if current_distance_in_field != current_distance_in_con:
-            return True
 
         current_lang_in_field = self.ids.caller_label.text
         current_lang_in_con = app_config['current_language']
@@ -569,9 +560,6 @@ class AppSettings(MDBoxLayout):
 
         language = self.languages_full[self._last_index].split('_')[0]
         app_config['current_language'] = language
-
-        app_config['swipe_distance'] = float(self.ids.swipe_distance_text_input.text)
-
         config.save_config()
 
         # Aktualisiere die Texte in den Spinner Widgets
@@ -1206,39 +1194,6 @@ class AppSettingsScreen(CustomScreen):
             self._dialog.open()
         super(AppSettingsScreen, self).on_pre_enter(*args)
 
-    def on_touch_down(self, touch):
-        """
-        Wird aufgerufen sobald der Benutzer das Display berührt.
-
-        Parameters
-        ----------
-        touch: MouseMotionEvent
-            Enthält alle Informationen über die Berührung wie z.B die Position
-        """
-
-        # Wurde der graue Bereich berührt?
-        if self.app_settings.ids.touch_card.collide_point(*touch.pos):
-            self._touch_card = True
-        super(AppSettingsScreen, self).on_touch_down(touch)
-
-    def on_touch_up(self, touch):
-        """
-        Wird aufgerufen sobald der Benutzer aufhört das Display zu berühren.
-
-        Parameters
-        ---------
-        touch: MouseMotionEvent
-            Enthält alle Informationen über die letzte Berührung wie z.B die Position.
-        """
-
-        # Wurde der graue Bereich am Anfang und am Ende berührt?
-        if self._touch_card and self.app_settings.ids.touch_card.collide_point(*touch.pos):
-            # Berechne die Distanz, wobei wir nur die absolute und gerundete Zahl nehmen
-            rounded_distance = round(touch.ox - touch.pos[0])
-            self.app_settings.swipe_distance_field.text = str(abs(rounded_distance))
-            self._touch_card = False
-        super(AppSettingsScreen, self).on_touch_up(touch)
-
     def cancel_leave(self, button):
         self._dialog.dismiss()
         self.manager.current = 'appSettings'
@@ -1251,6 +1206,9 @@ class AppSettingsScreen(CustomScreen):
         self.configuration.save_config()
         self.destroy_drawer(None)
         self.load_drawer(None)
+
+        toolbar = MDApp.get_running_app().root_widget.toolbar
+        toolbar.title = DroneApp.translate('Settings')
 
     def discard_config(self, button):
         self.app_settings.add_settings()
@@ -1582,7 +1540,11 @@ class ControlScreen(CustomScreen):
         """
 
         self.r_joystick = JoyStick()
+        self.r_joystick.outer_radius = dp(100)
+        self.r_joystick.inner_radius = dp(30)
         self.l_joystick = JoyStick()
+        self.l_joystick.outer_radius = dp(100)
+        self.l_joystick.inner_radius = dp(30)
 
         self.esp_connection = DroneApp.translate('strong')
 
@@ -1860,7 +1822,7 @@ class ControlScreen(CustomScreen):
         label = MDLabel(text=terminal_log)
         label.font_name = './data/customfonts/Consolas'
         label.adaptive_height = True
-        label.font_size = 10
+        label.font_size = dp(15)
         label.color = [.5, .5, .5, 1]
 
         self.ids.terminal.add_widget(label)
@@ -2594,8 +2556,8 @@ class DroneApp(MDApp):
         """
         Diese Funktion baut die App und ist die Ausgangsfunktion.
         """
-        #from kivy.core.window import Window
-        #Window.size = (900, 400)
+        from kivy.core.window import Window
+        Window.size = (1480, 720.0)
         if os_on_device in ['android', 'linux']:
             from android.permissions import request_permissions, Permission
             request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])

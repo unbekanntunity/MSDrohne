@@ -1,7 +1,6 @@
 {
     "app": {
-        "current_language": "en",
-        "swipe_distance": 182.0,
+        "current_language": "de",
         "testcase": true,
         "waypoints": [
             {
@@ -38,9 +37,5 @@
             }
         ]
     },
-    "machine": {
-        "tick": {
-            "value": 1
-        }
-    }
+    "machine": {}
 }
