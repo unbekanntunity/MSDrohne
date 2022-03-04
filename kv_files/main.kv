@@ -180,7 +180,7 @@
                     text: app.bind_text(self, 'Language:')
                 MenuDropDown:
                     id: language_drop_down
-                    size_hint: .5, .5
+                    size_hint: .3, .5
                     pos_hint: {'y':.25}
                     size: caller_btn.width + 40, caller_btn.height
                     canvas.before:
@@ -201,6 +201,14 @@
             MDLabel:
                 adaptive_height: True
                 text: app.bind_text(self, 'MAP SETTINGS')
+            MDBoxLayout:
+                MDLabel:
+                    text: app.bind_text(self, 'Show waypoints:')
+                MDAnchorLayout:
+                    size_hint_x: .3
+                    MDSwitch:
+                        id: marker_switch
+                        width: dp(60)
             MDRectangleFlatButton:
                 text: app.bind_text(self, 'Clear cache')
                 on_release: root.clear_cache()
@@ -277,12 +285,12 @@
                         width: 1
                         rectangle: self.x,self.y,self.width,self.height
                 MapView:
-                    id: mapview
+                    id: map
                     lat: 52.533320
                     lon: 13.433042
                     zoom: 17
         MDBoxLayout:
-            size_hint: .5, .15
+            size_hint: .6, .15
             pos_hint: {'center_x': .5 , 'center_y': .9}
             MDBoxLayout:
                 orientation: 'vertical'
@@ -351,8 +359,7 @@
             padding: 30
             spacing: 30
             orientation: 'vertical'
-            size_hint_y: None
-            height: dp(600)
+            height: dp(400)
             AppSettings:
                 id: app_settings
             MDBoxLayout:

@@ -8,6 +8,7 @@ import platform
 import socket
 
 from time import sleep
+
 platform = platform.uname()
 os_on_device = platform.system
 
@@ -47,6 +48,8 @@ from kivy.clock import Clock
 from kivy.lang import Builder
 from kivy.core.text.markup import MarkupLabel
 from kivy.properties import ObjectProperty, StringProperty, BooleanProperty, BoundedNumericProperty
+
+from kivy_garden.mapview import MapMarker
 
 from communication import client
 from misc.custom_threads import DisposableLoopThread
@@ -511,6 +514,7 @@ class AppSettings(MDBoxLayout):
 
         self.ids.caller_btn.source = f'./data/res/{app_config["current_language"]}_flag.png'
         self.ids.caller_label.text = app_config["current_language"]
+        self.ids.marker_switch.active = app_config["show_markers"]
 
     @staticmethod
     def clear_cache():
@@ -551,10 +555,12 @@ class AppSettings(MDBoxLayout):
         app_config = app.configuration.config_dict['app']
 
         current_lang_in_field = self.ids.caller_label.text
-        current_lang_in_con = app_config['current_language']
-        if current_lang_in_field != current_lang_in_con:
+        if current_lang_in_field != app_config['current_language']:
             return True
-        return False
+
+        current_marker_in_field = self.ids.marker_switch.active
+        if current_marker_in_field != app_config['show_markers']:
+            return True
 
     def menu_item_selected(self, index):
         """
@@ -586,8 +592,10 @@ class AppSettings(MDBoxLayout):
         app_config['current_language'] = language
         config.save_config()
 
+        app_config['show_markers'] = self.ids.marker_switch.active
+
         # Aktualisiere die Texte in den Spinner Widgets
-        self.add_settings()
+        #self.add_settings()
 
         # Aktualisiere alle Texte in der App
         MDApp.get_running_app().set_translation()
@@ -1059,9 +1067,10 @@ class StartScreen(CustomScreen):
         # os.listdir gibt uns nur die Dateinamen aus
         # Damit wird die Schriftarten mit den HTML Tags verwenden können, brauchen wir die relativen Pfade zum
         # Projektverzeichnis. Aus diesen Grund werden alle Dateinamen mit den Verzeichnis Namen kombiniert.
-        self.fonts = list(map(lambda x: f'{FONTS_DIRECTORY}/{x}', os.listdir(FONTS_DIRECTORY)))
         self.texts = ['Welcome', 'Willkommen']
+        self._fonts = list(map(lambda x: f'{FONTS_DIRECTORY}/{x}', os.listdir(FONTS_DIRECTORY)))
 
+        self.first_load = False
         super(StartScreen, self).__init__(**kw)
 
     def on_enter(self, *args) -> None:
@@ -1069,9 +1078,8 @@ class StartScreen(CustomScreen):
         siehe line 746.
         """
 
-        toolbar = MDApp.get_running_app().root_widget.toolbar
-        toolbar.title = DroneApp.translate('Home')
         print(f'{self.width} x {self.height}')
+        Clock.schedule_once(self.set_toolbar)
         Clock.schedule_interval(self.change_font, 2)
         super(StartScreen, self).on_enter(*args)
 
@@ -1112,6 +1120,19 @@ class StartScreen(CustomScreen):
         }
         super(StartScreen, self).load_drawer(dt)
 
+    @staticmethod
+    def set_toolbar(dt):
+        """
+        Diese Funktion verändert nur den Text in der Kopfzeile.
+
+        Parameters
+        ----------
+        dt: float
+            Die Zeit die zwischen Aufruf der Clock.schedule-Funktion und dieser
+        """
+        toolbar = MDApp.get_running_app().root_widget.toolbar
+        toolbar.title = DroneApp.translate('Home')
+
     def change_font(self, dt) -> None:
         """
         Wird von einem Thread in bestimmten Intervall takten ausgeführt.
@@ -1122,20 +1143,20 @@ class StartScreen(CustomScreen):
         Parameters
         ----------
         dt: float
-            Die ZEit die zwischen Aufruf der Clock.schedule-Funktion und dieser
+            Die Zeit die zwischen Aufruf der Clock.schedule-Funktion und dieser
         """
 
         text = MarkupLabel(self.ids.title.text).markup[1]
-        current_font_index = self.fonts.index(self.ids.title.font_family)
+        current_font_index = self._fonts.index(self.ids.title.font_family)
         current_text_index = self.texts.index(text)
 
         while True:
-            font_index = randrange(0, len(self.fonts))
+            font_index = randrange(0, len(self._fonts))
             text_index = randrange(0, len(self.texts))
             if font_index != current_font_index and text_index != current_text_index:
                 break
 
-        self.ids.title.text = f'[font={self.fonts[font_index]}]{self.texts[text_index]}[/font]'
+        self.ids.title.text = f'[font={self._fonts[font_index]}]{self.texts[text_index]}[/font]'
 
 
 class AppSettingsScreen(CustomScreen):
@@ -1564,6 +1585,7 @@ class ControlScreen(CustomScreen):
             Durch die Zwei sterne vor dem Namen kann man eine undefinierte Anzahl von Parameter
             übergeben werden. kw kann also beliebig viele Parameter mit variablen Namen darstellen.
         """
+        super(ControlScreen, self).__init__(**kwargs)
 
         self.r_joystick = JoyStick()
         self.r_joystick.outer_radius = dp(100)
@@ -1590,9 +1612,11 @@ class ControlScreen(CustomScreen):
         self._created = False
         self._hover_mode = False
 
-        self.control_screens = ['control', 'settings', 'support', 'waypoints']
+        self._waypoints = self.app_config['waypoints']
+        self._names = [waypoint['name'] for waypoint in self._waypoints]
+        self._markers = []
 
-        super(ControlScreen, self).__init__(**kwargs)
+        self._control_screens = ['control', 'settings', 'support', 'waypoints']
 
     def on_enter(self, *args) -> None:
         """
@@ -1623,10 +1647,6 @@ class ControlScreen(CustomScreen):
         toolbar = MDApp.get_running_app().root_widget.toolbar
         set_visible(toolbar, False)
 
-        # Erstelle die erste Nachricht in der Konsole
-        self.log_message(DroneApp.translate('Ready to take off'))
-        self.esp_connection_icon = CON_ICON[100]
-
         # Wurden die Joysticks schon erstellt?
         if not self._created:
             self.ids.joystick_a.add_widget(self.r_joystick)
@@ -1636,6 +1656,17 @@ class ControlScreen(CustomScreen):
             Clock.schedule_once(self.l_joystick.set_center, 0.01)
             self._created = True
 
+        # Erstelle die erste Nachricht in der Konsole
+        self.log_message(DroneApp.translate('Ready to take off'))
+        self.esp_connection_icon = CON_ICON[100]
+
+        # Füge die Wegpunkte zu der Karte hinzu
+        if self.app_config['show_markers']:
+            for waypoint in self._waypoints:
+                marker = MapMarker(lon=waypoint['longitude'], lat=waypoint['latitude'])
+                self.ids.map.add_marker(marker)
+                self._markers.append(marker)
+        print(self._markers)
         super(ControlScreen, self).on_enter(*args)
 
     def on_leave(self, *args) -> None:
@@ -1649,15 +1680,18 @@ class ControlScreen(CustomScreen):
             self._send_thread.stop()
             self._connection_thread.stop()
             # Ist der Benutzer z.B in den Einstellungen, soll die Drohne auf gleicher Höhe bleiben
-            if self.manager.current in self.control_screens[2:]:
+            if self.manager.current in self._control_screens[2:]:
                 self.toggle_hover_mode(value=True)
 
-        if self.manager.current not in self.control_screens:
+        if self.manager.current not in self._control_screens:
             self.shutdown()
 
         # Lass die Anzeige oben wieder erscheinen
         toolbar = MDApp.get_running_app().root_widget.toolbar
         set_visible(toolbar, True)
+
+        for marker in self._markers:
+            self.ids.map.remove_marker(marker)
 
         super(ControlScreen, self).on_leave(*args)
 
@@ -1696,11 +1730,8 @@ class ControlScreen(CustomScreen):
         Es wird also ein neuer Wegpunkt erstellt und in der Konfiguration gespeichert.
         """
 
-        waypoints = self.app_config['waypoints']
-        names = [waypoint['name'] for waypoint in waypoints]
         # Erstelle dynamisch den Namen des Wegpunkts, ohne dass sie sich doppeln
-
-        name = get_waypoint_name(names)
+        name = get_waypoint_name(self._names)
 
         # Erstelle den Wegpunkt mithilfe der momentanen Sensordaten
         new_waypoint = {
@@ -1890,7 +1921,6 @@ class SettingsScreen(CustomScreen):
     app_settings = ObjectProperty(None)
 
     def __init__(self, **kw):
-        self._touch_card = True
         super(SettingsScreen, self).__init__(**kw)
 
     def on_enter(self, *args) -> None:
@@ -1902,29 +1932,6 @@ class SettingsScreen(CustomScreen):
         toolbar.title = DroneApp.translate('Settings')
 
         super(SettingsScreen, self).on_enter(*args)
-
-    def on_touch_down(self, touch):
-        """
-        siehe line. 1147
-        """
-
-        # Wurde der graue Bereich berührt?
-        if self.app_settings.ids.touch_card.collide_point(*touch.pos):
-            self._touch_card = True
-        super(SettingsScreen, self).on_touch_down(touch)
-
-    def on_touch_up(self, touch):
-        """
-        siehe line. 1160
-
-        """
-        # Wurde der graue Bereich am Anfang und am Ende berührt?
-        if self._touch_card and self.app_settings.ids.touch_card.collide_point(*touch.pos):
-            # Berechne die Distanz, wobei wir nur die absolute und gerundete Zahl nehmen
-            rounded_distance = round(touch.ox - touch.pos[0])
-            self.app_settings.swipe_distance_field.text = str(abs(rounded_distance))
-            self._touch_card = False
-        super(SettingsScreen, self).on_touch_up(touch)
 
     def load_drawer(self, dt):
         """
@@ -2570,11 +2577,6 @@ class DroneApp(MDApp):
         try:
             decoded = raw.encode("latin-1").decode("utf-8")
         except UnicodeDecodeError as e:
-            print(e)
-            print(raw)
-            print(raw.encode('utf-8'))
-            print(app.translation.gettext(message))
-            print(app.translation.gettext('Eingangsbereich'))
             decoded = app.translation.gettext(message)
         return decoded
 

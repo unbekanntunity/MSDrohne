@@ -124,3 +124,6 @@ msgstr "By Monarch Softworks"
 
 msgid "Speicher geleert"
 msgstr "Cache cleared"
+
+msgid "Wegpunkte anzeigen:"
+msgstr "Show waypoints:"

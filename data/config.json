@@ -1,39 +1,32 @@
 {
     "app": {
-        "current_language": "de",
+        "current_language": "en",
+        "show_markers": true,
         "testcase": true,
         "waypoints": [
             {
                 "altitude": "0",
                 "date": "02/27/2022, 19:46:40",
                 "img": "./data/res/example_landscape.jpg",
-                "latitude": "0",
-                "longitude": "0",
+                "latitude": "52.533320",
+                "longitude": "13.433042",
                 "name": "new waypoint"
             },
             {
                 "altitude": "0",
                 "date": "02/27/2022, 19:46:42",
                 "img": "./data/res/example_landscape.jpg",
-                "latitude": "0",
-                "longitude": "0",
+                "latitude": "52.533320",
+                "longitude": "12.433042",
                 "name": "new waypoint(1)"
             },
             {
                 "altitude": "0",
                 "date": "03/02/2022, 10:54:58",
                 "img": "./data/res/example_landscape.jpg",
-                "latitude": "0",
-                "longitude": "0",
+                "latitude": "52.58320",
+                "longitude": "13.433042",
                 "name": "new waypoint(2)"
-            },
-            {
-                "altitude": "0",
-                "date": "03/02/2022, 11:04:54",
-                "img": "./data/res/example_landscape.jpg",
-                "latitude": "0",
-                "longitude": "0",
-                "name": "new waypoint(3)"
             }
         ]
     },
