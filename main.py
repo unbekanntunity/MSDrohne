@@ -2136,6 +2136,7 @@ class WaypointsScreen(CustomScreen):
             content = waypoints
         print(content)
         print(self.ids.grid.width)
+        print(self.ids.grid.height)
         print(self.ids.grid.cols)
         for waypoint in content:
             card = self.build_card(waypoint)

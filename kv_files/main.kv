@@ -82,8 +82,8 @@
                 size_hint_y: None
                 height: dp(700)
                 orientation: 'vertical'
-                padding: 50
-                spacing: 30
+                padding: dp(30)
+                spacing: dp(30)
                 MDLabel:
                     adaptive_height: True
                     halign: 'center'
@@ -381,12 +381,19 @@
 <WaypointsScreen>:
     name: 'waypoints'
     MDAnchorLayout:
+        canvas.before:
+            Color:
+                rgba: .5,.5,.5,1
+            Line:
+                width: 2
+                rectangle: self.x,self.y,self.width,self.height
         anchor_y: 'bottom'
-        padding: 30
+        padding: dp(30)
         ScrollView:
             size_hint_y: .9
             MDGridLayout:
                 size_hint_y: None
+                cols: 4
                 id: grid
                 spacing: 30, 30
     FloatLayout:
