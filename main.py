@@ -2033,8 +2033,10 @@ class WaypointsScreen(CustomScreen):
         """
         siehe line 746.
         """
-
         self._toolbar = MDApp.get_running_app().root_widget.toolbar
+
+        MDApp.get_running_app().root_widget.remove_widget(self._toolbar)
+        self.ids.toolbar_area.add_widget(self._toolbar)
         self._toolbar.right_action_items = [
             ['plus', self.add_waypoint],
             ['delete-alert-outline', self.delete_waypoints]
@@ -2058,9 +2060,10 @@ class WaypointsScreen(CustomScreen):
         Entfernt die Knöpfe in der Kopfzeile
         """
 
+        self.ids.toolbar_area.remove_widget(self._toolbar)
+        MDApp.get_running_app().root_widget.add_widget(self._toolbar)
         self._toolbar.right_action_items = []
         self.clear_grid()
-
         super(WaypointsScreen, self).on_pre_leave(*args)
 
     def load_drawer(self, dt):
@@ -2278,9 +2281,7 @@ class WaypointsScreen(CustomScreen):
         button: Button
             Der Knopf der gedrückt wurde, damit diese Funktion ausgeführt wird.
         """
-
         add_area = self.ids.add_waypoint_area
-
         names = [waypoint['name'] for waypoint in self.waypoints]
         add_area.ids.name_field.text = get_waypoint_name(names)
         add_area.ids.altitude_field.text = '0'

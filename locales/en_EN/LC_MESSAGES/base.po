@@ -125,5 +125,8 @@ msgstr "By Monarch Softworks"
 msgid "Speicher geleert"
 msgstr "Cache cleared"
 
+msgid "KARTENEINSTELLUNGEN:"
+msgstr "MAP SETTINGS"
+
 msgid "Wegpunkte anzeigen:"
 msgstr "Show waypoints:"

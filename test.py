@@ -15,7 +15,7 @@ from kivy_garden.mapview import MapMarker
 
 class Root(FloatLayout):
     def __init__(self, **kwargs):
-        self._map = MapView(zoom=4, lon=50.6394, lat=3.057)
+        self._map = MapView(zoom=1, lon=50.6394, lat=3.057)
         super(Root, self).__init__(**kwargs)
 
     def on_kv_post(self, base_widget):
@@ -26,6 +26,7 @@ class Root(FloatLayout):
         self.add_widget(btn)
 
     def add_wp(self, *args):
+        print('ades')
         m1 = MapMarker(lon=50.6394, lat=3.057)  # Lille
         self._map.add_marker(m1)
 
