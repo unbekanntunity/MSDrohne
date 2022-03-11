@@ -5,10 +5,6 @@
 # **************************** Imports ****************a**************
 import os
 import platform
-import socket
-
-from time import sleep
-
 platform = platform.uname()
 os_on_device = platform.system
 
@@ -59,6 +55,7 @@ from customwidgets.joystick import *
 
 from random import randrange, uniform
 from datetime import datetime
+from time import sleep
 
 import gettext
 
@@ -278,33 +275,30 @@ class WaypointArea(MDAnchorLayout):
 
     def show_bottom_sheet(self) -> None:
         if os_on_device in ['android', 'Linux']:
-            from android.storage import app_storage_path
             _bottom_sheet_menu = MDGridBottomSheet()
             data = [
                 ("System folder", "folder-cog-outline", "."),
-                ("Gallery folder", "folder-image", os.path.join(app_storage_path(), 'DCIM'))
+                ("Gallery folder", "folder-image", "/storage/emulated/0/DCIM")
             ]
             for name, icon, path in data:
                 _bottom_sheet_menu.add_item(
                     name,
-                    lambda path=path: self.sheet_item_selected(path),
+                    lambda button, path=path: self.sheet_item_selected(button, path),
                     icon_src=icon,
                 )
             _bottom_sheet_menu.open()
         else:
             self.open_manager('.')
 
-    def sheet_item_selected(self, path) -> None:
+    def sheet_item_selected(self, button, path) -> None:
         self.open_manager(path)
 
     def open_manager(self, init_path) -> None:
         """
         Öffnet das Fenster/die Dialogbox, der dann alle Dateien auf den Gerät auflistet.
         """
-        print(init_path)
-        content = LoadDialog(load=self.load, cancel=self.dismiss_manager, init_path=init_path)
-        self._popup = Popup(title="Load file", content=content,
-                            size_hint=(0.9, 0.9))
+        content = LoadDialog(load=self.load, cancel=self.dismiss_manager, init_path=str(init_path))
+        self._popup = Popup(title="Load file", content=content, size_hint=(0.9, 0.9))
         self._popup.open()
 
     def dismiss_manager(self) -> None:
@@ -1490,7 +1484,7 @@ class ConnectionScreen(CustomScreen):
         # Try und Catch-Block abgedeckt sein, da besonders hier viele Exception passieren können, die nicht
         # code bedingt sind.
         try:
-            ip, port = get_server_address()
+            ip, port = wlan_client.get_server_address()
             wlan_client.connect(ip, port)
 
             wlan_client.send_message(0, f'CMD|register_ip')
@@ -1628,7 +1622,7 @@ class ControlScreen(CustomScreen):
         if not self.app_config['testcase']:
             self.toggle_hover_mode(value=False)
 
-            ip, port = get_server_address()
+            ip, port = wlan_client.get_server_address()
 
             wlan_client.connect(ip, port)
             wlan_client.connect(ip, port)
@@ -2686,17 +2680,7 @@ def get_waypoint_name(existing_names) -> str:
     return name
 
 
-def get_server_address() -> (str, int):
-    """
-    Gibt die IP-Adresse und den Port des Servers zurück, der gehardcoded wurde.
 
-    Returns
-    -------
-    <nameless>: tuple(str, int)
-        Die Adresse und den Port
-    """
-
-    return socket.gethostbyname('espressif.box'), 9192
 
 
 # *******************************************************************

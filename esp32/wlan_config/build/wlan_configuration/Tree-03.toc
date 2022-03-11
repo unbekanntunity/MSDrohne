@@ -1,0 +1,9 @@
+('./data',
+ None,
+ [],
+ 'DATA',
+ [('backup_network.json', './data\\backup_network.json', 'DATA'),
+  ('network.json', './data\\network.json', 'DATA'),
+  ('res\\de_flag.png', './data\\res\\de_flag.png', 'DATA'),
+  ('res\\en_flag.png', './data\\res\\en_flag.png', 'DATA'),
+  ('res\\sources.txt', './data\\res\\sources.txt', 'DATA')])

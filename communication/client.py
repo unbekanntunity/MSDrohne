@@ -155,8 +155,14 @@ class WLANClient(object):
         return socket.gethostbyname(h_name)
 
     @staticmethod
-    def get_all_devices_on_net():
-        result = who()  # who(n)
-        #for j in range(0, len(result)):
-        #    comm = f"\n{result[j][0]} {result[j][1]}\n{result[j][2]} {result[j][3]}\n{result[j][4]} {result[j][5]}\n"
-        return result
+    def get_server_address() -> (str, int):
+        """
+        Gibt die IP-Adresse und den Port des Servers zurück, der gehardcoded wurde.
+
+        Returns
+        -------
+        <nameless>: tuple(str, int)
+            Die Adresse und den Port
+        """
+
+        return socket.gethostbyname('espressif.box'), 9192

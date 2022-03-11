@@ -1,0 +1,55 @@
+{
+    "networks": [
+        {
+            "name": "KHOA",
+            "password": "Khoa19610121"
+        },
+        {
+            "name": "LEMUEL",
+            "password": "Khoa19610121"
+        },
+        {
+            "name": "DUC",
+            "password": "Khoa19610121"
+        },
+        {
+            "name": "SECRET",
+            "password": "Khoa19610121"
+        }
+    ]
+}
+
+
+ name: 'start'
+    AnchorLayout:
+        padding: 20
+        anchor_x: 'left'
+        anchor_y: 'top'
+        RoundedButton:
+            size_hint_x: None
+            size_hint_y: None
+            text: app.bind_text(self, 'Settings', 'Settings')
+            on_release: root.manager.current = 'appSettings'
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 50
+        Label:
+            id: title
+            markup: True
+            text: "[font=./data/fonts/Roboto-Thin]Welcome[/font]"
+            font_family: './data/fonts/Roboto-Thin.ttf'
+            font_size: '80'
+            color: 0, 0 ,0 ,1
+        AnchorLayout:
+            padding: root.width / 4, 20, root.width / 4, 20
+            MDRoundFlatButton:
+                text: app.bind_text(self, 'Find device', 'Find device')
+                on_release: root.manager.current = 'connection'
+                size_hint: .5, .25
+    AnchorLayout:
+        anchor_x: 'left'
+        anchor_y: 'bottom'
+        Label:
+            size_hint_x: None
+            size_hint_y: None
+            text: 'version: ' + app.__version__

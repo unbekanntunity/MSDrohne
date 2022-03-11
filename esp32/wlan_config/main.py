@@ -1,5 +1,11 @@
 import os
-os.environ['KIVY_GL_BACKEND'] = 'angle_sdl2'
+import platform
+platform = platform.uname()
+os_on_device = platform.system
+
+print(os_on_device)
+if os_on_device == 'Windows':
+    os.environ['KIVY_GL_BACKEND'] = 'angle_sdl2'
 
 from kivymd.app import MDApp
 
