@@ -247,6 +247,10 @@ class LoadDialog(MDFloatLayout):
     load = ObjectProperty(None)
     cancel = ObjectProperty(None)
 
+    def __init__(self, init_path, **kwargs):
+        self.init_path = init_path
+        super(LoadDialog, self).__init__(**kwargs)
+
 
 class WaypointArea(MDAnchorLayout):
     """
@@ -273,12 +277,12 @@ class WaypointArea(MDAnchorLayout):
         super(WaypointArea, self).__init__(**kwargs)
 
     def show_bottom_sheet(self) -> None:
-        if os_on_device in ['android', 'linux']:
+        if os_on_device in ['android', 'Linux']:
             from android.storage import app_storage_path
             _bottom_sheet_menu = MDGridBottomSheet()
             data = [
                 ("System folder", "folder-cog-outline", "."),
-                ("Gallery folder", "folder-image", os.path.join(app_storage_path, 'DCIM'))
+                ("Gallery folder", "folder-image", os.path.join(app_storage_path(), 'DCIM'))
             ]
             for name, icon, path in data:
                 _bottom_sheet_menu.add_item(
@@ -297,11 +301,8 @@ class WaypointArea(MDAnchorLayout):
         """
         Öffnet das Fenster/die Dialogbox, der dann alle Dateien auf den Gerät auflistet.
         """
-        if os_on_device in ['android', 'linux']:
-            from android.permissions import request_permissions, Permission
-            request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])
-        content = LoadDialog(load=self.load, cancel=self.dismiss_manager)
-        content.path = init_path
+        print(init_path)
+        content = LoadDialog(load=self.load, cancel=self.dismiss_manager, init_path=init_path)
         self._popup = Popup(title="Load file", content=content,
                             size_hint=(0.9, 0.9))
         self._popup.open()
@@ -325,7 +326,7 @@ class WaypointArea(MDAnchorLayout):
                 snackbar_y='10dp',
                 size_hint_x=.5
             ).open()
-            self.dismiss_popup()
+            self.dismiss_manager()
         else:
             filename = filename[0]
             suffix = filename.split('.')[-1]
@@ -1666,7 +1667,6 @@ class ControlScreen(CustomScreen):
                 marker = MapMarker(lon=waypoint['longitude'], lat=waypoint['latitude'])
                 self.ids.map.add_marker(marker)
                 self._markers.append(marker)
-        print(self._markers)
         super(ControlScreen, self).on_enter(*args)
 
     def on_leave(self, *args) -> None:
@@ -1795,7 +1795,6 @@ class ControlScreen(CustomScreen):
 
         esp_con = self.check_esp_connection()
         own_con = self.check_own_connection()
-        print(CON_ICON[esp_con[0]])
         self.esp_connection_icon = CON_ICON[esp_con[0]]
         status_keys = list(CON_STATUS.keys())
         if esp_con[1] == status_keys[0]:
@@ -2134,10 +2133,6 @@ class WaypointsScreen(CustomScreen):
             content = self.app_config['waypoints'].copy()
         else:
             content = waypoints
-        print(content)
-        print(self.ids.grid.width)
-        print(self.ids.grid.height)
-        print(self.ids.grid.cols)
         for waypoint in content:
             card = self.build_card(waypoint)
             self._waypoint_cards.append(card)
@@ -2414,7 +2409,7 @@ class WaypointsScreen(CustomScreen):
         card.on_edit_btn_clicked.add_function(self.edit_waypoint)
         card.on_delete_btn_clicked.add_function(self.delete_waypoint)
         card.size_hint = None, None
-        card.size = 160, 220
+        card.size = dp(180), dp(260)
         return card
 
     @staticmethod
@@ -2503,9 +2498,7 @@ class DroneApp(MDApp):
 
         self.translation = None
         self.root_widget = None
-
         self.connected = False
-
         super(DroneApp, self).__init__(**kwargs)
 
     def on_config_changed(self) -> None:
@@ -2588,7 +2581,7 @@ class DroneApp(MDApp):
         """
         #from kivy.core.window import Window
         #Window.size = (1480, 720.0)
-        if os_on_device in ['android', 'linux']:
+        if os_on_device in ['android', 'Linux']:
             from android.permissions import request_permissions, Permission
             request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])
 
@@ -2615,10 +2608,10 @@ class DroneApp(MDApp):
             False: App sofort stoppen/schließen
         """
 
-        if not self.configuration.config_dict['testcase']:
+        if not self.configuration.config_dict['app']['testcase']:
             wlan_client.send_message(0, f'CMD{SEPARATOR}set_hover_mode{SEPARATOR}True')
 
-        Clock.schedule_once(self.cut_connection(), 10)
+        Clock.schedule_once(self.cut_connection, 10)
         return True
 
     def on_resume(self) -> None:
@@ -2626,13 +2619,13 @@ class DroneApp(MDApp):
         Wird aufgerufen wenn die App fortgesetzt wird.
         """
 
-        Clock.unschedule(self.cut_connection())
+        Clock.unschedule(self.cut_connection)
 
-        if not self.configuration.config_dict['testcase']:
+        if not self.configuration.config_dict['app']['testcase']:
             wlan_client.send_message(0, f'CMD{SEPARATOR}set_hover_mode{SEPARATOR}False')
 
     def cut_connection(self) -> None:
-        if not self.configuration.config_dict['testcase']:
+        if not self.configuration.config_dict['app']['testcase']:
             wlan_client.send_message(0, f'CMD{SEPARATOR}reset')
 
     @staticmethod
