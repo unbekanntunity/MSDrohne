@@ -24,7 +24,7 @@
             MDLabel:
                 adaptive_height: True
                 halign: 'center'
-                text: root.title
+                text: root.text
             BoxLayout:
                 orientation: 'vertical'
                 spacing: 10
@@ -32,13 +32,13 @@
                     id: name_field
                     mode: "rectangle"
                     required: True
-                    hint_text: 'Name'
+                    hint_text: app.bind_text(self, 'Name')
                     helper_text_mode: 'on_error'
                 MDTextField:
                     id: pass_field
                     mode: "rectangle"
                     required: True
-                    hint_text: 'Password'
+                    hint_text: app.bind_text(self, 'Password')
                     helper_text_mode: 'on_error'
             AnchorLayout:
                 size_hint_y: .5
@@ -182,7 +182,7 @@
                     on_release: root.save_networks()
         NetworkArea:
             id: add_network_area
-            title: 'Add new network'
+            text: app.bind_text(self, 'Add new network')
         NetworkArea:
             id: edit_network_area
-            title: 'Edit network'
+            text: app.bind_text(self, 'Edit network')

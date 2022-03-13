@@ -21,7 +21,7 @@ from kivymd.uix.navigationdrawer import MDNavigationDrawerItem
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.list import OneLineAvatarIconListItem
-from kivymd.uix.button import MDFlatButton
+from kivymd.uix.button import MDFlatButton, MDFillRoundFlatIconButton
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.expansionpanel import MDExpansionPanel, MDExpansionPanelOneLine
 from kivymd.uix.label import MDLabel
@@ -83,6 +83,12 @@ CON_ICON = {
     20: './data/res/weak_wifi.png',
     50: './data/res/medium_wifi.png',
     100: './data/res/strong_wifi.png'
+}
+
+GERMAN_UMLAUTS = {
+    'ä': 'ae',
+    'ü': 'ue',
+    'ö': 'oe',
 }
 
 # ******************************************************************
@@ -2524,21 +2530,25 @@ class DroneApp(MDApp):
             Findet sich keine Übersetzung wird die Zeichenkette unverändert zurückgegeben.
         """
 
-        self.translated_labels.append(label)
-        translated_text = self.translate(text)
         if entire_text is None:
             entire_text = text
+
+        self.translated_labels.append(label)
+        translated_text = self.translate(text)
 
         self.translated_parts.append(translated_text)
         return entire_text.replace(text, translated_text)
 
     def update_text(self) -> None:
         """
-        Aktualisiert die registrierten Labels und übersetzt alle Texte nochmal.
+        Aktualisiert die registrierten Widgets.
         """
-        for index, label in enumerate(self.translated_labels):
+
+        for index, widget in enumerate(self.translated_labels):
             translated_text = self.translate(self.translated_parts[index])
-            label.text = label.text.replace(self.translated_parts[index], translated_text)
+            widget.text = widget.text.replace(self.translated_parts[index], translated_text)
+            if isinstance(widget, MDFillRoundFlatIconButton):
+                widget.apply_class_lang_rules(self)
             self.translated_parts[index] = translated_text
 
     def set_translation(self) -> None:
@@ -2561,12 +2571,15 @@ class DroneApp(MDApp):
             Die zu übersetzende Zeichenkette.
         """
         app = MDApp.get_running_app()
-        raw = app.translation.gettext(message)
+        if app.configuration.config_dict['app']['current_language'] != 'de':
+            for key, value in GERMAN_UMLAUTS.items():
+                message = message.replace(value, key)
 
-        try:
-            decoded = raw.encode("latin-1").decode("utf-8")
-        except UnicodeDecodeError as e:
-            decoded = app.translation.gettext(message)
+        decoded = app.translation.gettext(message)
+
+        if app.configuration.config_dict['app']['current_language'] == 'de':
+            for key, value in GERMAN_UMLAUTS.items():
+                decoded = decoded.replace(value, key)
         return decoded
 
     def build(self):
@@ -2678,9 +2691,6 @@ def get_waypoint_name(existing_names) -> str:
         i += 1
         name = DEFAULT_WP_PREFIX + '(' + str(i) + ')'
     return name
-
-
-
 
 
 # *******************************************************************

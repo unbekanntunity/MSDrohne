@@ -11,17 +11,17 @@ msgstr ""
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=cp1252\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: UTF-8\n"
 "Generated-By: pygettext.py 1.5\n"
 
 
 msgid "Netzwerkkonfiguration"
 msgstr "Network configuration"
 
-msgid "hinzufügen"
+msgid "Hinzuf-ue-gen"
 msgstr "Add"
 
-msgid "Alles löschen"
+msgid "Alles l-oe-schen"
 msgstr "Clear"
 
 msgid "Verwerfen"
@@ -33,7 +33,7 @@ msgstr "Restore"
 msgid "Speichern"
 msgstr "Save"
 
-msgid "Neues Netzwerk hinzufügen"
+msgid "Neues Netzwerk hinzuf-ue-gen"
 msgstr "Add new network"
 
 msgid "Name"
@@ -42,7 +42,7 @@ msgstr "Name"
 msgid "Passwort"
 msgstr "Password"
 
-msgid "Willst du wirklich alle Einträge löschen?"
+msgid "Willst du wirklich alle Eintr-ae-ge l-oe-schen?"
 msgstr "Do you really want to delete all entries?"
 
 msgid "Nein"
@@ -51,7 +51,7 @@ msgstr "No"
 msgid "Ja"
 msgstr "Yes"
 
-msgid "Netzwerk überarbeiten"
+msgid "Netzwerk -ue-berarbeiten"
 msgstr "Edit network"
 
 msgid "Liste aktualisiert!"
@@ -66,3 +66,11 @@ msgstr "Ohh, something went wrong!"
 msgid "Die Liste ist bereits auf den neusten Stand!"
 msgstr "List is already up to date!"
 
+msgid "Liste geleert!"
+msgstr "All entries deleted!"
+
+msgid "Name darf nicht leer sein!"
+msgstr "Name cant be empty!"
+
+msgid "Passwort darf nicht leer sein!"
+msgstr "Password cant be empty!"

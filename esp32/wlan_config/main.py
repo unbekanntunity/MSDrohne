@@ -20,13 +20,20 @@ from kivymd.uix.screen import MDScreen
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.snackbar import BaseSnackbar
 from kivymd.uix.dialog import MDDialog
-from kivymd.uix.button import MDFlatButton
+from kivymd.uix.button import MDFlatButton, MDFillRoundFlatIconButton
 from kivymd.uix.menu import MDDropdownMenu
 
-from misc.configuration import Configuration
+from configuration import Configuration
 
 import collections
 import gettext
+
+
+GERMAN_UMLAUTS = {
+    'ä': '-ae-',
+    'ü': '-ue-',
+    'ö': '-oe-',
+}
 
 
 class CustomSnackbar(BaseSnackbar):
@@ -73,7 +80,7 @@ class LanguageDropDown(MDBoxLayout):
 
 
 class NetworkArea(AnchorLayout):
-    title = StringProperty()
+    text = StringProperty()
 
     network_card = ObjectProperty()
     name_field = ObjectProperty()
@@ -194,16 +201,16 @@ class NetworkRoot(MDScreen):
 
     def clear_networks(self, *args):
         self.clear_networks_dialog = MDDialog(
-            text=MDApp.get_running_app().bind_text(self, 'Do u really want to delete all entries?'),
+            text=MDApp.get_running_app().translate('Do u really want to delete all entries?'),
             buttons=[
                 MDFlatButton(
-                    text=MDApp.get_running_app().bind_text(self, 'Yes'),
+                    text=MDApp.get_running_app().translate('Yes'),
                     theme_text_color="Custom",
                     text_color=MDApp.get_running_app().theme_cls.primary_color,
                     on_release=self.accept_clear
                 ),
                 MDFlatButton(
-                    text=MDApp.get_running_app().bind_text(self, 'No'),
+                    text=MDApp.get_running_app().translate('No'),
                     theme_text_color="Custom",
                     text_color=MDApp.get_running_app().theme_cls.primary_color,
                     on_release=self.cancel_clear
@@ -220,7 +227,7 @@ class NetworkRoot(MDScreen):
         self.clear_networks_dialog.dismiss(force=True)
 
         CustomSnackbar(
-            text=MDApp.get_running_app().bind_text(self, 'All entries deleted!'),
+            text=MDApp.get_running_app().translate('All entries deleted!'),
             icon='information',
             snackbar_x='10dp',
             snackbar_y='10dp',
@@ -240,7 +247,6 @@ class NetworkRoot(MDScreen):
         if collections.Counter(names) != collections.Counter(old_names) and\
                 collections.Counter(passwords) != collections.Counter(old_passwords):
             self.ids.network_list.clear_widgets()
-
             self.add_to_network_list(self.old_networks)
             CustomSnackbar(
                 text=MDApp.get_running_app().bind_text(self, 'List refreshed!'),
@@ -250,7 +256,6 @@ class NetworkRoot(MDScreen):
                 size_hint_x=.5
             ).open()
         else:
-            self.add_to_network_list(self.old_networks)
             CustomSnackbar(
                 text=MDApp.get_running_app().bind_text(self, 'List is already up to date!'),
                 icon='information',
@@ -259,7 +264,7 @@ class NetworkRoot(MDScreen):
                 size_hint_x=.5
             ).open()
 
-    def save_networks(self, *args):
+    def save_networks(self):
         try:
             MDApp.get_running_app().configuration.save_config()
             CustomSnackbar(
@@ -280,7 +285,7 @@ class NetworkRoot(MDScreen):
             ).open()
 
     @staticmethod
-    def discard_network(network_area, *args):
+    def discard_network(network_area, button):
         network_area.name_field.required = False
         network_area.name_field.text = ''
         network_area.name_field.required = True
@@ -291,7 +296,7 @@ class NetworkRoot(MDScreen):
 
         network_area.set_visibility(False)
 
-    def move_network(self, direction, *args):
+    def move_network(self, direction, item):
         networks = MDApp.get_running_app().configuration.config_dict['networks']
         items = self.ids.network_list.children.copy()
 
@@ -307,7 +312,7 @@ class NetworkRoot(MDScreen):
         }
 
         for i, child in enumerate(items):
-            if child == args[0]:
+            if child == item:
                 idx = len(items) - 1 - i
                 if i != factor[direction]['limit']:
                     networks[idx], networks[idx - factor[direction]['value']] = networks[idx - factor[direction]['value']], networks[idx]
@@ -317,10 +322,10 @@ class NetworkRoot(MDScreen):
                 else:
                     return
 
-    def edit_network(self, *args):
+    def edit_network(self, item):
         networks = MDApp.get_running_app().configuration.config_dict['networks']
         for i, child in enumerate(self.ids.network_list.children):
-            if child == args[0]:
+            if child == item:
                 reversed_index = len(networks) - 1 - i
                 self.current_edited_idx = i
                 self.ids.edit_network_area.set_visibility(True)
@@ -340,9 +345,10 @@ class NetworkRoot(MDScreen):
         name_field = area.name_field
         password_field = area.pass_field
 
+        app = MDApp.get_running_app()
         if name_field.text == '':
             CustomSnackbar(
-                text='Name cant be empty!',
+                text=app.translate('Name cant be empty!'),
                 icon='alert-circle-outline',
                 snackbar_x='10dp',
                 snackbar_y='10dp',
@@ -351,7 +357,7 @@ class NetworkRoot(MDScreen):
             return
         if password_field.text == '':
             CustomSnackbar(
-                text='Password cant be empty!',
+                text=app.translate('Password cant be empty!'),
                 icon='alert-circle-outline',
                 snackbar_x='10dp',
                 snackbar_y='10dp',
@@ -373,7 +379,7 @@ class NetworkRoot(MDScreen):
                 self.apply_edit_changes(networks, name_field, password_field)
             else:
                 self.apply_add_changes(networks, name_field, password_field)
-            self.ids.edit_network_area.set_visibility(False)
+            area.set_visibility(False)
 
     def apply_add_changes(self, networks, name_field, password_field):
         new_network = {
@@ -423,14 +429,12 @@ class NetworkApp(MDApp):
 
     def build(self):
         self.theme_cls.material_style = "M3"
-
         self.set_translation()
         return NetworkRoot()
 
-    def set_translation(self):
-        language = self.configuration.config_dict['current_language'] + '_' + self.configuration.config_dict[
-            'current_language'].capitalize()
-
+    def set_translation(self) -> None:
+        language = self.configuration.config_dict['current_language'] + '_' + \
+                   self.configuration.config_dict['current_language'].upper()
         self.translation = gettext.translation('base', localedir='locales',
                                                languages=[language])
         self.translation.install()
@@ -456,25 +460,51 @@ class NetworkApp(MDApp):
             Die übersetzte Zeichenkette.
             Findet sich keine Übersetzung wird die Zeichenkette unverändert zurückgegeben.
         """
-
-        self.translated_labels.append(label)
-        translated_text = self.translation.gettext(text)
-
         if entire_text is None:
             entire_text = text
+
+        self.translated_labels.append(label)
+        translated_text = self.translate(text)
 
         self.translated_parts.append(translated_text)
         return entire_text.replace(text, translated_text)
 
     def update_text(self) -> None:
         """
-        Aktualisiert die registrierten Labels.
+        Aktualisiert die registrierten Widgets.
         """
 
-        for index, label in enumerate(self.translated_labels):
-            translated_text = self.translation.gettext(self.translated_parts[index])
-            label.text = label.text.replace(self.translated_parts[index], translated_text)
+        for index, widget in enumerate(self.translated_labels):
+            translated_text = self.translate(self.translated_parts[index])
+            widget.text = widget.text.replace(self.translated_parts[index], translated_text)
+            if isinstance(widget, MDFillRoundFlatIconButton):
+                widget.apply_class_lang_rules(self)
             self.translated_parts[index] = translated_text
+
+    @staticmethod
+    def translate(message: str) -> str:
+        """
+        Übersetzte eine Zeichenkette mit der Sprache, die gerade in der App
+        eingestellt ist und gibt sie wieder zurück.
+        Falls keine Übersetzung vorhanden wird, wird die Zeichenkette unübersetzt zurückgegeben.
+
+        Parameters
+        ----------
+        message: str
+            Die zu übersetzende Zeichenkette.
+        """
+
+        app = MDApp.get_running_app()
+        if app.configuration.config_dict['current_language'] != 'de':
+            for key, value in GERMAN_UMLAUTS.items():
+                message = message.replace(key, value)
+
+        decoded = app.translation.gettext(message)
+
+        if app.configuration.config_dict['current_language'] == 'de':
+            for key, value in GERMAN_UMLAUTS.items():
+                decoded = decoded.replace(value, key)
+        return decoded
 
 
 if __name__ == '__main__':

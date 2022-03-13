@@ -334,12 +334,12 @@
                 padding: 20
                 spacing: 10
                 MDRectangleFlatIconButton:
-                    text: app.bind_text(self, 'Add waypoint')
+                    text: app.bind_text(self, 'Set waypoint')
                     icon: 'map-marker-plus-outline'
                     on_release: root.set_waypoint()
                 MDRectangleFlatIconButton:
                     id: hover_mode_btn
-                    text: app.bind_text(self, 'Toggle hover')
+                    text: app.bind_text(self, 'Hovermode')
                     icon: 'butterfly'
                     on_release: root.toggle_hover_mode()
                 MDRectangleFlatIconButton:
@@ -382,12 +382,6 @@
 <WaypointsScreen>:
     name: 'waypoints'
     MDAnchorLayout:
-        canvas.before:
-            Color:
-                rgba: .5,.5,.5,1
-            Line:
-                width: 2
-                rectangle: self.x,self.y,self.width,self.height
         anchor_y: 'bottom'
         padding: dp(30)
         ScrollView:

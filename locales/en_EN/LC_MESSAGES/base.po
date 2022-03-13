@@ -44,14 +44,8 @@ msgstr "Waypoint"
 msgid "gesetzt"
 msgstr "set"
 
-msgid "Kontrolle"
+msgid "Steuerung"
 msgstr "Control"
-
-msgid "Bedienungseinstellungen"
-msgstr "TOUCH SETTINGS"
-
-msgid "Wischempfindlichkeit:"
-msgstr "Swipe-Sensitivity:"
 
 msgid "EINSTELLUNGEN ZUM ERSCHEINUNGSBILD"
 msgstr "APPEARANCE SETTINGS"
@@ -122,6 +116,9 @@ msgstr 'Send an e-mail to monarch_softwork@gmail.com'
 msgid "Von Monarch Softworks"
 msgstr "By Monarch Softworks"
 
+msgid "Speicher leeren"
+msgstr "Clear cache"
+
 msgid "Speicher geleert"
 msgstr "Cache cleared"
 
@@ -130,3 +127,12 @@ msgstr "MAP SETTINGS"
 
 msgid "Wegpunkte anzeigen:"
 msgstr "Show waypoints:"
+
+msgid "Verbindung"
+msgstr "Connection"
+
+msgid "Wegpunkt setzen"
+msgstr "Set waypoint"
+
+msgid "Hovermode"
+msgstr "Hovermode"

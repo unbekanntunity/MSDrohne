@@ -1,7 +1,15 @@
 # -*- mode: python ; coding: utf-8 -*-
 from kivy_deps import sdl2, glew
-block_cipher = None
+import os
+import platform
+platform = platform.uname()
+os_on_device = platform.system
 
+print(os_on_device)
+if os_on_device == 'Windows':
+    os.environ['KIVY_GL_BACKEND'] = 'angle_sdl2'
+    
+block_cipher = None
 
 a = Analysis(['main.py'],
              pathex=[],

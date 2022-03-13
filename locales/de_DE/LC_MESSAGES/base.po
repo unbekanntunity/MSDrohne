@@ -18,7 +18,7 @@ msgid "Home"
 msgstr "Eingangsbereich"
 
 msgid "Connect to device"
-msgstr "Zum Gerät verbinden"
+msgstr "Zum Geraet verbinden"
 
 msgid "Connect"
 msgstr "Verbinden"
@@ -30,7 +30,7 @@ msgid "Waypoints"
 msgstr "Wegpunkte"
 
 msgid "Support"
-msgstr "Unterstützung"
+msgstr "Unterstuetzung"
 
 msgid "Waiting for response"
 msgstr "Auf Antwort warten"
@@ -45,13 +45,7 @@ msgid "set"
 msgstr "gesetzt"
 
 msgid "Control"
-msgstr "Kontrolle"
-
-msgid "TOUCH SETTINGS"
-msgstr "Bedienungseinstellungen"
-
-msgid "Swipe-Sensitivity:"
-msgstr "Wischempfindlichkeit:"
+msgstr "Steuerung"
 
 msgid "APPEARANCE SETTINGS"
 msgstr "EINSTELLUNGEN ZUM ERSCHEINUNGSBILD"
@@ -66,7 +60,7 @@ msgid "Save"
 msgstr "Speichern"
 
 msgid "Add new waypoint"
-msgstr "Neuen Wegpunkt hinzufügen"
+msgstr "Neuen Wegpunkt hinzufuegen"
 
 msgid "Edit waypoint"
 msgstr "Wegpunkt bearbeiten"
@@ -81,10 +75,10 @@ msgid "Latitude"
 msgstr "Breitengrad"
 
 msgid "Longitude"
-msgstr "Längengrad"
+msgstr "Laengengrad"
 
 msgid "Do you really want to delete all entries?"
-msgstr "Wollen Sie wirklich alle Einträge löschen?"
+msgstr "Wollen Sie wirklich alle Eintraege löschen?"
 
 msgid "Yes"
 msgstr "Ja"
@@ -99,7 +93,7 @@ msgid "Name already exists!"
 msgstr "Name existiert bereits!"
 
 msgid "Changes applied!"
-msgstr u"Änderungen übernommen!"
+msgstr u"aenderungen uebernommen!"
 
 msgid "Waypoint deleted!"
 msgstr "Wegpunkt gelöscht!"
@@ -114,7 +108,7 @@ msgid "Cant connect to device?"
 msgstr "Du kannst dich nicht mit deiner Drohne verbinden?"
 
 msgid "There can be several problems:\n- A other device has already establish a connection to the drone\n- Weak connection\n- Internal problems\n\nYour options:\n- Turn off and on the drone\n- Restart the application\n- Make sure that both devices are on the same network"
-msgstr "Es kann an folgenden Problemen liegen:\n- Ein anderes Gerät hat sich schon verbunden\n- Schwache Verbindung\n- Interne Verbindung\n\Mögliche Lösungsansätze:\n- Schalte die Drohne aus und an\n- Starte die Applikation neu\n- Stelle sicher, dass beide Geräte im selben Netzwerk sind"
+msgstr "Es kann an folgenden Problemen liegen:\n- Ein anderes Geraet hat sich schon verbunden\n- Schwache Verbindung\n- Interne Verbindung\n\Mögliche Lösungsansaetze:\n- Schalte die Drohne aus und an\n- Starte die Applikation neu\n- Stelle sicher, dass beide Geraete im selben Netzwerk sind"
 
 msgid "Cant find the solution?"
 msgstr "Nichts hilft?"
@@ -128,9 +122,20 @@ msgstr "Von Monarch Softworks"
 msgid "Cache cleared"
 msgstr "Speicher geleert"
 
+msgid "Clear cache"
+msgstr "Speicher leeren"
+
 msgid "MAP SETTINGS"
 msgstr "KARTENEINSTELLUNGEN:"
 
 msgid "Show waypoints:"
 msgstr "Wegpunkte anzeigen:"
 
+msgid "Connection"
+msgstr "Verbindung"
+
+msgid "Set waypoint"
+msgstr "Wegpunkt setzen"
+
+msgid "Hovermode"
+msgstr "Hovermode"
