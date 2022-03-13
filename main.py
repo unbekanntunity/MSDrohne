@@ -5,6 +5,9 @@
 # **************************** Imports ****************a**************
 import os
 import platform
+import traceback
+import socket
+
 platform = platform.uname()
 os_on_device = platform.system
 
@@ -1480,7 +1483,7 @@ class ConnectionScreen(CustomScreen):
         Sendet den Befehl 'register_ip' zu den Microcontroller, der dieses Gerät registriert und
         damit die nächste Phase beginnen kann und der Benutzer die Drohne steuern kann.
         """
-
+        print('Start registration')
         if self.app_config['testcase']:
             sleep(3)
             self.manager.current = 'control'
@@ -1491,13 +1494,14 @@ class ConnectionScreen(CustomScreen):
         # Try und Catch-Block abgedeckt sein, da besonders hier viele Exception passieren können, die nicht
         # code bedingt sind.
         try:
+            wlan_client.reset(0)
             ip, port = wlan_client.get_server_address()
-            wlan_client.connect(ip, port)
+            wlan_client.connect(ip, port, 0)
 
             wlan_client.send_message(0, f'CMD|register_ip')
             sent_request = True
-        except Exception as e:
-            print(e)
+        except OSError as e:
+            print(traceback.format_exc())
 
         if sent_request:
             self._register_thread.stop()
@@ -1857,6 +1861,7 @@ class ControlScreen(CustomScreen):
         Dabei wird der ESP32 und die Clients zurückgesetzt (Verbindung wird gekappt).
         """
 
+        self.clear_terminal()
         if not self.app_config['testcase']:
             wlan_client.send_message(0, f'CMD{SEPARATOR}reset')
         wlan_client.reset()
@@ -1883,6 +1888,9 @@ class ControlScreen(CustomScreen):
         label.color = [.5, .5, .5, 1]
 
         self.ids.terminal.add_widget(label)
+
+    def clear_terminal(self):
+        self.ids.terminal.clear_widgets()
 
     @staticmethod
     def get_connectivity(value: str) -> (int, str):

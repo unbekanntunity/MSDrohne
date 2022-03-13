@@ -1,9 +1,6 @@
 import network
 import ubinascii
 
-from drohnev2.decorators import command
-from drohnev2.startup import startup
-
 import gc
 
 gc.collect()
@@ -43,9 +40,12 @@ class Wlan_Server(object):
             'Hover_mode': False
         }
 
-        self._public_commands = ['register_ip']
-        self._private_commands = ['reset', 'set_config', 'set_hover_mode', 'unregister_ip',
-        'get_conn_data', 'get_sensor_data']
+        self._public_commands = [self.register_ip]
+        self._private_commands = [self.reset, self.set_config, self.set_hover_mode, self.unregister_ip, self.get_conn_data, self.get_sensor_data]
+
+        self._public_commands_name = [command.__name__ for command in self._public_commands]
+        self._private_commands_name = [command.__name__ for command in self._private_commands]
+
 
     def create_server(self) -> bool:
         try:
@@ -66,7 +66,6 @@ class Wlan_Server(object):
             print('\nSearch for requests')
             c, addr = self.server.accept()  # Anfrage entgegennehmen
             print('\nGot a connection from %s' % str(addr))
-            done = False
             # c ist ein bytes-Objekt und muss als string decodiert werden
             # damit string-Methoden darauf angewandt werden koennen.
             request = c.recv(1024).decode("utf-8")
@@ -88,17 +87,12 @@ class Wlan_Server(object):
                     if result[0]:
                         print(f'Data detected: {result[1]}: {result[2]}')
                         self.data_container[result[1]] = result[2]
-                        self.process_request(c, addr, request)
-
             c.close()
             print('Connection closed')
 
     def validate_data(self, connection, address):
         if self.paired_device_ip is not None:
             result = self.paired_device_ip[0] == address[0]
-            print(f'result: {result}')
-            print(f'register: {self.paired_device_ip}')
-            print(f'address: {address}')
             if not result:
                 connection.send('Permission denied.')
                 return False
@@ -113,7 +107,7 @@ class Wlan_Server(object):
         data_value = data_split[1]
         expected_data = data_key in self.data_container.keys()
 
-        return (expected_data, data_key, data_value)
+        return expected_data, data_key, data_value
 
     # CMD|name|arg1|arg2|....
     def extract_command(self, data):
@@ -124,26 +118,29 @@ class Wlan_Server(object):
             args = []
             if len(command_split) > 2:
                 args = command_split[2:]
-            return (command_name, args)
-        return (None, None)
+            return command_name, args
+        return None, None
 
     def execute_public_command(self, name, connection, address, *args):
-        if name in self._public_commands:
-            index = self._public_commands.index(name)
+        if name in self._public_commands_name:
+            index = self._public_commands_name.index(name)
             self._public_commands[index](connection, address, *args)
         else:
             print('Command not found.')
 
     def execute_private_command(self, name, connection, address, *args):
-        if name in self._public_commands:
-            index = self._public_commands.index(name)
+        if name in self._private_commands_name:
+            index = self._private_commands_name.index(name)
             self._private_commands[index](connection, address, *args)
         else:
             print('Command not found.')
 
     def reset(self, connection, address, *args):
         self.server.close()
-        setup()
+        server = Wlan_Server(self.nic)
+        result = server.create_server()
+        if result:
+            server.server_loop()
 
     def set_config(self, connection, address, *args):
         try:
@@ -198,10 +195,6 @@ class Wlan_Server(object):
 
 
 def hex_mac(byte_mac):
-    """
-    Diese Funktion nimmt die MAC-Adresse im Bytecode entgegen und
-    bildet daraus einen String für die Rückgabe
-    """
     mac_string = ""
     for i in range(0, len(byte_mac)):  # Für alle Bytewerte
         mac_string += hex(byte_mac[i])[2:]  # vom String ab Position 2 bis Ende
@@ -211,21 +204,18 @@ def hex_mac(byte_mac):
 
 
 def activate_nic():
-    # Netzwerk-Interface-Instanz erzeugen und ESP32-Stationmodus aktivieren;
-    # möglich sind network.STA_IF und network.AP_IF beide wie in LUA oder
-    # AT-based oder Arduino-IDE ist in MicroPython nicht möglich
     nic = network.WLAN(network.STA_IF)  # Constructor
     nic.active(True)
     print(f'Hostname: {nic.config("dhcp_hostname")}')
 
     # binäre MAC-Adresse abrufen und in ein Hex-Tupel umgewandelt ausgeben
     MAC = nic.config('mac')
-    my_mac = hex_mac(MAC)
-    print("STATION MAC: \t" + my_mac + "\n")
+    myMac = hex_mac(MAC)
+    print("STATION MAC: \t" + myMac + "\n")
     return nic
 
 
-def connect(nic, siD="pasteur-wlan", password="03Y01pasgymbln#12") -> (bool, Any, Any):
+def connect(nic, siD, password) -> (bool, Any, Any):
     print('name: ' + siD)
     print('password: ' + password)
     # zeige_ap_liste(nic)
@@ -239,7 +229,7 @@ def connect(nic, siD="pasteur-wlan", password="03Y01pasgymbln#12") -> (bool, Any
         # warten bis die Verbindung zum Accesspoint steht
         while nic.status() != network.STAT_GOT_IP:
             if tries == max_tries:
-                return (False, None, None)
+                return False, None, None
 
             print(connectStatus[nic.status()])
             tries += 1
@@ -248,8 +238,7 @@ def connect(nic, siD="pasteur-wlan", password="03Y01pasgymbln#12") -> (bool, Any
     STAconf = nic.ifconfig()
     print("STA-IP:\t\t", STAconf[0], "\nSTA-NETMASK:\t", STAconf[1], "\nSTA-GATEWAY::\t", STAconf[2], "\n", "\n",
           sep='')
-
-    return (True, STAconf, nic)
+    return True, STAconf, nic
 
 
 def scan(nic):
@@ -265,3 +254,5 @@ def scan(nic):
         decoded = (AP[0].decode("utf-8"), ubinascii.hexlify(AP[1], "-").decode("utf-8"), AP[2], AP[3], AP[4], AP[5])
         networks_decoded.append(decoded)
     return networks_decoded
+
+

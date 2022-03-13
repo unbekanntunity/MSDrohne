@@ -1,20 +1,17 @@
 from drohnev2.wifi import *
 from drohnev2.configuration import *
-
 import os
 
+
 def startup():
-    config = Configuration('./drohnev2/wlan_config/data/network.json', load_at_init=True)
-    networks = config.config_dict['networks']
     nic = activate_nic()
+    config = Configuration('./drohnev2/wlan_config/data/network.json', load_at_init=True)
     scanned_networks = scan(nic)
-    #print(networks)
-    #print(scanned_networks)
+    networks = config.config_dict['networks']
 
     names = [network[0] for network in scanned_networks]
 
     connected = False
-
     for network in networks:
         if network['name'] in names:
             index = names.index(network['name'])
@@ -30,8 +27,10 @@ def startup():
         if result:
             server.server_loop()
     else:
-       print('Couldnt connect to any network')
+       print('Could not connect to any network')
+
 
 if __name__ == '__main__':
     startup()
+
 

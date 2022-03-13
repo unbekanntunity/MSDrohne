@@ -73,6 +73,14 @@ class WLANClient(object):
             self.paired_device_ports.append(port)
             self._first_msgs.append(False)
         elif index >= 0:
+            if len(self.sockets) - 1 < index:
+                for _ in range(index - (len(self.sockets) - 1)):
+                    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                    self.paired_device_ips.append(None)
+                    self.paired_device_ports.append(None)
+                    self._first_msgs.append(False)
+                    self.sockets.append(s)
+
             self.sockets[index].connect((address, port))
             self.paired_device_ips[index] = address
             self.paired_device_ports[index] = port
@@ -90,12 +98,15 @@ class WLANClient(object):
         message: str
             Die Nachricht
         """
+
+        # Erst nach der ersten Nachricht macht das zurücksetzen ein Sinn
         if self._first_msgs[index]:
             ip = self.paired_device_ips[index]
             port = self.paired_device_ports[index]
 
             self.reset(index)
-            self.connect(ip, int(port), index)
+            if str(port).isnumeric():
+                self.connect(ip, int(port), index)
 
         self.sockets[index].send(message.encode('utf-8'))
         self._first_msgs[index] = True
@@ -134,6 +145,8 @@ class WLANClient(object):
                 self.sockets[i] = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 self.paired_device_ips[i] = ''
                 self.paired_device_ports[i] = ''
+        elif len(self.sockets) - 1 < index:
+            return
         else:
             self.sockets[index].close()
             self.sockets[index] = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -164,5 +177,4 @@ class WLANClient(object):
         <nameless>: tuple(str, int)
             Die Adresse und den Port
         """
-
-        return socket.gethostbyname('espressif.box'), 9192
+        return socket.gethostbyname('espressif'), 9192
