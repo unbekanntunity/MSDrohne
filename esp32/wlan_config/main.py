@@ -7,6 +7,9 @@ print(os_on_device)
 if os_on_device == 'Windows':
     os.environ['KIVY_GL_BACKEND'] = 'angle_sdl2'
 
+from kivy import Config
+Config.set('graphics', 'multisamples', '0')
+
 from kivymd.app import MDApp
 
 from kivy.clock import Clock

@@ -94,4 +94,26 @@ class EventHandler(object):
 
 
 if __name__ == '__main__':
-    print(help(EventHandler))
+    class TriggerEvent:
+        def __init__(self):
+            self.on_hello = EventHandler()
+
+        def hello(self):
+            print('hello')
+            self.on_hello.invoke()
+
+    class OtherClass:
+        def hello_back(self):
+            print('hello')
+
+    class OtherClassWithPara:
+        def hello_back(self, message):
+            print('hello')
+
+    other = OtherClass()
+
+    trigger = TriggerEvent()
+    trigger.on_hello.add_function(other.hello_back)
+
+    trigger.hello()
+

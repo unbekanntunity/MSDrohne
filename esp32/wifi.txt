@@ -197,31 +197,31 @@ class Wlan_Server(object):
             print(f'Error while trying sending conn data {e}')
 
 
-def hexMac(byteMac):
+def hex_mac(byte_mac):
     """
-    Die Funktion hexMAC nimmt die MAC-Adresse im Bytecode entgegen und
+    Diese Funktion nimmt die MAC-Adresse im Bytecode entgegen und
     bildet daraus einen String für die Rückgabe
     """
-    macString = ""
-    for i in range(0, len(byteMac)):  # Für alle Bytewerte
-        macString += hex(byteMac[i])[2:]  # vom String ab Position 2 bis Ende
-        if i < len(byteMac) - 1:  # Trennzeichen bis auf das letzte Byte
-            macString += "-"
-    return macString
+    mac_string = ""
+    for i in range(0, len(byte_mac)):  # Für alle Bytewerte
+        mac_string += hex(byte_mac[i])[2:]  # vom String ab Position 2 bis Ende
+        if i < len(byte_mac) - 1:  # Trennzeichen bis auf das letzte Byte
+            mac_string += "-"
+    return mac_string
 
 
 def activate_nic():
     # Netzwerk-Interface-Instanz erzeugen und ESP32-Stationmodus aktivieren;
     # möglich sind network.STA_IF und network.AP_IF beide wie in LUA oder
-    # AT-based oder Adruino-IDE ist in MicroPython nicht möglich
+    # AT-based oder Arduino-IDE ist in MicroPython nicht möglich
     nic = network.WLAN(network.STA_IF)  # Constructor
     nic.active(True)
     print(f'Hostname: {nic.config("dhcp_hostname")}')
 
     # binäre MAC-Adresse abrufen und in ein Hex-Tupel umgewandelt ausgeben
     MAC = nic.config('mac')
-    myMac = hexMac(MAC)
-    print("STATION MAC: \t" + myMac + "\n")
+    my_mac = hex_mac(MAC)
+    print("STATION MAC: \t" + my_mac + "\n")
     return nic
 
 
@@ -259,12 +259,9 @@ def scan(nic):
     """
     # Gib eine Liste der umgebenden APs aus
     networks_raw = nic.scan()
-    autModus = ["open", "WEP", "WPA-PSK", "WPA2-PSK", "WPA/WPA2-PSK"]
 
     networks_decoded = []
     for AP in networks_raw:
         decoded = (AP[0].decode("utf-8"), ubinascii.hexlify(AP[1], "-").decode("utf-8"), AP[2], AP[3], AP[4], AP[5])
         networks_decoded.append(decoded)
     return networks_decoded
-
-

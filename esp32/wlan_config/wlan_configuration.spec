@@ -5,10 +5,9 @@ import platform
 platform = platform.uname()
 os_on_device = platform.system
 
-print(os_on_device)
 if os_on_device == 'Windows':
     os.environ['KIVY_GL_BACKEND'] = 'angle_sdl2'
-    
+
 block_cipher = None
 
 a = Analysis(['main.py'],
@@ -32,7 +31,7 @@ exe = EXE(pyz,
           [],
           exclude_binaries=True,
           name='wlan_configration',
-          debug=False,
+          debug=True,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,

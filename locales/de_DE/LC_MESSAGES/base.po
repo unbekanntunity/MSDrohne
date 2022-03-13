@@ -18,7 +18,7 @@ msgid "Home"
 msgstr "Eingangsbereich"
 
 msgid "Connect to device"
-msgstr "Zum Geraet verbinden"
+msgstr "Zum Ger-ae-t verbinden"
 
 msgid "Connect"
 msgstr "Verbinden"
@@ -30,7 +30,7 @@ msgid "Waypoints"
 msgstr "Wegpunkte"
 
 msgid "Support"
-msgstr "Unterstuetzung"
+msgstr "Unterst-ue-tzung"
 
 msgid "Waiting for response"
 msgstr "Auf Antwort warten"
@@ -60,7 +60,7 @@ msgid "Save"
 msgstr "Speichern"
 
 msgid "Add new waypoint"
-msgstr "Neuen Wegpunkt hinzufuegen"
+msgstr "Neuen Wegpunkt hinzuf-ue-gen"
 
 msgid "Edit waypoint"
 msgstr "Wegpunkt bearbeiten"
@@ -69,16 +69,16 @@ msgid "Name"
 msgstr "Name"
 
 msgid "Altitude"
-msgstr "Höhe"
+msgstr "H-oe-he"
 
 msgid "Latitude"
 msgstr "Breitengrad"
 
 msgid "Longitude"
-msgstr "Laengengrad"
+msgstr "L-ae-ngengrad"
 
 msgid "Do you really want to delete all entries?"
-msgstr "Wollen Sie wirklich alle Eintraege löschen?"
+msgstr "Wollen Sie wirklich alle Eintr-ae-ge l-oe-schen?"
 
 msgid "Yes"
 msgstr "Ja"
@@ -93,13 +93,13 @@ msgid "Name already exists!"
 msgstr "Name existiert bereits!"
 
 msgid "Changes applied!"
-msgstr u"aenderungen uebernommen!"
+msgstr "-Ae-nderungen -ue-bernommen!"
 
 msgid "Waypoint deleted!"
-msgstr "Wegpunkt gelöscht!"
+msgstr "Wegpunkt gel-oe-scht!"
 
 msgid "Waypoints deleted!"
-msgstr "Wegpunkte gelöscht!"
+msgstr "Wegpunkte gel-oe-scht!"
 
 msgid "Ohh, something went wrong!"
 msgstr "Ohh, irgendetwas ist schief gelaufen!"
@@ -108,7 +108,7 @@ msgid "Cant connect to device?"
 msgstr "Du kannst dich nicht mit deiner Drohne verbinden?"
 
 msgid "There can be several problems:\n- A other device has already establish a connection to the drone\n- Weak connection\n- Internal problems\n\nYour options:\n- Turn off and on the drone\n- Restart the application\n- Make sure that both devices are on the same network"
-msgstr "Es kann an folgenden Problemen liegen:\n- Ein anderes Geraet hat sich schon verbunden\n- Schwache Verbindung\n- Interne Verbindung\n\Mögliche Lösungsansaetze:\n- Schalte die Drohne aus und an\n- Starte die Applikation neu\n- Stelle sicher, dass beide Geraete im selben Netzwerk sind"
+msgstr "Es kann an folgenden Problemen liegen:\n- Ein anderes Ger-ae-t hat sich schon verbunden\n- Schwache Verbindung\n- Interne Verbindung\n\M-oe-gliche L-oe-sungsans-ae-tze:\n- Schalte die Drohne aus und an\n- Starte die Applikation neu\n- Stelle sicher, dass beide Ger-ae-te im selben Netzwerk sind"
 
 msgid "Cant find the solution?"
 msgstr "Nichts hilft?"

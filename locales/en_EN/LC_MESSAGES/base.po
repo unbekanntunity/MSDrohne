@@ -17,7 +17,7 @@ msgstr ""
 msgid "Eingangsbereich"
 msgstr "Home"
 
-msgid "Zum Gerät verbinden"
+msgid "Zum Ger-ae-t verbinden"
 msgstr "Connect to device"
 
 msgid "Verbinden"
@@ -29,7 +29,7 @@ msgstr "Settings"
 msgid "Wegpunkte"
 msgstr "Waypoints"
 
-msgid "Unterstützung"
+msgid "Unterst-ue-tzung"
 msgstr "Support"
 
 msgid "Auf Antwort warten"
@@ -59,7 +59,7 @@ msgstr "Discard"
 msgid "Speichern"
 msgstr "Save"
 
-msgid "Neuen Wegpunkt hinzufügen"
+msgid "Neuen Wegpunkt hinzuf-ue-gen"
 msgstr "Add new waypoint"
 
 msgid "Wegpunkt bearbeiten"
@@ -68,16 +68,16 @@ msgstr "Edit waypoint"
 msgid "Name"
 msgstr "Name"
 
-msgid "Höhe"
+msgid "H-oe-he"
 msgstr "Altitude"
 
 msgid "Breitengrad"
 msgstr "Latitude"
 
-msgid "Längengrad"
+msgid "L-ae-ngengrad"
 msgstr "Longitude"
 
-msgid "Wollen Sie wirklich alle Einträge löschen?"
+msgid "Wollen Sie wirklich alle Eintr-ae-ge l-oe-schen?"
 msgstr "Do you really want to delete all entries?"
 
 msgid "Ja"
@@ -92,19 +92,19 @@ msgstr "Name can´t be empty!"
 msgid "Name existiert bereits!"
 msgstr "Name already exists!"
 
-msgid "Änderungen übernommen!"
+msgid "-Ae-nderungen -ue-bernommen!"
 msgstr "Changes applied!"
 
-msgid "Wegpunkt gelöscht!"
+msgid "Wegpunkt gel-oe-scht!"
 msgstr "Waypoint deleted!"
 
-msgid "Wegpunkte gelöscht!"
+msgid "Wegpunkte gel-oe-scht!"
 msgstr "Waypoints deleted!"
 
 msgid "Ohh, irgendetwas ist schief gelaufen!"
 msgstr "Ohh, something went wrong!"
 
-msgid "Es kann an folgenden Problemen liegen:\n- Ein anderes Gerät hat sich schon verbunden\n- Schwache Verbindung\n- Interne Verbindung\n\Mögliche Lösungsansätze:\n- Schalte die Drohne aus und an\n- Starte die Applikation neu\n- Stelle sicher, dass beide Geräte im selben Netzwerk sind"
+msgid "Es kann an folgenden Problemen liegen:\n- Ein anderes Ger-ae-t hat sich schon verbunden\n- Schwache Verbindung\n- Interne Verbindung\n\M-oe-gliche L-oe-sungsans-ae-tze:\n- Schalte die Drohne aus und an\n- Starte die Applikation neu\n- Stelle sicher, dass beide Ger-ae-te im selben Netzwerk sind"
 msgstr "There can be several problems:\n- A other device has already establish a connection to the drone\n- Weak connection\n- Internal problems\n\nYour options:\n- Turn off and on the drone\n- Restart the application\n- Make sure that both devices are on the same network"
 
 msgid "Nichts hilft?"
