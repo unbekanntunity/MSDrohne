@@ -6,3 +6,5 @@ canvas.before:
         rectangle: self.x,self.y,self.width,self.height
 
 C:\Users\nguye\AppData\Local\Programs\Python\Python38\Tools\i18n\msgfmt.py base
+
+python -m PyInstaller msdrohne.spec

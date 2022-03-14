@@ -1594,11 +1594,11 @@ class ControlScreen(CustomScreen):
         super(ControlScreen, self).__init__(**kwargs)
 
         self.r_joystick = JoyStick()
-        self.r_joystick.outer_radius = dp(100)
-        self.r_joystick.inner_radius = dp(30)
+        self.r_joystick.outer_radius = dp(80)
+        self.r_joystick.inner_radius = dp(20)
         self.l_joystick = JoyStick()
-        self.l_joystick.outer_radius = dp(100)
-        self.l_joystick.inner_radius = dp(30)
+        self.l_joystick.outer_radius = dp(80)
+        self.l_joystick.inner_radius = dp(20)
 
         self.esp_connection = DroneApp.translate('strong')
 
@@ -1635,9 +1635,9 @@ class ControlScreen(CustomScreen):
 
             ip, port = wlan_client.get_server_address()
 
-            wlan_client.connect(ip, port)
-            wlan_client.connect(ip, port)
-            wlan_client.connect(ip, port)
+            wlan_client.connect(ip, port, 1)
+            wlan_client.connect(ip, port, 2)
+            wlan_client.connect(ip, port, 3)
 
             # 1. socket: Daten senden
             # 2. socket: Sensordaten abfragen

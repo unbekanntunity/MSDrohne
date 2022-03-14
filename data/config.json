@@ -2,7 +2,7 @@
     "app": {
         "current_language": "de",
         "show_markers": true,
-        "testcase": false,
+        "testcase": true,
         "waypoints": [
             {
                 "altitude": "0",
