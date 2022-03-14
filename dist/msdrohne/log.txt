@@ -1,0 +1,10 @@
+canvas.before:
+    Color:
+        rgba: .5,.5,.5,1
+    Line:
+        width: 2
+        rectangle: self.x,self.y,self.width,self.height
+
+C:\Users\nguye\AppData\Local\Programs\Python\Python38\Tools\i18n\msgfmt.py base
+
+python -m PyInstaller msdrohne.spec

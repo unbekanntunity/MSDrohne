@@ -1,0 +1,6 @@
+('./kv_files',
+ None,
+ [],
+ 'DATA',
+ [('joystick.kv', './kv_files\\joystick.kv', 'DATA'),
+  ('main.kv', './kv_files\\main.kv', 'DATA')])

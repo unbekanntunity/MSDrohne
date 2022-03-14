@@ -2,7 +2,7 @@
 # Hauptklasse und Einstiegspunkt der ganzen Applikation
 # *******************************************************************
 
-# **************************** Imports ****************a**************
+# **************************** Imports ******************************
 import os
 import platform
 import traceback
@@ -223,6 +223,14 @@ class WaypointCard(MDCard):
             width_mult=3
         )
 
+    def unbind_text(self):
+        app = MDApp.get_running_app()
+        app.unbind_text(self.ids.name_label)
+        app.unbind_text(self.ids.altitude_label)
+        app.unbind_text(self.ids.latitude_label)
+        app.unbind_text(self.ids.longitude_label)
+        app.unbind_text(self.ids.last_updated_label)
+
     def open_menu(self, *args):
         self.ids.drop_down.menu.open()
 
@@ -287,7 +295,7 @@ class WaypointArea(MDAnchorLayout):
         if os_on_device in ['android', 'Linux']:
             _bottom_sheet_menu = MDGridBottomSheet()
             data = [
-                ("System folder", "folder-cog-outline", "."),
+                ("System folder", "folder-cog-outline", "/storage/emulated/0"),
                 ("Gallery folder", "folder-image", "/storage/emulated/0/DCIM")
             ]
             for name, icon, path in data:
@@ -336,7 +344,7 @@ class WaypointArea(MDAnchorLayout):
             suffix = filename.split('.')[-1]
             if suffix == 'jpg' or suffix == 'png':
                 self.ids.image.source = filename
-                self.dismiss_popup()
+                self.dismiss_manager()
             else:
                 CustomSnackbar(
                     text=MDApp.get_running_app().translate('File has to a .jgp or .png file!'),
@@ -1594,11 +1602,11 @@ class ControlScreen(CustomScreen):
         super(ControlScreen, self).__init__(**kwargs)
 
         self.r_joystick = JoyStick()
-        self.r_joystick.outer_radius = dp(80)
-        self.r_joystick.inner_radius = dp(20)
+        self.r_joystick.outer_radius = dp(60)
+        self.r_joystick.inner_radius = dp(15)
         self.l_joystick = JoyStick()
-        self.l_joystick.outer_radius = dp(80)
-        self.l_joystick.inner_radius = dp(20)
+        self.l_joystick.outer_radius = dp(60)
+        self.l_joystick.inner_radius = dp(15)
 
         self.esp_connection = DroneApp.translate('strong')
 
@@ -2154,6 +2162,8 @@ class WaypointsScreen(CustomScreen):
 
         self.ids.grid.clear_widgets()
         self.waypoints.clear()
+        for waypoint_card in self._waypoint_cards:
+            waypoint_card.unbind_text()
         self._waypoint_cards.clear()
 
     def edit_waypoint(self, waypoint_card) -> None:
@@ -2261,6 +2271,8 @@ class WaypointsScreen(CustomScreen):
         index = self._waypoint_cards.index(waypoint_card)
 
         self.waypoints.pop(index)
+
+        self._waypoint_cards[index].unbind_text()
         self._waypoint_cards.pop(index)
         self.ids.grid.remove_widget(waypoint_card)
 
@@ -2502,7 +2514,7 @@ class DroneApp(MDApp):
         self.configuration = Configuration('./data/config.json', True)
         self.configuration.on_config_changed.add_function(self.on_config_changed)
 
-        self.translated_labels = []
+        self.translated_widgets = []
         self.translated_parts = []
 
         self.translation = None
@@ -2517,7 +2529,7 @@ class DroneApp(MDApp):
 
         self.configuration.load_config()
 
-    def bind_text(self, label, text, entire_text=None) -> str:
+    def bind_text(self, widget, text, entire_text=None) -> str:
         """
         Registriert den Label. Durch die update_text Funktion kann dann der Text aktualisiert werden.
         Das wird vor allem wichtig, wenn die Sprache geändert wurde una alle Texte in der App
@@ -2525,8 +2537,8 @@ class DroneApp(MDApp):
 
         Parameters
         ----------
-        label: Label
-            Das Label.
+        widget: Label
+            Das Widget mit den Text-Attribut.
         text: str
             Der Teil des Textes, der übersetzt werden soll.
         entire_text: str
@@ -2542,18 +2554,31 @@ class DroneApp(MDApp):
         if entire_text is None:
             entire_text = text
 
-        self.translated_labels.append(label)
+        self.translated_widgets.append(widget)
         translated_text = self.translate(text)
 
         self.translated_parts.append(translated_text)
         return entire_text.replace(text, translated_text)
+
+    def unbind_text(self, widget) -> str:
+        """
+        Entfernt den Widget.
+
+        Parameters
+        ----------
+        widget: Label
+            Das Widget mit den Text-Attribut.
+        """
+
+        if widget in self.translated_widgets:
+            self.translated_widgets.remove(widget)
 
     def update_text(self) -> None:
         """
         Aktualisiert die registrierten Widgets.
         """
 
-        for index, widget in enumerate(self.translated_labels):
+        for index, widget in enumerate(self.translated_widgets):
             translated_text = self.translate(self.translated_parts[index])
             widget.text = widget.text.replace(self.translated_parts[index], translated_text)
             if isinstance(widget, MDFillRoundFlatIconButton):

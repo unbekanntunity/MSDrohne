@@ -1,0 +1,8 @@
+('./customwidgets',
+ None,
+ [],
+ 'DATA',
+ [('joystick.py', './customwidgets\\joystick.py', 'DATA'),
+  ('__pycache__\\joystick.cpython-38.pyc',
+   './customwidgets\\__pycache__\\joystick.cpython-38.pyc',
+   'DATA')])
