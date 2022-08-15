@@ -36,12 +36,14 @@ Hardware (ESP32-WROOM-32)
 ### Apps
 
 1. App für die Steuerung der Drohne
-- Einstiegspunkt Main.py
-
+  - Einstiegtspunkt: main.py
+  
 2. App um über eine GUI, die Daten für das Wlan, womit sich der Microcontroller verbindet
-
+  - Einstiegspunkt: esp32/wlan_config/main.py
+  
 3. Programm für den ESP32 (Microcontroller), der sich in der Drohne befindet
-    
+  - Einstiegspunkt: esp32/wlan_config/client.py
+  
 ### Installation
 Die Entwickler unter der E-Mail [Monarch Softworks](https://www.gmail.com) nach der Software fragen.
 In der E-Mail sollten sich am besten schon folgende Daten über das Gerät gelistet sein.
