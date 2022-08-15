@@ -1,4 +1,4 @@
-#Schülerprojekt: Drohne zum Nachbauen
+# Schülerprojekt: Drohne zum Nachbauen
 
 ## Inhaltsverzeichnis
 1. [Entwicklerstatus](#Entwicklerstatus)
@@ -6,7 +6,7 @@
 3. [Dokumantation](#Dokumentation)
 
 ### Entwicklerstatus
-In der Entwicklung...
+Entwicklung gestoppt.
 
 ### Kontakt
 Falls ihr Bugs oder ähnliches findet, könnt ihr entweder ein [Issue](https://github.com/unbekanntunity/MSDrohne/issues/new/choose)
@@ -45,6 +45,10 @@ In der E-Mail sollten sich am besten schon folgende Daten über das Gerät gelis
 1. Firma
 2. Betriebssystem
 3. Handymodell
+
+#### oder
+
+Unter den Verzeichnis Build, die APK herunterladen.
 
 #### oder
 
@@ -126,10 +130,6 @@ Falls ihr das Gerät schon an eurem Computer angeschlossen habt, könnt ihr hier
 ```commandline
 buildozer android debug deploy
 ```
-
-### Kommunikation
-Für die Kommunikation verwenden wir Sockets, die als ein Kommunikationsendpunkte dienen. 
-
 
 Letztes Update: 23/12/2021
 
